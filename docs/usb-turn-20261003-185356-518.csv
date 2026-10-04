@@ -1,0 +1,2 @@
+host_ms,board_ms,cycle_ms,seq,accepted,drops,consent,active,fault,stop_reason,left_mv,right_mv,forward_mm,lateral_right_mm,imu_deg,gyro_dps,motor_l1_mm,motor_l2_mm,motor_l3_mm,motor_r1_mm,motor_r2_mm,motor_r3_mm,session_mm,nexus_x_mm,nexus_y_mm,nexus_h_deg,lemlib_x_mm,lemlib_y_mm,lemlib_h_deg,interlocks
+5,448114,10,1,0,0,1,0,1,9,0,0,738.037,24.546,16.27666,-0.000,687.766,223.377,691.396,680.504,221.994,681.023,691.396,2.765,734.228,16.27953,2.805,734.228,16.27663,0

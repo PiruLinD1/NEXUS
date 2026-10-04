@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\x64\Release\ZERO_CHECK</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\arm_motion_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\automatic_calibration_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\autonomous_units_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\calibration_routine_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\calibration_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\chassis_adapter_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\controller_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\driver_input_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\estimator_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\mechanism_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\nexus_calibrate.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\startup_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\Release\system_test.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-estimator-audit\x64\Release\ALL_BUILD</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles />
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

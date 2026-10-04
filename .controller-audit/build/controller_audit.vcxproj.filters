@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\controller_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\src\nexus\controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.controller-audit\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{C9A2E2FA-1221-3C90-9779-040BCB9A288E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-temporal-probe\quiet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\src\nexus\estimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-temporal-probe\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{2804A748-CC83-34FB-98C7-2EE08B8DEB01}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

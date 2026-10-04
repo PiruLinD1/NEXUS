@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(temporal_probe LANGUAGES CXX)
+add_executable(temporal_probe probe.cpp ../src/nexus/estimator.cpp)
+target_compile_features(temporal_probe PRIVATE cxx_std_23)
+target_include_directories(temporal_probe PRIVATE ../include)
+add_executable(quiet_probe quiet.cpp ../src/nexus/estimator.cpp)
+target_compile_features(quiet_probe PRIVATE cxx_std_23)
+target_include_directories(quiet_probe PRIVATE ../include)

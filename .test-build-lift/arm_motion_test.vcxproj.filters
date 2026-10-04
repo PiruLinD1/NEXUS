@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\arm_motion_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0FD2D549-DA53-3FC3-88B8-A0D7D2768782}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

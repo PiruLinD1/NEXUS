@@ -1,0 +1,10 @@
+^C:\USERS\RUGGE\DOCUMENTS\VEX-VSCODE-PROJECTS\SX_SAWP\.TEST-BUILD-REVERSE-AUDIT\BUILD\CMAKEFILES\5B016B8D3226070A922D4ACBB6E5B756\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-reverse-audit -BC:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-reverse-audit/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-reverse-audit/build/reverse_audit.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

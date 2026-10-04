@@ -1,0 +1,175 @@
+{
+  "file": "docs/usb-passive-20261003-192152-873.csv",
+  "plan": "docs/usb-checkpoint-plan-20261003.json",
+  "rows": 13843,
+  "points": [
+    {
+      "name": "checkpoint",
+      "marker": 2,
+      "board_ms": 121844.0,
+      "reference_xy_mm": [
+        600,
+        600
+      ],
+      "reference_heading_deg": 0,
+      "measured_heading_change_deg": -0.32941785999999995,
+      "heading_error_wrapped_deg": -0.3294178600000066,
+      "stationary_spans": {
+        "forward_mm": 0.03989799999999377,
+        "lateral_right_mm": 0.0,
+        "imu_deg": 0.018932999999999978
+      },
+      "raw_integrated_xy_mm": [
+        553.4212471591724,
+        667.8517979488023
+      ],
+      "offset_sensitivity": [
+        [
+          1.6533638645280397e-05,
+          0.005749394563585988
+        ],
+        [
+          -0.005749394563585988,
+          1.6533638645280397e-05
+        ]
+      ]
+    },
+    {
+      "name": "return",
+      "marker": 3,
+      "board_ms": 168614.0,
+      "reference_xy_mm": [
+        0,
+        0
+      ],
+      "reference_heading_deg": 0,
+      "measured_heading_change_deg": 360.83402542000005,
+      "heading_error_wrapped_deg": 0.834025419999989,
+      "stationary_spans": {
+        "forward_mm": 0.0,
+        "lateral_right_mm": 0.0,
+        "imu_deg": 0.0010570000000029722
+      },
+      "raw_integrated_xy_mm": [
+        -56.27982558054841,
+        96.50131698725608
+      ],
+      "offset_sensitivity": [
+        [
+          0.0001059438175069596,
+          -0.014555975563862837
+        ],
+        [
+          0.014555975563862837,
+          0.0001059438175069596
+        ]
+      ]
+    }
+  ],
+  "cycle_ms_min_max": [
+    10.0,
+    10.0
+  ],
+  "reference_heading_excitation": [
+    0.0,
+    0.0
+  ],
+  "designed_offsets_identifiable": false,
+  "recorded_matrix_rank": 2,
+  "recorded_singular_values": [
+    0.01565066963159209,
+    0.01565066963159209
+  ],
+  "configured": {
+    "offsets_mm": [
+      20.0,
+      -70.0
+    ],
+    "errors_xy_mm": [
+      [
+        -46.98087978750575,
+        67.7356527028254
+      ],
+      [
+        -55.258788414727874,
+        96.78502043130784
+      ]
+    ],
+    "errors_norm_mm": [
+      82.43374134834501,
+      111.44897431987582
+    ],
+    "sum_squared_error_mm2": 19216.195589638184
+  },
+  "unconstrained_continuous_fit": {
+    "offsets_mm": [
+      -4114.5472436479,
+      -2297.4840509813794
+    ],
+    "errors_xy_mm": [
+      [
+        -59.8559235907809,
+        91.46996773195703
+      ],
+      [
+        -23.27361471840365,
+        36.366663621335725
+      ]
+    ],
+    "errors_norm_mm": [
+      109.31370721821972,
+      43.17632875787471
+    ],
+    "sum_squared_error_mm2": 13813.681950798738
+  },
+  "bounded_continuous_fit": {
+    "offsets_mm": [
+      -500.0,
+      -500.0
+    ],
+    "errors_xy_mm": [
+      [
+        -49.461716941943266,
+        70.71822841127265
+      ],
+      [
+        -49.054809707370474,
+        89.17035729657118
+      ]
+    ],
+    "errors_norm_mm": [
+      86.29906878103522,
+      101.77291867596455
+    ],
+    "sum_squared_error_mm2": 17805.25624829834
+  },
+  "grid": {
+    "minimum_mm": -500,
+    "maximum_mm": 500,
+    "step_mm": 1,
+    "pairs_tested": 1002001,
+    "best": {
+      "offsets_mm": [
+        -500.0,
+        -500.0
+      ],
+      "errors_xy_mm": [
+        [
+          -49.461716941943266,
+          70.71822841127265
+        ],
+        [
+          -49.054809707370474,
+          89.17035729657118
+        ]
+      ],
+      "errors_norm_mm": [
+        86.29906878103522,
+        101.77291867596455
+      ],
+      "sum_squared_error_mm2": 17805.25624829834
+    }
+  },
+  "apply_calibration": false,
+  "interpretation": "Coincident externally specified headings give no geometric offset excitation. Small measured heading errors can yield a numerical fit but do not make this a valid offset calibration. Ground truth alignment/measurement uncertainty is not known."
+}

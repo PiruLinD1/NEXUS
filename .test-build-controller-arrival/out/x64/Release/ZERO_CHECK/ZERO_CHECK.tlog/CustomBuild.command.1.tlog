@@ -1,0 +1,10 @@
+^C:\USERS\RUGGE\DOCUMENTS\VEX-VSCODE-PROJECTS\SX_SAWP\.TEST-BUILD-CONTROLLER-ARRIVAL\OUT\CMAKEFILES\6612D2473A75AD0B8CC05483919E0B2D\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-arrival -BC:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-arrival/out --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-arrival/out/arrival_comparison.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

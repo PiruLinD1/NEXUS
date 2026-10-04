@@ -1,0 +1,6 @@
+Original LemLib v0.5.6 odom.cpp, commit3388145e0d90ee3c7c17d7267a30ef64367df4cb.
+Kinematic comparison only: F/L/G same input, bias0, no quiet/ranges; offsets +20/-70mm, scales1. Lem horizontal=-Nexus lateral; inches converted at API boundary.
+CSV origin at 130.001124s: (-1.327900,-0.295300) mm, -1.027894000 deg
+CSV segment: frames=3600 max position difference=0.001177737 mm heading=0.000024255 deg; final Nexus=(-38.116950,-24.967402) LemLib=(-38.116962,-24.966390) mm
+All CSV segments: max position difference 0.001177737 mm; heading 0.000024255 deg.
+CSV segments=1 invalid F/L/G frames skipped=0. Boundaries are rebaselined, never interpolated.

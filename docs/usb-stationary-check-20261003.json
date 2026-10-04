@@ -1,0 +1,31 @@
+﻿{
+    "rows":  1000,
+    "invalid_frames":  0,
+    "signals":  {
+                    "forward_mm":  {
+                                       "maximum":  5348.578946,
+                                       "span":  0,
+                                       "minimum":  5348.578946
+                                   },
+                    "lateral_right_mm":  {
+                                             "maximum":  -4.79222,
+                                             "span":  0,
+                                             "minimum":  -4.79222
+                                         },
+                    "imu_deg":  {
+                                    "maximum":  360.864837,
+                                    "span":  0.0020049999999969259,
+                                    "minimum":  360.862832
+                                },
+                    "cycle_ms":  {
+                                     "maximum":  10,
+                                     "span":  0,
+                                     "minimum":  10
+                                 },
+                    "drops":  {
+                                  "maximum":  0,
+                                  "span":  0,
+                                  "minimum":  0
+                              }
+                }
+}

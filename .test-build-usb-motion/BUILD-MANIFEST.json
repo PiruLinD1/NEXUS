@@ -1,0 +1,16 @@
+﻿{
+    "project":  "USBODOM",
+    "slot":  5,
+    "date":  "2026-10-03",
+    "upstream_commit":  "3388145e0d90ee3c7c17d7267a30ef64367df4cb",
+    "sha256":  {
+                   ".test-build-usb-motion/src/main.cpp":  "C6555CBFDB171D3701ED7E0A7C5FA9F67D3CE020C00DD5C9B82B6446C302A45A",
+                   ".test-build-usb-motion/include/pulse_guard.hpp":  "10C2D0B763FD347A35D66DD95C8D4443F0CD231F5687FA036339953C73A62A7D",
+                   ".test-build-usb-motion/bin/hot.package.bin":  "7A81A1A427E77646B832A63D1C4751A9D2DFF283971F2221CC409A643B3A2AA7",
+                   ".test-build-usb-motion/bin/cold.package.bin":  "E9A72BD0A423FD6454C25122831DFAF7DE42CF0D5B17657232C2EDA43FDA0C12",
+                   "tools/usb_odom_probe.ps1":  "E526D3F2403CE089F44A33C0C224C72B5C65DF22AD9C90CEDB188770C48AEA47",
+                   "src/nexus/estimator.cpp":  "1C2269C870EEA237EF564055973923B504A19FE8550D359F648679B950C77B81",
+                   "include/nexus/types.hpp":  "62ACA163BDAC27582AAE7F7F54D0B17952452D48AB0CF239E5F29276413ABBF9",
+                   "bin/hot.package.bin":  "0526431F5FB812A6077BAB928F3EA099386801E20697162B1004E863BA9B3ED4"
+               }
+}

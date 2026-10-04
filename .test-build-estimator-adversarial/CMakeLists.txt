@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.20)
+project(reset_interval_audit LANGUAGES CXX)
+add_executable(reset_interval reset_interval.cpp ../src/nexus/estimator.cpp ../.test-build-lemlib-reference/odom.cpp)
+target_compile_features(reset_interval PRIVATE cxx_std_23)
+target_include_directories(reset_interval BEFORE PRIVATE ../.test-build-lemlib-reference/fake ../include)

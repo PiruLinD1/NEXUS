@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.20)
+project(direction_regression LANGUAGES CXX)
+add_executable(fixed_direction ../tests/controller_test.cpp fixed-direction.cpp)
+target_compile_features(fixed_direction PRIVATE cxx_std_23)
+target_include_directories(fixed_direction PRIVATE ../include)

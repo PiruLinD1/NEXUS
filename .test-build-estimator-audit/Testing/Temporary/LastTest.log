@@ -1,0 +1,23 @@
+Start testing: Oct 02 22:32 ora legale Europa occidentale
+----------------------------------------------------------
+2/14 Testing: odometry_trace_log
+2/14 Test: odometry_trace_log
+Command: "C:/Users/rugge/AppData/Local/Programs/Python/Python311/python.exe" "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/odometry_trace_log_test.py"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-estimator-audit
+"odometry_trace_log" start time: Oct 02 22:32 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.264s
+
+OK
+<end of output>
+Test time =   0.44 sec
+----------------------------------------------------------
+Test Passed.
+"odometry_trace_log" end time: Oct 02 22:32 ora legale Europa occidentale
+"odometry_trace_log" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 02 22:32 ora legale Europa occidentale

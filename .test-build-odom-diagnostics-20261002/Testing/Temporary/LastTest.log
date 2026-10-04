@@ -1,0 +1,39 @@
+Start testing: Oct 02 17:42 ora legale Europa occidentale
+----------------------------------------------------------
+1/13 Testing: log_preparation
+1/13 Test: log_preparation
+Command: "C:/Python314/python.exe" "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/prepare_dynamics_test.py" "--calibrate" "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/nexus_calibrate.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002
+"log_preparation" start time: Oct 02 17:42 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.378s
+
+OK
+<end of output>
+Test time =   0.63 sec
+----------------------------------------------------------
+Test Passed.
+"log_preparation" end time: Oct 02 17:42 ora legale Europa occidentale
+"log_preparation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/13 Testing: chassis_adapter
+13/13 Test: chassis_adapter
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/chassis_adapter_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002
+"chassis_adapter" start time: Oct 02 17:42 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Chassis adapter lifecycle, calibration lease, reconnect, timing and diagnostic tests passed.
+<end of output>
+Test time =   4.41 sec
+----------------------------------------------------------
+Test Passed.
+"chassis_adapter" end time: Oct 02 17:42 ora legale Europa occidentale
+"chassis_adapter" time elapsed: 00:00:04
+----------------------------------------------------------
+
+End testing: Oct 02 17:42 ora legale Europa occidentale

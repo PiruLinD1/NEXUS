@@ -1,0 +1,184 @@
+{
+  "verifiedAtUtc": "2026-09-22T07:34:54.665388+00:00",
+  "engine": "Microsoft C/C++ IntelliSense",
+  "extensionVersion": "1.34.4",
+  "filesChecked": 29,
+  "errors": 0,
+  "warnings": 0,
+  "files": [
+    {
+      "file": "src/main.cpp",
+      "ready": true,
+      "sha256": "7555140ae93521f2160f17d7556f3d2076101a037e3a073b1917af91a5262cec",
+      "diagnostics": []
+    },
+    {
+      "file": "src/nexus/automatic_calibration.cpp",
+      "ready": true,
+      "sha256": "4819ec7c0b3581b0a3d7f99c6125545226398a70ff6bed65ae5ba41a1c12d394",
+      "diagnostics": []
+    },
+    {
+      "file": "src/nexus/calibration.cpp",
+      "ready": true,
+      "sha256": "1085283228990d2ba76d230fb953ef5e2b456bd388341b5bdd3513f4f3d826fa",
+      "diagnostics": []
+    },
+    {
+      "file": "src/nexus/chassis.cpp",
+      "ready": true,
+      "sha256": "4fb1edc2fb0127f8749c1dbbdfeecbcaf7276b5d578aec4ee14cf4277e7f9f91",
+      "diagnostics": []
+    },
+    {
+      "file": "src/nexus/controller.cpp",
+      "ready": true,
+      "sha256": "33386867182437d353a27a1a0459ea61cee182550ce6fea2cde8e8603c4667ea",
+      "diagnostics": []
+    },
+    {
+      "file": "src/nexus/estimator.cpp",
+      "ready": true,
+      "sha256": "8a90585f850c48d7d7a7e66b4d16d963b8b8c5789be15bee5c4f18e16af6db65",
+      "diagnostics": []
+    },
+    {
+      "file": "src/robot-calibration.cpp",
+      "ready": true,
+      "sha256": "b95aad71267e403c9ab6591763083ef2c40d5cb523544b561224546e2fd15d08",
+      "diagnostics": []
+    },
+    {
+      "file": "src/robot.cpp",
+      "ready": true,
+      "sha256": "499beebf258a29e958258f7bb5c715560f1aa81a8da55f44626e1af9dcf19763",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/api.hpp",
+      "ready": true,
+      "sha256": "fca23021e7fbad0b6b2c65a8714c5c28902e5eccad414850f52ad5ffb0484e93",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/automatic_calibration.hpp",
+      "ready": true,
+      "sha256": "80405dae66868efac2684baa1b8a01a26802395f261fca89af1d9049c4866297",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/autonomous_units.hpp",
+      "ready": true,
+      "sha256": "6457e1c4c5155f6e1014d200c83f9af106be66228635981bcda78c0f1b293a4f",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/calibration.hpp",
+      "ready": true,
+      "sha256": "1a282f8f42e2daceb7a379d615008d936dab43ab0200199167b95b904939824f",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/calibration_routine.hpp",
+      "ready": true,
+      "sha256": "4246be46820ba925df1fc8da6516704ebc4822b00ffc9e14be6bc30da488631c",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/chassis.hpp",
+      "ready": true,
+      "sha256": "5bc8e3178efc58ac444e3be07e0fd2641061f4c627e84eb82527b1c6e4f1aac4",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/controller.hpp",
+      "ready": true,
+      "sha256": "80a2f4533edb79fbc0d71b99195aa820b2f78241eb3e3e15e7c3d708ce006a94",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/estimator.hpp",
+      "ready": true,
+      "sha256": "1f2a93a7d54ec4a1d8490752c6808c128f2a3b3eb6b74b11a14b6a14637a65b4",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/imu_status.hpp",
+      "ready": true,
+      "sha256": "41fa3bccfaf500b2d60560686f5c536c2f267fa3c087d467adab278a9c5a65a5",
+      "diagnostics": []
+    },
+    {
+      "file": "include/nexus/types.hpp",
+      "ready": true,
+      "sha256": "9218ad34c6647d936be9fb035129a80868da81aa7166fe3d43c4dfe3964b9dac",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot/arm_motor.hpp",
+      "ready": true,
+      "sha256": "80bef92a0525a3cc4913eba5aa044334c1d09dcf4a809ec01f5355aa25c1a4c9",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot/arm_progress.hpp",
+      "ready": true,
+      "sha256": "4630a45594a51e4c1ea14cd0c638eadc67d14ace8d8ba53f9281d058a06651fd",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot/calibration_support.hpp",
+      "ready": true,
+      "sha256": "7e971e5804f4324813f276e9ea532b947ed4aff431457a428756c7d5ed63eb46",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot/driver_input.hpp",
+      "ready": true,
+      "sha256": "fe31d6cab08cc59f7fce485a7db904516549d793b9e5699b5de62d315432ae69",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot/mechanism.hpp",
+      "ready": true,
+      "sha256": "efdba2dbce1918eb4d0c57e3266556c0d50169f9b7cd2808bbf4dbb386419b71",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot/mechanism_config.hpp",
+      "ready": true,
+      "sha256": "6b3d6fc2a2982ac5c77eb2380d477c32c6184812a16a0960291460a057e1852f",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot/mechanism_driver.hpp",
+      "ready": true,
+      "sha256": "5fa5193cae1dc456f7e59631a522ce3c52ae5234f698466ee6bb8d56aa3fe439",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot/startup.hpp",
+      "ready": true,
+      "sha256": "dc09dcb3efb511cc6d4c6e5b19d72712a2f9a13f8447378f54207e07ea279165",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot.hpp",
+      "ready": true,
+      "sha256": "3a4d8be76d1873bf0f364ea534ef3f18b76f7492177491aac6be7cb0e822a4d2",
+      "diagnostics": []
+    },
+    {
+      "file": "include/robot-config.hpp",
+      "ready": true,
+      "sha256": "b88496a1d3c0db8e242cbdc8b9dbafd578ea6d055a2eb5821800ba2c2d3ca3af",
+      "diagnostics": []
+    },
+    {
+      "file": "tools/nexus_calibrate.cpp",
+      "ready": true,
+      "sha256": "8e4fbb37b773a861156b2133114d8dc661773f7b39041ee914301dbefc46d1c9",
+      "diagnostics": []
+    }
+  ]
+}

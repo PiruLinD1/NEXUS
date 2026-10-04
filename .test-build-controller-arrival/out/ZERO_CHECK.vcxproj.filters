@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-controller-arrival\out\CMakeFiles\6612d2473a75ad0b8cc05483919e0b2d\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{87CD72AA-67B5-322B-B7C0-3DCE168982F2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

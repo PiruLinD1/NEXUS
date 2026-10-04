@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Solution>
+	<Configurations>
+		<BuildType Name="Debug"/>
+		<BuildType Name="Release"/>
+		<BuildType Name="MinSizeRel"/>
+		<BuildType Name="RelWithDebInfo"/>
+		<Platform Name="x64"/>
+	</Configurations>
+	<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="315c3464-d860-349d-8328-b6b7b1a6b869" DefaultStartup="true">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="arm_motion_test.vcxproj"/>
+		<BuildDependency Project="automatic_calibration_test.vcxproj"/>
+		<BuildDependency Project="autonomous_units_test.vcxproj"/>
+		<BuildDependency Project="calibration_routine_test.vcxproj"/>
+		<BuildDependency Project="calibration_test.vcxproj"/>
+		<BuildDependency Project="chassis_adapter_test.vcxproj"/>
+		<BuildDependency Project="controller_test.vcxproj"/>
+		<BuildDependency Project="driver_input_test.vcxproj"/>
+		<BuildDependency Project="estimator_test.vcxproj"/>
+		<BuildDependency Project="mechanism_test.vcxproj"/>
+		<BuildDependency Project="nexus_calibrate.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+		<BuildDependency Project="startup_test.vcxproj"/>
+		<BuildDependency Project="system_test.vcxproj"/>
+		<Build Solution="Debug|*" Project="false"/>
+		<Build Solution="Release|*" Project="false"/>
+		<Build Solution="MinSizeRel|*" Project="false"/>
+		<Build Solution="RelWithDebInfo|*" Project="false"/>
+	</Project>
+	<Project Path="RUN_TESTS.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="ab15fa83-7a6c-3e3e-a8b0-1c676959b85e">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<Build Solution="Debug|*" Project="false"/>
+		<Build Solution="Release|*" Project="false"/>
+		<Build Solution="MinSizeRel|*" Project="false"/>
+		<Build Solution="RelWithDebInfo|*" Project="false"/>
+	</Project>
+	<Project Path="ZERO_CHECK.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="0476d44b-f61d-3ddf-8a81-a6b8070a0a6c"/>
+	<Project Path="arm_motion_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="c80865a0-cf6f-3e36-8a6f-5de7a9e0ca67">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="automatic_calibration_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9ee9d2a8-d8b0-3c57-9d05-a0037f8205d0">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="autonomous_units_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="84779849-6eda-37be-b618-ff1f08780594">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="calibration_routine_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="7f9f45ad-32ed-3d6d-97a2-0a294c12688d">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="calibration_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="2cf8ddf4-d7af-3370-98bd-9fb08d4118ae">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="chassis_adapter_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9681affc-3adb-315e-8c8c-ee417a422940">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="controller_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="04db1bf2-a6d5-3f80-87e0-7e1852648ac0">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="driver_input_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="f4d85e31-1ff0-3930-ab46-6a732dfa1708">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="estimator_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="b4f5fd1c-95c2-3f98-9350-5569d6f6fde2">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="mechanism_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="13ef4086-f5b9-3224-b3fb-101f9cce2cca">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="nexus_calibrate.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="499203a2-4b81-3dd2-981a-2d44ce8a91dd">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="nexus_core.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="822e58ff-ed59-3d3d-a22e-55957c5544ac">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="startup_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="0f9aa2fa-2403-3c03-a6b0-99996784eb4f">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+	<Project Path="system_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="a37f1ceb-0322-36e5-86eb-f4586eb6a9d5">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+		<BuildDependency Project="nexus_core.vcxproj"/>
+	</Project>
+</Solution>

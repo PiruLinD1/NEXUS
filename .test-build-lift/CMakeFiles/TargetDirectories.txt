@@ -1,0 +1,17 @@
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/nexus_core.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/estimator_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/controller_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/calibration_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/system_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/autonomous_units_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/driver_input_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/automatic_calibration_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/calibration_routine_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/mechanism_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/arm_motion_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/startup_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/chassis_adapter_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/nexus_calibrate.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/RUN_TESTS.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/ALL_BUILD.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/CMakeFiles/ZERO_CHECK.dir

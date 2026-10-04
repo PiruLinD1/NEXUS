@@ -1,0 +1,4 @@
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/CMakeFiles/lemlib_compare.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/CMakeFiles/RUN_TESTS.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/CMakeFiles/ALL_BUILD.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/CMakeFiles/ZERO_CHECK.dir

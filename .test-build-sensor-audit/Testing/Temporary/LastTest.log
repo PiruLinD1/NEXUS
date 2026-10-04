@@ -1,0 +1,19 @@
+Start testing: Sep 30 08:27 ora legale Europa occidentale
+----------------------------------------------------------
+13/13 Testing: chassis_adapter
+13/13 Test: chassis_adapter
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-sensor-audit/Release/chassis_adapter_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-sensor-audit
+"chassis_adapter" start time: Sep 30 08:27 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Chassis adapter lifecycle, calibration lease, reconnect, timing and diagnostic tests passed.
+<end of output>
+Test time =   4.21 sec
+----------------------------------------------------------
+Test Passed.
+"chassis_adapter" end time: Sep 30 08:28 ora legale Europa occidentale
+"chassis_adapter" time elapsed: 00:00:04
+----------------------------------------------------------
+
+End testing: Sep 30 08:28 ora legale Europa occidentale

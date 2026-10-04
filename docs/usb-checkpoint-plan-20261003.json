@@ -1,0 +1,13 @@
+{
+  "units": "mm,degrees",
+  "reference_point": "The same user-selected rigid point on the chassis at every mark",
+  "motion": "Manual, forward motion and a broad returning curve; no motor commands",
+  "markers": [
+    {"id": 1, "name": "start", "x_mm": 0, "y_mm": 0, "heading_deg": 0},
+    {"id": 2, "name": "checkpoint", "x_mm": 600, "y_mm": 600, "heading_deg": 0},
+    {"id": 3, "name": "return", "x_mm": 0, "y_mm": 0, "heading_deg": 0}
+  ],
+  "offset_scan": {"minimum_mm": -500, "maximum_mm": 500, "step_mm": 1},
+  "configured_offsets_mm": [20, -70],
+  "note": "All reference headings coincide: the designed test does not identify constant pod offsets. Scan results are diagnostic, not accepted calibration."
+}

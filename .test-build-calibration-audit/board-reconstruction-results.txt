@@ -1,0 +1,7 @@
+﻿File: odometry-usb-01.csv frames: 27838
+Recorded heading used directly; no test of physical yaw accuracy.
+Maximum single-step discrepancy mm / sequence: (0.00017797991700705337, 13729)
+Maximum accumulated path discrepancy mm / sequence: (0.00018175593923472398, 13604)
+Independent final reconstruction mm: -37.3872357071355 -24.254827143713026
+Actual Brain final output mm: -37.3873 -24.2549
+Final discrepancy mm: 9.71679524186099e-05

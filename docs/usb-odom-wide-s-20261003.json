@@ -1,0 +1,30 @@
+[
+  {
+    "file": "docs/usb-odom-20261003-180826-227.csv",
+    "rows": 1572,
+    "max_cycle_ms": 10.0,
+    "max_drops": 0.0,
+    "active_rows": 400,
+    "final_stop_reason": 3.0,
+    "final_session_mm": 716.293,
+    "powered_ms": 4020.0,
+    "settled_change": {
+      "forward_mm": 699.4423800000001,
+      "lateral_right_mm": -1.4821000000000002,
+      "imu_deg": -0.3648702,
+      "nexus_x_mm": 130.98212,
+      "nexus_y_mm": 681.69822,
+      "nexus_h_deg": -0.36487,
+      "lemlib_x_mm": 130.9451,
+      "lemlib_y_mm": 681.70532,
+      "lemlib_h_deg": -0.3648416,
+      "motor_l1_mm": 715.774,
+      "motor_l2_mm": 243.778,
+      "motor_l3_mm": 714.737,
+      "motor_r1_mm": 715.774,
+      "motor_r2_mm": 241.703,
+      "motor_r3_mm": 715.256
+    },
+    "settled_delta_disagreement_mm": 0.03769469989270967
+  }
+]

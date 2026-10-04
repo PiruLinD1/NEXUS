@@ -1,0 +1,6 @@
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.controller-audit/build/CMakeFiles/probe.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.controller-audit/build/CMakeFiles/controller_audit.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.controller-audit/build/CMakeFiles/latency_baseline.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.controller-audit/build/CMakeFiles/latency_improved.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.controller-audit/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.controller-audit/build/CMakeFiles/ZERO_CHECK.dir

@@ -1,0 +1,16 @@
+chassis_adapter 13 1.31745
+controller 7 0.595005
+system 8 0.0372217
+mechanism 5 0.0266808
+startup 7 0.00275333
+log_preparation 4 0.144742
+odometry_trace_log 4 0.154975
+estimator 7 0.0163495
+calibration 4 0.0630169
+autonomous_units 4 0.0379989
+driver_input 5 0.0048413
+automatic_calibration 5 0.0151594
+calibration_routine 5 0.0103394
+arm_motion 4 0.0405051
+pod_offset 2 0.0245572
+---

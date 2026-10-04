@@ -1,0 +1,13 @@
+﻿{
+    "date":  "2026-10-03",
+    "slot":  5,
+    "version":  "USBODOM 4",
+    "sha256":  {
+                   ".test-build-usb-rotation/src/main.cpp":  "48A4E7135DC3FFCFA40B9380C244056AE3952205636420AC93306368F7C632A3",
+                   ".test-build-usb-rotation/include/pulse_guard.hpp":  "D067782F3F9B056A52B01AA4CC7164CBCAA0BA4C8223AEBB36E2208C4C82AF23",
+                   ".test-build-usb-rotation/bin/hot.package.bin":  "AA46A4E60F5D62F8696EA20BE16ACDACC30D2E5AB52ED3EE2EC7CDE88E62D79E",
+                   "tools/usb_odom_turn.ps1":  "D1F0BAD1F3566B3D79C65318FBF7954F67C2F74CBAC679501442A7F8E99D70F9",
+                   "tools/analyze_usb_odom_rotation.py":  "6E8402ACC89D7F98E58541F4B9232AFD1730D551541F493F58B4B015115F34CF",
+                   "bin/hot.package.bin":  "0526431F5FB812A6077BAB928F3EA099386801E20697162B1004E863BA9B3ED4"
+               }
+}

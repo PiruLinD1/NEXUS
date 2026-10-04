@@ -1,0 +1,31 @@
+Test project C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-audit-20261002
+      Start  1: log_preparation
+ 1/13 Test  #1: log_preparation ..................   Passed    0.51 sec
+      Start  2: estimator
+ 2/13 Test  #2: estimator ........................   Passed    0.11 sec
+      Start  3: controller
+ 3/13 Test  #3: controller .......................   Passed    1.78 sec
+      Start  4: calibration
+ 4/13 Test  #4: calibration ......................   Passed    0.08 sec
+      Start  5: system
+ 5/13 Test  #5: system ...........................   Passed    0.30 sec
+      Start  6: autonomous_units
+ 6/13 Test  #6: autonomous_units .................   Passed    0.05 sec
+      Start  7: driver_input
+ 7/13 Test  #7: driver_input .....................   Passed    0.05 sec
+      Start  8: automatic_calibration
+ 8/13 Test  #8: automatic_calibration ............   Passed    0.06 sec
+      Start  9: calibration_routine
+ 9/13 Test  #9: calibration_routine ..............   Passed    0.04 sec
+      Start 10: mechanism
+10/13 Test #10: mechanism ........................   Passed    0.05 sec
+      Start 11: arm_motion
+11/13 Test #11: arm_motion .......................   Passed    0.04 sec
+      Start 12: startup
+12/13 Test #12: startup ..........................   Passed    0.04 sec
+      Start 13: chassis_adapter
+13/13 Test #13: chassis_adapter ..................   Passed    4.49 sec
+
+100% tests passed, 0 tests failed out of 13
+
+Total Test time (real) =   8.00 sec

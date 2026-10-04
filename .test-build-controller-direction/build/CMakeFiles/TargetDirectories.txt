@@ -1,0 +1,3 @@
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-direction/build/CMakeFiles/fixed_direction.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-direction/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-direction/build/CMakeFiles/ZERO_CHECK.dir

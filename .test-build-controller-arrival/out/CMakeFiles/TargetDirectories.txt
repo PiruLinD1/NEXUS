@@ -1,0 +1,4 @@
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-arrival/out/CMakeFiles/arrival_before.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-arrival/out/CMakeFiles/arrival_after.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-arrival/out/CMakeFiles/ALL_BUILD.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-controller-arrival/out/CMakeFiles/ZERO_CHECK.dir

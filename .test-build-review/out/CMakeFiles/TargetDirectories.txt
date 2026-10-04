@@ -1,0 +1,3 @@
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-review/out/CMakeFiles/review.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-review/out/CMakeFiles/ALL_BUILD.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-review/out/CMakeFiles/ZERO_CHECK.dir

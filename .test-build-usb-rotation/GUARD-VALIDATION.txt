@@ -1,0 +1,1 @@
+PASS: quarter angle stop both directions, wrong-direction latch, no straight commands, watchdogs, time/travel/envelope limits, four-quarter sequence

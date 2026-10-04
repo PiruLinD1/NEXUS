@@ -1,0 +1,17 @@
+Original LemLib v0.5.6 odom.cpp, commit3388145e0d90ee3c7c17d7267a30ef64367df4cb.
+Kinematic comparison only: F/L/G same input, no ranges; offsets +20/-70mm, scales1. Lem horizontal=-Nexus lateral; inches converted at API boundary.
+Legacy pure integration: bias0 imposed, drive validity withheld to exclude quiet constraints.
+Unadapted upstream horizontal +100mm gives world X=-100.000001mm; mapping horizontal=-NexusL is explicit.
+forward reverse: frames=401 quiet=0 max position difference=0.000024033 mm heading=0.000000000 deg; final Nexus=(0.000000,0.000000) LemLib=(0.000000,0.000000) mm
+right left: frames=401 quiet=0 max position difference=0.000024033 mm heading=0.000000000 deg; final Nexus=(0.000000,0.000000) LemLib=(0.000000,0.000000) mm
+diagonal reverse: frames=401 quiet=0 max position difference=0.000033987 mm heading=0.000000000 deg; final Nexus=(0.000000,0.000000) LemLib=(0.000000,0.000000) mm
+arc + inverse, synchronized: frames=202 quiet=0 max position difference=0.000093621 mm heading=0.000001931 deg; final Nexus=(0.000000,-0.000000) LemLib=(-0.000009,-0.000005) mm
+arc + inverse, gyro previous frame: frames=202 quiet=0 max position difference=0.000134372 mm heading=0.000001931 deg; final Nexus=(-4.957495,0.934991) LemLib=(-4.957500,0.935038) mm
+20 closed manual cycles, synchronized: frames=2101 quiet=0 max position difference=0.000040867 mm heading=0.000000179 deg; final Nexus=(0.000000,-0.000000) LemLib=(-0.000000,-0.000005) mm
+20 closed manual cycles, gyro 10ms older: frames=2101 quiet=0 max position difference=0.001104865 mm heading=0.000000179 deg; final Nexus=(-51.367253,-0.755922) LemLib=(-51.367219,-0.754844) mm
+varying simultaneous forward/lateral/yaw: frames=6001 quiet=0 max position difference=0.002467777 mm heading=0.000013361 deg; final Nexus=(300.089679,444.284011) LemLib=(300.090719,444.286205) mm
+clockwise pure turn: frames=1201 quiet=0 max position difference=0.000000000 mm heading=0.000000000 deg; final Nexus=(-0.000000,-0.000000) LemLib=(0.000000,0.000000) mm
+counterclockwise pure turn: frames=1201 quiet=0 max position difference=0.000000000 mm heading=0.000000000 deg; final Nexus=(0.000000,0.000000) LemLib=(-0.000000,-0.000000) mm
+clockwise pure turn: frames=1201 quiet=0 max position difference=0.000101464 mm heading=0.000057264 deg; final Nexus=(0.000000,0.000000) LemLib=(-0.000004,0.000030) mm
+counterclockwise pure turn: frames=1201 quiet=0 max position difference=0.000102062 mm heading=0.000057264 deg; final Nexus=(-0.000000,0.000000) LemLib=(-0.000029,0.000023) mm
+LemLib differential: 33266 checks passed.

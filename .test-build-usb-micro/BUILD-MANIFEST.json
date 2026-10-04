@@ -1,0 +1,15 @@
+﻿{
+    "project":  "USBMICRO 1",
+    "slot":  5,
+    "date":  "2026-10-03",
+    "sha256":  {
+                   ".test-build-usb-micro/src/main.cpp":  "C56124CBC0A833DD17913535A2175530C0F48D93BD4C51E0C5E3A6706C99F5E0",
+                   ".test-build-usb-micro/include/pulse_guard.hpp":  "28335BBE147D03386675FB09B141D1A0F9C3B541D9F391139DF4260F420A6EDF",
+                   ".test-build-usb-micro/guard_test.cpp":  "11CCBED21E66C1E750FFEDD9B29C6ACCC4D39260FA41AD96016BF48821342197",
+                   ".test-build-usb-micro/bin/hot.package.bin":  "65C4AF41B4E30532DB508A904C7B8FD35B9A307326EC73FC01E798C1141F03CD",
+                   ".test-build-usb-micro/bin/cold.package.bin":  "E9A72BD0A423FD6454C25122831DFAF7DE42CF0D5B17657232C2EDA43FDA0C12",
+                   "tools/usb_odom_micro.ps1":  "BD76D96719F2E77318CDB3F4A6E78BF0C39DB9308B3C53FD547C46D0FE55027D",
+                   ".test-build-usb-micro/src/nexus/estimator.cpp":  "1C2269C870EEA237EF564055973923B504A19FE8550D359F648679B950C77B81",
+                   ".test-build-usb-micro/src/lemlib/chassis/odom.cpp":  "26A84C6A3448C0443A398FEF437AE6597D44CB3D0D5485748C3F4604005DF5F6"
+               }
+}

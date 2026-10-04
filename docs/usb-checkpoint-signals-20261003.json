@@ -1,0 +1,186 @@
+﻿{
+  "file": "docs/usb-passive-20261003-192152-873.csv",
+  "baseline": {
+    "points_mm": [
+      [
+        553.0191202124937,
+        667.7356527028254
+      ],
+      [
+        -55.25878841472789,
+        96.78502043130784
+      ]
+    ],
+    "errors_mm": [
+      [
+        -46.9808797875063,
+        67.7356527028254
+      ],
+      [
+        -55.25878841472789,
+        96.78502043130784
+      ]
+    ],
+    "error_norms_mm": [
+      82.43374134834532,
+      111.44897431987583
+    ],
+    "sse_mm2": 19216.19558963824
+  },
+  "gyro_integrated": {
+    "points_mm": [
+      [
+        552.3924621269189,
+        668.8442690463631
+      ],
+      [
+        -18.836390717867065,
+        78.9396730315203
+      ]
+    ],
+    "errors_mm": [
+      [
+        -47.60753787308113,
+        68.84426904636314
+      ],
+      [
+        -18.836390717867065,
+        78.9396730315203
+      ]
+    ],
+    "error_norms_mm": [
+      83.70191779681566,
+      81.15590917240397
+    ],
+    "sse_mm2": 13592.292636464368
+  },
+  "native_heading_changes_deg": [
+    -0.32941786,
+    360.83402542
+  ],
+  "integrated_gyro_changes_deg": [
+    -0.41845484629992946,
+    359.1012295400003
+  ],
+  "best_constant_imu_shift": {
+    "points_mm": [
+      [
+        541.8475280307576,
+        659.9741436114948
+      ],
+      [
+        -2.788793281050455,
+        89.66602943335128
+      ]
+    ],
+    "errors_mm": [
+      [
+        -58.152471969242356,
+        59.97414361149481
+      ],
+      [
+        -2.788793281050455,
+        89.66602943335128
+      ]
+    ],
+    "error_norms_mm": [
+      83.5380625706972,
+      89.70938748150637
+    ],
+    "sse_mm2": 15026.382100372773,
+    "imu_shift_ms": -160
+  },
+  "best_independent_pod_shifts_within_20ms": {
+    "forward_shift_ms": 20,
+    "lateral_shift_ms": 20,
+    "points_mm": [
+      [
+        551.6352116059408,
+        666.5127465511407
+      ],
+      [
+        -48.750066344447745,
+        95.4257915995703
+      ]
+    ],
+    "error_norms_mm": [
+      82.23805816152525,
+      107.15713075196014
+    ],
+    "note": "Constant interpolation shifts are hypotheses, not measured device latencies."
+  },
+  "best_independent_pod_shifts_within_200ms": {
+    "forward_shift_ms": 110,
+    "lateral_shift_ms": 200,
+    "points_mm": [
+      [
+        540.8155422862837,
+        657.5014609333084
+      ],
+      [
+        -18.45789104913748,
+        83.217564798163
+      ]
+    ],
+    "error_norms_mm": [
+      82.51798618683966,
+      85.23999550045909
+    ],
+    "note": "Constant interpolation shifts are hypotheses, not measured device latencies."
+  },
+  "diagnostic_full_turn_gyro_scale": 0.9976886175880193,
+  "scaled_native": {
+    "points_mm": [
+      [
+        552.8030197943848,
+        668.9798867835024
+      ],
+      [
+        -40.395433691175214,
+        91.44535755846077
+      ]
+    ],
+    "errors_mm": [
+      [
+        -47.196980205615205,
+        68.97988678350237
+      ],
+      [
+        -40.395433691175214,
+        91.44535755846077
+      ]
+    ],
+    "error_norms_mm": [
+      83.58097702942959,
+      99.97021797561948
+    ],
+    "sse_mm2": 16979.82420328691
+  },
+  "call_durations": {
+    "forward": {
+      "max_us": 4.0,
+      "median_us": 3.0
+    },
+    "lateral": {
+      "max_us": 3.0,
+      "median_us": 2.0
+    },
+    "imu": {
+      "max_us": 16.0,
+      "median_us": 13.0
+    },
+    "drive": {
+      "max_us": 20.0,
+      "median_us": 19.0
+    },
+    "whole_acquisition": {
+      "max_us": 44.0,
+      "median_us": 39.0
+    }
+  },
+  "microsecond_sample_interval_us_min_max": [
+    9992.0,
+    10009.0
+  ],
+  "note": "Neither gyro integration, fitted lag nor full-turn scaling is independent ground truth; no parameter is applied."
+}

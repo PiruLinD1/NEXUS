@@ -1,0 +1,36 @@
+# CMake generated Testfile for 
+# Source directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference
+# Build directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+if(CTEST_CONFIGURATION_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
+  add_test([=[lemlib_differential]=] "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/Debug/lemlib_compare.exe")
+  set_tests_properties([=[lemlib_differential]=] PROPERTIES  _BACKTRACE_TRIPLES "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;11;add_test;C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;0;")
+elseif(CTEST_CONFIGURATION_TYPE MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
+  add_test([=[lemlib_differential]=] "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/Release/lemlib_compare.exe")
+  set_tests_properties([=[lemlib_differential]=] PROPERTIES  _BACKTRACE_TRIPLES "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;11;add_test;C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;0;")
+elseif(CTEST_CONFIGURATION_TYPE MATCHES "^([Mm][Ii][Nn][Ss][Ii][Zz][Ee][Rr][Ee][Ll])$")
+  add_test([=[lemlib_differential]=] "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/MinSizeRel/lemlib_compare.exe")
+  set_tests_properties([=[lemlib_differential]=] PROPERTIES  _BACKTRACE_TRIPLES "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;11;add_test;C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;0;")
+elseif(CTEST_CONFIGURATION_TYPE MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
+  add_test([=[lemlib_differential]=] "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/RelWithDebInfo/lemlib_compare.exe")
+  set_tests_properties([=[lemlib_differential]=] PROPERTIES  _BACKTRACE_TRIPLES "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;11;add_test;C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;0;")
+else()
+  add_test([=[lemlib_differential]=] NOT_AVAILABLE)
+endif()
+if(CTEST_CONFIGURATION_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
+  add_test([=[lemlib_native_differential]=] "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/Debug/lemlib_compare.exe" "--native")
+  set_tests_properties([=[lemlib_native_differential]=] PROPERTIES  _BACKTRACE_TRIPLES "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;12;add_test;C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;0;")
+elseif(CTEST_CONFIGURATION_TYPE MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
+  add_test([=[lemlib_native_differential]=] "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/Release/lemlib_compare.exe" "--native")
+  set_tests_properties([=[lemlib_native_differential]=] PROPERTIES  _BACKTRACE_TRIPLES "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;12;add_test;C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;0;")
+elseif(CTEST_CONFIGURATION_TYPE MATCHES "^([Mm][Ii][Nn][Ss][Ii][Zz][Ee][Rr][Ee][Ll])$")
+  add_test([=[lemlib_native_differential]=] "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/MinSizeRel/lemlib_compare.exe" "--native")
+  set_tests_properties([=[lemlib_native_differential]=] PROPERTIES  _BACKTRACE_TRIPLES "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;12;add_test;C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;0;")
+elseif(CTEST_CONFIGURATION_TYPE MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
+  add_test([=[lemlib_native_differential]=] "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/out/RelWithDebInfo/lemlib_compare.exe" "--native")
+  set_tests_properties([=[lemlib_native_differential]=] PROPERTIES  _BACKTRACE_TRIPLES "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;12;add_test;C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lemlib-reference/CMakeLists.txt;0;")
+else()
+  add_test([=[lemlib_native_differential]=] NOT_AVAILABLE)
+endif()

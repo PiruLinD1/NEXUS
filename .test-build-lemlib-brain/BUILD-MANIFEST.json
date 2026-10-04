@@ -1,0 +1,20 @@
+{
+  "project": "LEMLIBTEST",
+  "build_date": "2026-10-02",
+  "default_slot": 2,
+  "uploaded": false,
+  "hardware_tested": false,
+  "upstream_commit": "3388145e0d90ee3c7c17d7267a30ef64367df4cb",
+  "sha256": {
+    "src/main.cpp": "87ef9649ecbd601e466454054c70695328f719864afeb46f46385fc0520d0fda",
+    "Makefile": "5fec9d9f310779b07619154b058a53becd1f94269fb3acd1da839b9ef9575494",
+    "common.mk": "108dfcdf441079f3a8b71eb0b58fa88a685a9862348586d1f57f75bc8267ebf0",
+    "project.pros": "fa2b0feded6820023c5ce7a68aed702459d1259d86235302856b26be3c849eab",
+    "bin/hot.package.bin": "5560bd8019aea53d220e4d063b292109471acdd8f2ff6526adfa8581dcf32155",
+    "bin/cold.package.bin": "e9a72bd0a423fd6454c25122831dfaf7de42cf0d5b17657232c2eda43fda0c12",
+    "firmware/libpros.a": "eb3275f89e4f97b3ef58ec16e329fdc55d74fac3cef06a03116bf65002f55d70",
+    "firmware/liblvgl.a": "263dc8bd6c9ffffbba058b0eba763e172c46f7db58bead8d6be9287d3d70457d",
+    "firmware/libc.a": "7ee4dffd8207dec28cd480973d8a69f87837f4f2dde9f116441ae1043b258374",
+    "firmware/libm.a": "169155ac31ad451436680f618693b6e040f428978299cc90caa96f57c15b38f4"
+  }
+}

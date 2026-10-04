@@ -1,0 +1,14 @@
+﻿{
+    "date":  "2026-10-03",
+    "slot":  5,
+    "version":  "USBODOM 5B",
+    "sha256":  {
+                   ".test-build-usb-passive/src/main.cpp":  "9FAB89F3E1063D9DDD4DFBB18E5BD80BA21A26FFDA63A3A66D87CDFD9238F404",
+                   ".test-build-usb-passive/bin/hot.package.bin":  "BA7CE7727DE89587ACFAB195F1F611F41AD5E87D38940A49B77E98FE1A30E6AA",
+                   "tools/usb_odom_passive.ps1":  "41CEC7E10F6C27A5C8CD2D58465E1BD649F5471710AB72BBDD99C60209C5161A",
+                   "tools/fit_usb_checkpoint_offsets.py":  "8686FE6E7A3FFEAE4C51CA8D466BDB58D76B59F849FA8F00C9A28802311D4287",
+                   "tools/test_usb_checkpoint_offsets.py":  "2B8CDD08C190F5BC4D7FD93E2D1FAEB634AB7E4D9A979748AB2D060048DE0498",
+                   "docs/usb-checkpoint-plan-20261003.json":  "5BD188C4517DAAFE252AF0B567FA286506AAD18580C97656C7CA58FB5CD57F83",
+                   "bin/hot.package.bin":  "0526431F5FB812A6077BAB928F3EA099386801E20697162B1004E863BA9B3ED4"
+               }
+}

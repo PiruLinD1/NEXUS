@@ -1,0 +1,21 @@
+Creating cold package with libc,liblvgl,libm,libpros [OK]
+Stripping cold package  [DONE]
+Section sizes:
+   text	   data	    bss	  total	    hex	filename
+2.14MB  4.52KB  57.24MB  59.38MB 3b6049f bin/cold.package.elf
+Compiled src/nexus/automatic_calibration.cpp [OK]
+Compiled src/nexus/calibration.cpp [OK]
+Compiled src/main.cpp [OK]
+Compiled src/nexus/controller.cpp [OK]
+Compiled src/nexus/estimator.cpp [OK]
+Creating cold package binary for VEX EDR V5 [DONE]
+Compiled src/nexus/chassis.cpp [OK]
+Compiled src/robot-calibration.cpp [OK]
+Compiled src/robot.cpp [OK]
+Adding timestamp [OK]
+Linking hot project with ./bin/cold.package.elf and libc,liblvgl,libm,libpros [OK]
+Section sizes:
+   text	   data	    bss	  total	    hex	filename
+73.81KB 16.56KB  46.01MB  46.09MB 2e16a60 bin/hot.package.elf
+Creating bin/hot.package.bin for VEX EDR V5 [DONE]
+Creating bin/NEXUS.a  [DONE]

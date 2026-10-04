@@ -1,0 +1,10 @@
+﻿{
+    "program":  "USBAUDIT",
+    "slot":  5,
+    "status":  "completed; USBODOM 5B restored",
+    "motion":  "all commands constant zero volts",
+    "source_sha256":  "4C3F1F074CE8E88DC6DD0DF99BA15C699E9011AF2F188E8BB0C0E2A43348F9D1",
+    "hot_sha256":  "737BDD1604367F2BC67EEB7B19539BE62AAD39092FA96D1D8C517DFFD99CB2B7",
+    "trace":  "docs/usb-sensor-audit-20261003-195751-949.txt",
+    "restore_check":  "docs/usb-passive-20261003-200046-718.csv"
+}

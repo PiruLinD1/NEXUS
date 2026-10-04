@@ -1,0 +1,1 @@
+PASS: pulse expiry, consent release, stale/absent heartbeat, replay, voltage/duration, each encoder, session path, invalid sensor, no restart

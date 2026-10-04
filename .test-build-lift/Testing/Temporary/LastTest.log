@@ -1,0 +1,69 @@
+Start testing: Oct 02 20:59 ora legale Europa occidentale
+----------------------------------------------------------
+7/13 Testing: driver_input
+7/13 Test: driver_input
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/Release/driver_input_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift
+"driver_input" start time: Oct 02 20:59 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Driver input: connection states 1/2, disconnection/errors, held, toggles, remapping, opposing inputs and reconnect passed.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"driver_input" end time: Oct 02 20:59 ora legale Europa occidentale
+"driver_input" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/13 Testing: mechanism
+10/13 Test: mechanism
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/Release/mechanism_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift
+"mechanism" start time: Oct 02 20:59 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Simulated R2 move: 360 ms; 40-degree profile: 680 ms
+Endstop confirmation, starting in contact: preMatch 750 ms; driver top 200 ms, driver zero 200 ms
+Mechanism manual grab sequences passed
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"mechanism" end time: Oct 02 20:59 ora legale Europa occidentale
+"mechanism" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/13 Testing: arm_motion
+11/13 Test: arm_motion
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/Release/arm_motion_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift
+"arm_motion" start time: Oct 02 20:59 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Arm profile: 150 degrees nominal 1170 ms; worst matrix move 1995 ms; heavy-load move 2055 ms
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"arm_motion" end time: Oct 02 20:59 ora legale Europa occidentale
+"arm_motion" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/13 Testing: startup
+12/13 Test: startup
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift/Release/startup_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-lift
+"startup" start time: Oct 02 20:59 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Startup sequencing passed
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"startup" end time: Oct 02 20:59 ora legale Europa occidentale
+"startup" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 02 20:59 ora legale Europa occidentale

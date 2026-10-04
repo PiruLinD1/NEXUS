@@ -1,0 +1,114 @@
+[
+  {
+    "file": "docs/usb-turn-20261003-185846-589.csv",
+    "rows": 10128,
+    "incomplete_final_record_omitted": false,
+    "baseline": {
+      "imu_deg": 0.0357126,
+      "forward_mm": 0.0,
+      "lateral_right_mm": 0.0
+    },
+    "plateaus": [
+      {
+        "nominal_deg": -360,
+        "measured_deg": -360.7719758,
+        "board_ms": 110109.0,
+        "delta_forward_mm": 140.1657,
+        "delta_lateral_mm": 184.144,
+        "candidate_forward_offset_mm": 22.26032946347503,
+        "candidate_lateral_offset_mm": -29.24471613755824,
+        "nexus_x_mm": -1.92108,
+        "nexus_y_mm": 4.3765600000000004
+      },
+      {
+        "nominal_deg": -180,
+        "measured_deg": -190.24345380000003,
+        "board_ms": 72809.0,
+        "delta_forward_mm": 62.367000000000004,
+        "delta_lateral_mm": 79.21119999999999,
+        "candidate_forward_offset_mm": 18.783121361164046,
+        "candidate_lateral_offset_mm": -23.856103111636557,
+        "nexus_x_mm": 8.99422,
+        "nexus_y_mm": -92.48156
+      },
+      {
+        "nominal_deg": -90,
+        "measured_deg": -94.937714,
+        "board_ms": 69909.0,
+        "delta_forward_mm": 27.28548,
+        "delta_lateral_mm": 34.8399,
+        "candidate_forward_offset_mm": 16.467036966875117,
+        "candidate_lateral_offset_mm": -21.02619859435247,
+        "nexus_x_mm": -45.75196,
+        "nexus_y_mm": -55.3615
+      }
+    ],
+    "powered_quarter_stops": [
+      {
+        "sequence": 2,
+        "stop_reason": 10,
+        "powered_ms": 1610.0,
+        "delta_heading_deg": -94.93396879999999,
+        "heading_deg": -94.89825619999999,
+        "delta_forward_mm": 27.277,
+        "delta_lateral_mm": 34.836,
+        "blue_drive_forward_mm": 4.668249999999993,
+        "candidate_forward_offset_mm": 16.46256864148238,
+        "drive_corrected_forward_candidate_mm": 13.645125885292185,
+        "candidate_lateral_offset_mm": -21.024674311496142,
+        "nexus_x_mm": -45.745,
+        "nexus_y_mm": -55.360459999999996,
+        "settled_heading_span_deg": 0.0017799999999965621
+      },
+      {
+        "sequence": 3,
+        "stop_reason": 10,
+        "powered_ms": 1390.0,
+        "delta_heading_deg": -95.29819140000001,
+        "heading_deg": -190.1964476,
+        "delta_forward_mm": 35.106,
+        "delta_lateral_mm": 44.379999999999995,
+        "blue_drive_forward_mm": 8.557749999999977,
+        "candidate_forward_offset_mm": 21.10665067234705,
+        "drive_corrected_forward_candidate_mm": 15.961506258535238,
+        "candidate_lateral_offset_mm": -26.682423427299092,
+        "nexus_x_mm": 8.97946,
+        "nexus_y_mm": -92.5043,
+        "settled_heading_span_deg": 0.0017300000000091131
+      },
+      {
+        "sequence": 4,
+        "stop_reason": 10,
+        "powered_ms": 1370.0,
+        "delta_heading_deg": -94.3906154,
+        "heading_deg": -284.587063,
+        "delta_forward_mm": 32.025,
+        "delta_lateral_mm": 51.429000000000016,
+        "blue_drive_forward_mm": 5.965250000000026,
+        "candidate_forward_offset_mm": 19.43940434258956,
+        "drive_corrected_forward_candidate_mm": 15.818454873280183,
+        "candidate_lateral_offset_mm": -31.217771301640564,
+        "nexus_x_mm": 36.98308,
+        "nexus_y_mm": -39.09096,
+        "settled_heading_span_deg": 0.0030700000000365435
+      },
+      {
+        "sequence": 5,
+        "stop_reason": 10,
+        "powered_ms": 1320.0,
+        "delta_heading_deg": -94.70792,
+        "heading_deg": -379.294983,
+        "delta_forward_mm": 28.792999999999992,
+        "delta_lateral_mm": 58.096000000000004,
+        "blue_drive_forward_mm": 6.0940000000000225,
+        "candidate_forward_offset_mm": 17.4190012780365,
+        "drive_corrected_forward_candidate_mm": 13.732292918770192,
+        "candidate_lateral_offset_mm": -35.14653902854197,
+        "nexus_x_mm": -17.1081,
+        "nexus_y_mm": -22.43946,
+        "settled_heading_span_deg": 0.0013999999999896318
+      }
+    ],
+    "caution": "Valid offsets require a physically fixed, known centre and independently checked pod scales. These candidates alone cannot establish that condition."
+  }
+]

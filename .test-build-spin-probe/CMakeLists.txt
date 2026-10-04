@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.20)
+project(spin_probe LANGUAGES CXX)
+add_executable(spin_probe probe.cpp ../src/nexus/controller.cpp)
+target_compile_features(spin_probe PRIVATE cxx_std_23)
+target_include_directories(spin_probe PRIVATE ../include)

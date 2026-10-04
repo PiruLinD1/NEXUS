@@ -1,0 +1,360 @@
+Verifica odometria — 3 ottobre 2026
+
+Esito
+Aggiornamento successivo: lettura USB conferma porte 4/9 tipo EXP/5.5 W,
+200 RPM fissi; vedere l'approfondimento in fondo al documento.
+La causa fisica dell'errore sul percorso manuale non è ancora identificata.
+È stato corretto un difetto distinto nella gestione degli encoder motore:
+le porte 4 e 9, con cartucce e rapporti diversi, non partecipano più alla
+distanza aggregata della trazione. Gli altri quattro encoder restano disponibili
+per diagnostica e odometria di riserva; tutti e sei i motori restano nei gruppi
+di comando. Il firmware è compilato, ma non caricato né avviato sul robot.
+Stato aggiornato: sul Brain e' caricato USBMICRO 1 nello slot 5, fermo e
+senza impulsi accettati. La prova breve richiede R1 e heartbeat USB.
+Durante questi approfondimenti non e' stato comandato alcun movimento.
+
+Misure usate
+Registrazione: usb-passive-20261003-192152-873.csv, 13843 righe.
+Riferimenti dichiarati dall'utente: partenza (0,0), checkpoint (600,600) mm,
+ritorno (0,0), orientamento fisico uguale ai tre riferimenti.
+Le coordinate fisiche dipendono dal posizionamento manuale sui segni; non sono
+state misurate indipendentemente da una telecamera o da un sensore esterno.
+Tutti i campioni hanno sensori validi, sequenza continua e nessuna perdita.
+Si mediano i 50 campioni precedenti ciascun marcatore A, a robot fermo.
+
+Risultati (errore euclideo rispetto ai riferimenti, mm)
+                                      checkpoint       ritorno
+Due pod + IMU nativa                      82.434         111.449
+Avanti dai quattro 600 RPM + pod L + IMU  86.737         111.163
+Due pod + yaw dai quattro 600 RPM         79.408         120.658
+La yaw da trazione assume carreggiata nominale 287 mm e assenza di slittamento:
+è un confronto diagnostico, non una misura indipendente dell'angolo vero.
+Il cambiamento della sorgente avanti sposta il risultato finale di circa 1.4 mm.
+L'errore grande persiste, quindi i due encoder diversi non lo spiegano.
+
+I due motori blue di ciascun lato concordano entro 3.112 mm a sinistra e
+2.075 mm a destra lungo il percorso, inclusi rumore e aggiornamenti asincroni.
+Il rapporto tra le rotazioni riportate blue e quelle delle porte 4/9 è circa
+3.011 e 3.010. Queste ultime non vengono convertite usando il rapporto blue.
+Una regressione diagnostica in finestre da 200 ms trova un rapporto pod avanti /
+avanzamento della trazione di 0.9969 e un offset apparente di 16.6 mm.
+La regressione non misura da sola un offset geometrico: include slittamento,
+diametri effettivi ed errori della trazione. Nessuna calibrazione è applicata.
+
+Confronto del calcolo
+Lo stesso tratto di 6850 campioni è stato ricalcolato dal sorgente originale
+LemLib v0.5.6, commit 3388145e0d90ee3c7c17d7267a30ef64367df4cb, con hash del
+file odom.cpp verificato. Differenza massima NEXUS/LemLib: 0.003873 mm.
+Zero incrementi F/L/IMU scartati. L'esperimento controlla la cinematica e le
+conversioni sugli stessi ingressi; non certifica che i sensori misurino il moto
+fisico corretto e non esclude un problema condiviso a monte dei due algoritmi.
+
+Tempi e sincronizzazione
+Intervalli micros() del log: 9992..10009 us. Acquisizione F/L/IMU/motori:
+massimo 44 us, mediana 39 us. Sono durate delle chiamate, non timestamp
+della misura fisica interna dei dispositivi.
+Ricerca indipendente dei ritardi costanti F e L rispetto all'IMU, fino a
+±20 ms: miglior risultato con +20/+20 ms, ancora 82.238/107.157 mm.
+Estendendo artificialmente la ricerca a ±200 ms: +110/+200 ms, ancora
+82.518/85.240 mm. Non è una calibrazione della latenza, né la prova di un
+ritardo reale. Nessuno spostamento temporale è stato applicato al firmware.
+Un errore di sincronizzazione più complesso non è escluso da questo test.
+
+Offset e angolo
+La scansione di 1002001 coppie di offset tra -500 e +500 mm e il minimo
+analitico senza limiti non trovano una coppia che annulli entrambi gli errori.
+A orientamento iniziale/finale uguale, la sensibilità geometrica agli offset
+si annulla; fare il percorso sempre avanti non cambia questa proprietà.
+La piccola differenza IMU ai riferimenti crea sensibilità numerica ma non
+trasforma questi riferimenti in una calibrazione attendibile degli offset.
+Il ritorno segna +360.834 gradi rispetto all'inizio. Forzare una scala che
+interpreti questo come esattamente 360 gradi lascia circa 100 mm al ritorno.
+Il test da solo non identifica la scala reale dell'IMU.
+
+Versioni e driver
+Letto via USB: VEXos 1.1.5-0, CPU0 FW 1.1.0-6, CPU1 SDK 1.1.5-18.
+Kernel nel progetto: PROS 4.2.1. La release ufficiale più recente consultata
+è 4.2.2: aggiorna toolchain e compatibilità C++26. Il confronto dei sorgenti
+mostra soltanto modifiche di sintassi dei literal nei wrapper IMU/Rotation/
+Motor; i driver C delle letture e il codice RTOS non cambiano.
+rotation_get_position inoltra vexDeviceAbsEncPositionGet; imu_get_rotation
+legge vexDeviceImuHeadingGet e aggiunge l'offset di azzeramento. Non eseguono
+la fusione X/Y. Il fix Rotation set_position citato nelle release precedenti
+è già incluso in 4.2.1; il logger non usa set_position.
+Il changelog ufficiale VEX consultato elenca 1.1.5 come ultima versione.
+Non c'è evidenza che aggiornare PROS a 4.2.2 risolva questa deriva.
+Fonti:
+https://github.com/purduesigbots/pros/releases/tag/4.2.2
+https://github.com/purduesigbots/pros/compare/4.2.1...4.2.2
+https://github.com/purduesigbots/pros/blob/4.2.1/src/devices/vdml_rotation.c
+https://github.com/purduesigbots/pros/blob/4.2.1/src/devices/vdml_imu.c
+https://kb.vex.com/hc/en-us/articles/360055338911-VEXos-V5-Firmware-Changelog
+
+Verifica aggiuntiva da fermo
+usb-passive-20261003-194023-481.csv: 1000 campioni, 10 s, zero campioni
+invalidi o persi, intervallo 10 ms. Escursione F=0 mm, L=0 mm, IMU=0.002005°.
+Questo esclude una deriva spontanea significativa in questi dieci secondi;
+non verifica contatto e comportamento dei sensori durante il movimento.
+
+Cause meccaniche da verificare, in ordine operativo
+1. Pod laterale: rullini omni liberi durante lo scorrimento avanti/indietro,
+   nessun contatto con telaio, collarini o supporti. Contatto col pavimento
+   mantenuto anche quando il telaio oscilla o viene spinto in diagonale.
+   Un pod può misurare bene lungo il proprio asse e perdere rotazione quando
+   deve contemporaneamente scorrere sui rullini. È una spiegazione compatibile
+   con i sintomi, non un guasto dimostrato dai dati.
+2. Asse ruota / Rotation Sensor e supporto: gioco, mozzo che slitta sull'albero,
+   albero piegato, attrito, flessione o precarico variabile sotto spinta laterale.
+   Controllare entrambi i pod, dando priorità al laterale perché sostituire la
+   misura avanti con la trazione lascia quasi invariato il risultato.
+3. Geometria: parallelismo del pod avanti al telaio, ortogonalità del laterale,
+   diametro effettivo e rapporti ruota/sensore. LemLib specifica 2.125 pollici
+   per la sua costante NEW_2, mentre questo robot usa 2.0; ciò richiede
+   identificare la ruota realmente montata. Non cambiare il diametro alla cieca:
+   le prove rettilinee riferite dall'utente non indicano un errore uniforme 6.25%.
+4. IMU: fissaggio rigido, assenza di movimento relativo sul supporto, calibrazione
+   immobile. Nel percorso pitch varia da -4.09 a +0.72 gradi e roll da -6.67
+   a -1.44; le accelerazioni influenzano l'interpretazione delle inclinazioni,
+   quindi queste oscillazioni non provano da sole un supporto allentato.
+La distribuzione dei pesi può modificare slittamento e pressione dei pod;
+il riferimento geometrico dell'odometria non è il baricentro dei pesi.
+Le foto disponibili mostrano il display, non permettono di ispezionare i pod.
+Fonti per configurazione e verifiche fisiche:
+https://lemlib.readthedocs.io/en/stable/tutorials/2_configuration.html
+https://kb.vex.com/hc/en-us/articles/360037382272-Using-the-Inertial-Sensor-with-VEX-V5
+https://kb.vex.com/hc/en-us/articles/14661626721172-Troubleshooting-VEX-V5-Sensors
+
+Correzione software e validazione
+HardwareConfig aggiunge due maschere di selezione degli encoder. Per il robot
+entrambi i lati usano indici 0 e 2 (porte 5/6 e 7/10). I motori esclusi non
+vengono letti o riconfigurati dal percorso odometrico; i gruppi di attuazione
+restano da tre. L'impronta di configurazione include le nuove maschere per
+non riutilizzare una calibrazione basata su una diversa aggregazione.
+Test specifico: un blue disconnesso, blue superstite a 90°, green a 30°;
+la distanza conserva i 90°, anziché mediare 90/30. Se entrambi i blue sono
+assenti, la sorgente viene dichiarata non valida. Riconnessione senza salto.
+Test estimator e chassis_adapter PASS; quattro test del fit offset PASS;
+replay LemLib del percorso PASS; compilazione ARM make -j4 PASS.
+Il primo tentativo del test adapter ha avuto un timeout nel preesistente
+controllo asincrono di un sensore di distanza; esecuzione diretta successiva
+e ripetizione CTest completate con successo, senza modificare quel controllo.
+SHA256 bin/hot.package.bin compilato:
+E2730C1DB5B402E00A044B4BC3A20D16372B3DA1EDF594C5D52E0A2F87AEAB86
+Il firmware compilato NON è stato caricato; sul robot è rimasto il logger 5B.
+
+Riproduzione analisi
+C:/Python314/python.exe tools/inspect_usb_drive_reference.py docs/usb-passive-20261003-192152-873.csv docs/usb-drive-reference-20261003.json
+C:/Python314/python.exe tools/inspect_usb_passive_signals.py docs/usb-passive-20261003-192152-873.csv
+.test-build-lemlib-reference/out/Release/lemlib_compare.exe --native docs/usb-checkpoint-replay-input-20261003.csv
+
+Approfondimento successivo: tipo reale dei motori, senza movimento
+È stato eseguito nello slot diagnostico 5 un programma isolato USBAUDIT con
+comandi motore esclusivamente a zero volt e nessun parser di movimento.
+Log conclusivo: usb-sensor-audit-20261003-195751-949.txt.
+Schema AUDIT1: tempo ms, porta firmata, gear enum, units enum, raw count,
+timestamp raw, posizione, velocità RPM, tensione mV, corrente mA, temperatura,
+errno, tipo motore. Tipo 0=V5 11 W, tipo 1=EXP/V5 5.5 W; gear 1=200 RPM,
+gear 2=600 RPM; units 1=rotazioni. Segni porta normalizzano la direzione.
+
+Porta     Tipo hardware letto    Rapporto letto
+5         11 W                  600 RPM
+4          5.5 W                200 RPM
+6         11 W                  600 RPM
+7         11 W                  600 RPM
+9          5.5 W                200 RPM
+10        11 W                  600 RPM
+
+Nel test sono stati riprodotti gli stessi costruttori MotorGroup blue/rotations
+di USBODOM 5B. Già PRIMA di reimpostare esplicitamente le porte 4/9 a green,
+le letture mostravano 200 RPM su quei due motori. L'impostazione successiva
+ha restituito successo senza cambiare il rapporto riportato. Il modello 5.5 W
+ha rapporto fisso e 900 conteggi/giro, come documentato da VEX. Questo spiega
+perché non si può assumere che un MotorGroup dichiarato blue renda omogenee
+le conversioni di tutti gli encoder. La maschera che esclude 4/9 rimane corretta.
+Il driver C PROS motor_set_gearing restituisce successo dopo la chiamata VEX;
+questo ritorno non dimostra che il motore abbia accettato un rapporto differente.
+Non è emersa una necessità di cambiare il controllo a tensione dei sei motori.
+Fonte:
+https://kb.vex.com/hc/en-us/articles/10002101702932-Understanding-V5-Smart-Motor-5-5W-Performance
+
+È importante distinguere i log: il primo USBAUDIT non imposta rapporti e legge
+i default di un programma appena avviato. Non descrive retroattivamente la
+configurazione del programma precedente. Per questo è stata poi riprodotta
+esplicitamente la configurazione di USBODOM 5B e letta dopo l'impostazione.
+Gli avvii cambiano i riferimenti dei contatori; non unire tratti di programmi
+diversi assumendo continuità dei conteggi. I log dei percorsi originali sono
+rimasti invariati e costituiscono ciascuno registrazioni continue.
+
+Confronto tra prove diverse
+tools/compare_usb_closed_paths.py e usb-closed-path-models-20261003.json
+confrontano la S continua, la rotazione oraria, l'antioraria e il percorso
+manuale con checkpoint. Errori di chiusura di base: 15.99 / 7.96 / 4.80 /
+111.45 mm; il percorso manuale ha anche 82.43 mm al checkpoint.
+Il miglior fit delle sole scale F/L sul percorso manuale usa 0.9637 / 1.3597;
+applicato alla S precedente peggiora l'errore da 15.99 a 66.99 mm.
+Il fit con entrambe le scale più un termine fisso di accoppiamento F->L
+non risolve tutti i percorsi. Nessun fit viene applicato al firmware.
+I fit su soli ritorni all'origine sono degeneri per la scala assoluta:
+possono preferire scale vicine a zero o negative. Il report li marca privi
+di riferimento non nullo e non li considera calibrazioni ammissibili.
+Questa verifica sconsiglia una correzione numerica ricavata da una sola curva;
+non dimostra da sola che il difetto sia meccanico.
+
+Stato finale di questo approfondimento
+Ripristinato USBODOM 5B nello slot 5. IMU calibrata da fermo e verifica passiva
+usb-passive-20261003-200046-718.csv: 399 campioni, tutti validi (31), zero persi,
+F/L costanti, nessun movimento comandato. Marcatore tornato a 0 per il riavvio.
+I programmi principali non sono stati avviati o sovrascritti. La correzione
+alla selezione degli encoder del programma principale resta compilata sul PC.
+
+Controllo fisico che separa meglio le ipotesi quando l'operatore sarà presente
+Prima ispezionare il pod laterale sotto carico: rullini, gioco dell'albero,
+supporto e contatto a terra. Poi confrontare una traslazione laterale con
+una diagonale mantenendo il muso parallelo per TUTTO lo spostamento, non solo
+ai due estremi. Usare i due segni del telaio per controllare l'orientamento.
+Le variazioni grezze dei pod, insieme all'angolo lungo il tragitto, permettono
+di distinguere perdita di misura durante moto combinato dalla proiezione
+con heading. Una rotazione residua durante il moto impedisce di pretendere
+delta grezzi esattamente nulli anche se posizione e heading finali coincidono.
+Per separare trasmissione/contatto dal sensore, una prova a ruota sollevata e
+marcata può verificare i conteggi per un giro completo, usando il rapporto
+meccanico reale. Senza ispezione dei pod o questo riferimento indipendente,
+i log non permettono di attribuire con certezza l'errore a rullini, albero,
+sensore Rotation o comportamento dinamico dell'IMU.
+
+Aggiornamento successivo: autorizzazione a piccoli movimenti
+Preparato e caricato USBMICRO 1 nello slot 5, in sostituzione della sola
+diagnostica passiva. Programmi principali invariati. Impulsi limitati a
+500 ms / 3 V, 120 mm per encoder per impulso, 250 mm cumulativi; restano
+R1, heartbeat USB e gli altri arresti. Previsti due archi opposti da 500 ms
+con un secondo di arresto in mezzo. Il riferimento motori usa solo i quattro
+600 RPM; 4/9 continuano a essere comandati insieme alla trazione.
+Build ARM e test host degli arresti superati. Verifica disarmata:
+usb-micro-20261003-200907-109.csv, 451 righe a 10 ms, zero perdite e zero
+fault. Comando di prova a zero volt rifiutato, nessun impulso accettato.
+Il solo interblocco presente era R1 rilasciato (mask 2). Richiesta all'utente
+la disponibilita' a tenerlo premuto; al momento della preparazione non e'
+stato ancora eseguito alcun movimento con questo programma.
+Dettagli e hash in .test-build-usb-micro/README.txt e BUILD-MANIFEST.json.
+
+Controlli riferiti dall'utente e modello degli assi
+L'utente riferisce pod in buone condizioni, rullini e ruota liberi, elastico
+che mantiene il contatto a terra. Non viene quindi assunto un guasto
+meccanico accertato e non viene prescritta la sostituzione dei pod.
+Ulteriore analisi offline: tools/check_usb_axis_model.py e
+docs/usb-axis-model-20261003.json provano una trasformazione lineare 2x2
+arbitraria dei due segnali grezzi, includendo entrambi gli accoppiamenti.
+La trasformazione che annulla checkpoint e ritorno del percorso manuale
+peggiora la S precedente da 15.99 a 83.11 mm. Il fit congiunto su tutti i
+percorsi lascia 54.36 mm sulla S e 39.13 mm al ritorno manuale. Non e'
+una calibrazione accettabile e nessun parametro e' applicato.
+Il controllo numerico del modello identita' riproduce il replay originale
+entro 1e-8 mm. Le incertezze dei riferimenti manuali restano sconosciute.
+Serve un riscontro fisico indipendente durante il moto per localizzare
+la discrepanza; i soli endpoint non identificano quale canale la produca.
+Le immagini disponibili mostrano i display, non permettono di verificare
+montaggio dei pod, geometria/rapporti, ne' fissaggio dell'IMU.
+
+
+Aggiornamento: giro automatico del campo, tutte ruote omni
+L'utente chiarisce di aver rimesso fisicamente il robot sui segni iniziali,
+con il display ancora fuori di circa 200 mm in X. Non e' soltanto un errore
+fisico di arrivo del controller: la chiusura odometrica e' errata.
+Non esiste un CSV disponibile di questo nuovo giro. Una lettura passiva del
+VEX V5 Controller collegato in COM5 non ha ricevuto frame NXOD; il file
+odometry-current-20261003-terminal.txt contiene solo apertura/chiusura terminale.
+Nessun programma e' stato avviato e nessun movimento e' stato comandato.
+
+Difetti distinti corretti e verificati:
+- Sequence interpretava timedOut come interruzione dell'intero autonomous.
+  Ora termina solo la singola mossa; attese, azioni e mosse successive continuano.
+  Annullamenti e guasti continuano a bloccare la sequenza.
+- L'arrivo ignorava la velocita' laterale. Ora DriveState pubblica lateralV,
+  osservata dal pod dopo compensazione di rotazione, e il controllo considera
+  la norma delle velocita' avanti/laterale prima di dichiarare l'arresto.
+- Con errore puramente laterale, i due percorsi tutto-avanti/tutto-indietro
+  erano quasi identici. Il planner confronta anche curve dolci con una posa
+  intermedia e un cambio di verso, con riferimento fermo per 120 ms.
+- Sul robot omni il limite laterale iniziale passa 3000 -> 1000 mm/s^2;
+  e' prudenziale, non una misura di grip. Velocita' e accelerazione rettilinea
+  non cambiano. Un pod L configurato mancante per 150 ms arresta l'autonomous.
+
+Questi interventi non annullano i 200 mm per costruzione. Posa, scale e offset
+non sono stati alterati per forzare la chiusura del percorso.
+Il modello predittivo resta a cinque stati; lateralV e' usata per riconoscere
+l'arresto, non e' un nuovo modello completo dell'inerzia laterale.
+
+Riscontro ulteriore sul vecchio log manuale (99,874..168,604 s):
+pitch -4,09..+0,72 deg, roll -6,67..-1,44 deg, accelerazione 0,850..1,277 g;
+essuna saturazione. Con offsetL attuale -33 mm, in finestre da 100 ms il canale L
+corretto misura 718 mm di variazione assoluta, 497 mm durante curve oltre 20 deg/s;
+velocita' laterale massima 172 mm/s. Sono osservazioni compatibili con moto
+laterale e variazioni di carico, non una prova di perdita di contatto.
+Eliminare L peggiora la chiusura del vecchio percorso da 111 a 300 mm: non va
+azzerato o attenuato per mascherare il drift.
+
+Per distinguere misura laterale e heading dinamico serve un riferimento
+indipendente DURANTE il moto. Prova minima: una sola diagonale di 600x600 mm,
+muso parallelo per tutto il tragitto verificato da due segni sul telaio e
+video fisso dall'alto, con log USB diretto dal Brain. Le foto dei soli endpoint
+non permettono di localizzare quale segnale si altera durante le curve.
+
+Verifica finale: firmware ARM compilato; 14 suite host superate. I due test
+Python inizialmente bloccati da permessi sui temporanei Windows sono passati
+rieseguendoli fuori sandbox. Risultati cinematici e del controller simulati,
+nessuna precisione fisica sul nuovo giro dichiarata. Firmware non caricato
+sul Brain da questo intervento.
+
+Aggiornamento CTRL 7: rotazione ripetuta al primo punto 600,600
+L'utente riferisce nuova chiusura fisica con display X=-88, Y=130 mm
+(errore di posizione circa 157 mm). Non e' disponibile la registrazione
+di questa prova; non viene attribuita automaticamente a pod o IMU.
+
+Trovata una lacuna nel predittore: lateralV era pubblicata e usata per
+riconoscere l'arresto, ma veniva esclusa da tutte le previsioni di posizione.
+Ora la velocita' laterale misurata, nel riferimento del telaio, entra nella
+compensazione della latenza, nei rollout e nelle Jacobiane. E' mantenuta
+costante per ogni orizzonte e aggiornata a ogni osservazione; non si tratta
+di una misura dell'aderenza ne' di un modello completo dell'inerzia laterale.
+Per un punto senza heading imposto, l'ingresso nella tolleranza attiva la
+frenata terminale senza obbligare a finire la curva e il suo orientamento.
+
+La prova sintetica con forte deriva riproduce giri multipli e timeout con
+il precedente modello. La regressione finale usa un plant indipendente,
+ritardo 10 ms, filtro compensato delle velocita' e quattro resistenze laterali
+sintetiche su due diagonali speculari. Otto casi superati; il caso piu'
+scivoloso arriva in 4.30 s, circa 243 gradi complessivi, errore 8.67 mm.
+Non sono precisioni misurate sul robot e non spiegano i 157 mm di odometria.
+Posa, scale e offset restano invariati. Le nuove righe USB NXCTRL a 10 Hz
+registrano anche obiettivo, riferimento, velocita', comandi e stato del solver.
+
+Correzione della precedente affermazione sul prematch in disabled:
+avviare il worker non supera l'inibizione dei motori applicata da VEXos.
+La sequenza ora mostra l'attesa, non avvia i timer di homing sui motori
+inibiti e parte automaticamente quando sono abilitati. Un avvio interrotto
+dal disabled riparte con riferimenti freschi; quello completato non si ripete.
+Fonte primaria VEX:
+https://www.vexforum.com/t/competition-code-and-user-created-tasks/88616
+
+CTRL 7: build ARM riuscita, bin/hot.package.bin 113152 byte; tutte le 14
+suite host superate in un'unica esecuzione (24.08 s). Nessun caricamento
+o movimento fisico effettuato durante questo intervento.
+
+Ripetibilita' riferita dopo CTRL 7
+L'utente conferma prove sullo stesso percorso, dalla stessa partenza e con
+la stessa build; confronta X/Y dopo avere riportato manualmente il robot
+sugli stessi riferimenti. Alcune chiusure sono di pochi mm, altre molto peggiori.
+La variabilita' non identifica un canale guasto e non esclude un errore
+geometrico che interagisce con traiettorie/velocita' reali leggermente diverse.
+
+Nuovo tentativo di lettura passiva: COM5 identificata da Windows come
+VEX V5 Controller Port. odometry-repeatability-20261003-terminal.txt contiene
+solo connessione e chiusura, nessun frame NXOD/NXCTRL. L'utente al momento
+non puo' collegare USB direttamente al Brain. Nessun movimento comandato.
+Il confronto tra una prova buona e una cattiva resta in attesa dei log.
+
+tools/inspect_odometry_trace.py ora conta separatamente disponibilita' di
+F/L/encoder/IMU, incrementi scartati e sorgente heading (IMU/fallback/assente).
+Un dato leggibile ma scartato non scompare piu' dal riepilogo. Sono conteggi
+di osservazioni, non durate o diagnosi di guasto hardware. Le 11 regressioni
+del lettore passano; firmware, calibrazioni e geometria non modificati.

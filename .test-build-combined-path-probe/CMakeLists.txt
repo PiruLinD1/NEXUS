@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(combined_probe LANGUAGES CXX)
+add_executable(combined_probe probe.cpp ../src/nexus/estimator.cpp)
+target_compile_features(combined_probe PRIVATE cxx_std_23)
+target_include_directories(combined_probe PRIVATE ../include)
+add_executable(arc_pair arc_pair.cpp ../src/nexus/estimator.cpp)
+target_compile_features(arc_pair PRIVATE cxx_std_23)
+target_include_directories(arc_pair PRIVATE ../include)

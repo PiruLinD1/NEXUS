@@ -1,0 +1,27 @@
+2026-10-02: ARM build PASS with the local PROS toolchain, make -j4.
+No upload and no execution on physical hardware were performed.
+
+LemLib v0.5.6, commit 3388145e0d90ee3c7c17d7267a30ef64367df4cb.
+48/48 upstream LemLib/fmt source/license files matched the pinned archive.
+Independent read-only review also matched their Git blob hashes to the commit.
+Original odom.cpp SHA256: 26a84c6a3448c0443a398fef437ae6597d44cb3d0d5485748c3f4604005df5f6.
+Original trackingWheel.cpp SHA256: d6d90abf534416e54b26903ab5983ff07055fb6e1aa3dcf36340aa57a18b6dcc.
+
+Built hot.package.bin: 16,060 bytes.
+Built cold.package.bin: 2,243,836 bytes.
+Exact binary/source hashes are recorded in BUILD-MANIFEST.json.
+The ARM ELF contains lemlib::update and the original TrackingWheel distance getter.
+No nexus:: symbol or lemlib::Chassis:: motion implementation is linked in the hot ELF.
+Read-only review found no reachable actuator command from the app entry points;
+the motor-backed placeholder only changes encoder units and reads telemetry.
+
+The original upstream sources compile with existing warnings (initializer order,
+unused variables, missing aggregate fields, deprecated implicit capture). They
+were preserved unchanged. App main.cpp, odom.cpp and trackingWheel.cpp compiled
+without warnings. No global SDK/compiler installation or upgrade was needed.
+
+Hardware limitation: upstream getPose is not a synchronized three-field snapshot;
+10 Hz raw telemetry is read separately from its odometry worker. Use this build
+for the physical A/B endpoint test, reading the endpoint after >=3 seconds still.
+Program slot 2 is only the project default; availability must be checked before
+any upload. The original NEXUS project and binaries were not replaced.

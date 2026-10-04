@@ -1,0 +1,5 @@
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-reverse-audit/build/CMakeFiles/reverse_audit.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-reverse-audit/build/CMakeFiles/cusp.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-reverse-audit/build/CMakeFiles/baseline_test.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-reverse-audit/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-reverse-audit/build/CMakeFiles/ZERO_CHECK.dir

@@ -1,0 +1,10 @@
+^C:\USERS\RUGGE\DOCUMENTS\VEX-VSCODE-PROJECTS\SX_SAWP\.TEST-BUILD-ESTIMATOR-AUDIT\CMAKEFILES\DB7FF58D3C2A59C8DC0B2819B75D1B9D\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests -BC:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-estimator-audit --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-estimator-audit/NEXUS.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

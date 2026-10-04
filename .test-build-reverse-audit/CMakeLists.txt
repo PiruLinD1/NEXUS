@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.20)
+project(reverse_audit LANGUAGES CXX)
+add_executable(reverse_audit benchmark.cpp)
+target_compile_features(reverse_audit PRIVATE cxx_std_23)
+target_include_directories(reverse_audit PRIVATE ../include)
+
+add_executable(cusp cusp.cpp)
+target_compile_features(cusp PRIVATE cxx_std_23)
+target_include_directories(cusp PRIVATE ../include)
+add_executable(baseline_test baseline_test.cpp)
+target_compile_features(baseline_test PRIVATE cxx_std_23)
+target_include_directories(baseline_test PRIVATE ../include)

@@ -1,0 +1,208 @@
+Start testing: Sep 21 10:55 ora legale Europa occidentale
+----------------------------------------------------------
+1/10 Testing: log_preparation
+1/10 Test: log_preparation
+Command: "C:/Python314/python.exe" "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/prepare_dynamics_test.py" "--calibrate" "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/calibrate.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"log_preparation" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.286s
+
+OK
+<end of output>
+Test time =   0.72 sec
+----------------------------------------------------------
+Test Passed.
+"log_preparation" end time: Sep 21 10:55 ora legale Europa occidentale
+"log_preparation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/10 Testing: estimator
+2/10 Test: estimator
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/estimator_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"estimator" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+two-turn simulation: raw IMU -720.0 deg, heading -0.000000 deg, confidence 0.674, position sigma 62.61 mm, heading sigma 3.721 deg; shifted counter gives identical confidence
+noisy simulation: 12 runs, position RMS 0.346 mm, max 0.640 mm, heading max 0.0565 deg
+stationary regression: confidence 0.901 -> 0.901 over 120 s with all pods; missing lateral sensing still increases uncertainty
+wall drift simulation: no correction 81.00 mm, delayed correction 9.11 mm; 900 paired updates 1.73 ms; worst range update 20.50 us (host only)
+raw V5 5% biased wall: position error 17.93 mm, reported Y sigma 95.15 mm after 2,000 readings
+Estimator: 18555 checks passed; sizeof(Estimator)=26664 bytes
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"estimator" end time: Sep 21 10:55 ora legale Europa occidentale
+"estimator" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/10 Testing: controller
+3/10 Test: controller
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/controller_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"controller" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+straight           pos_mm=3.492     heading_deg=0.000     time_s=1.820  rms_mm=5.242     mean_ms=0.214     worst_ms=0.393     settled=1 improves=84
+reverse            pos_mm=3.494     heading_deg=0.000     time_s=1.680  rms_mm=5.377     mean_ms=0.176     worst_ms=0.312     settled=1 improves=77
+curve pose         pos_mm=3.045     heading_deg=0.008     time_s=2.040  rms_mm=4.329     mean_ms=0.195     worst_ms=0.621     settled=1 improves=95
+point off axis     pos_mm=3.049     heading_deg=36.244    time_s=1.860  rms_mm=4.782     mean_ms=0.162     worst_ms=0.397     settled=1 improves=86
+large heading      pos_mm=2.372     heading_deg=0.038     time_s=2.240  rms_mm=3.901     mean_ms=0.280     worst_ms=0.723     settled=1 improves=105
+behind point       pos_mm=1.843     heading_deg=178.724   time_s=2.740  rms_mm=3.016     mean_ms=0.177     worst_ms=0.414     settled=1 improves=131
+behind pose        pos_mm=1.470     heading_deg=0.087     time_s=3.160  rms_mm=3.723     mean_ms=0.348     worst_ms=0.894     settled=1 improves=149
+short pose         pos_mm=0.431     heading_deg=0.169     time_s=1.160  rms_mm=0.849     mean_ms=0.167     worst_ms=0.439     settled=1 improves=47
+fast braking       pos_mm=3.202     heading_deg=0.000     time_s=0.780  rms_mm=5.752     mean_ms=0.150     worst_ms=0.285     settled=1 improves=32
+turn 170 deg       pos_mm=0.000     heading_deg=0.166     time_s=1.180  rms_mm=0.000     mean_ms=0.156     worst_ms=0.386     settled=1 improves=49
+turn across wrap   pos_mm=0.000     heading_deg=0.217     time_s=0.480  rms_mm=0.000     mean_ms=0.131     worst_ms=0.220     settled=1 improves=13
+pose across wrap   pos_mm=3.402     heading_deg=0.014     time_s=1.500  rms_mm=5.405     mean_ms=0.191     worst_ms=0.507     settled=1 improves=68
+initial reverse    pos_mm=1.496     heading_deg=0.140     time_s=1.900  rms_mm=121.224   mean_ms=0.370     worst_ms=0.911     settled=1 improves=89
+turn while moving  pos_mm=26.295    heading_deg=0.536     time_s=1.680  rms_mm=60.044    mean_ms=0.273     worst_ms=0.886     settled=1 improves=63
+low battery        pos_mm=1.537     heading_deg=0.001     time_s=2.760  rms_mm=2.139     mean_ms=0.154     worst_ms=0.359     settled=1 improves=132
+push recovery      pos_mm=0.468     heading_deg=0.117     time_s=4.680  rms_mm=55.968    mean_ms=0.361     worst_ms=1.317     settled=1 improves=226
+collision slip     pos_mm=3.255     heading_deg=0.012     time_s=2.340  rms_mm=55.842    mean_ms=0.257     worst_ms=0.743     settled=1 improves=110
+motor mismatch     pos_mm=3.314     heading_deg=0.369     time_s=1.780  rms_mm=8.036     mean_ms=0.160     worst_ms=0.399     settled=1 improves=82
+command latency    pos_mm=2.952     heading_deg=0.005     time_s=1.800  rms_mm=4.788     mean_ms=0.166     worst_ms=0.286     settled=1 improves=82
+high speed         pos_mm=3.554     heading_deg=0.010     time_s=2.680  rms_mm=4.736     mean_ms=0.170     worst_ms=0.417     settled=1 improves=127
+tight tolerance    pos_mm=0.660     heading_deg=0.034     time_s=2.920  rms_mm=3.744     mean_ms=0.189     worst_ms=0.765     settled=1 improves=113
+repeat A           pos_mm=2.603     heading_deg=0.007     time_s=1.660  rms_mm=5.150     mean_ms=0.128     worst_ms=0.301     settled=1 improves=75
+repeat B           pos_mm=2.603     heading_deg=0.007     time_s=1.660  rms_mm=5.150     mean_ms=0.130     worst_ms=0.278     settled=1 improves=75
+Controller simulation tests passed. Host timings are not V5 deadline measurements.
+<end of output>
+Test time =   0.60 sec
+----------------------------------------------------------
+Test Passed.
+"controller" end time: Sep 21 10:55 ora legale Europa occidentale
+"controller" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/10 Testing: calibration
+4/10 Test: calibration
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/calibration_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"calibration" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Calibration fits, observability, residual rejection and persistence tests passed
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"calibration" end time: Sep 21 10:55 ora legale Europa occidentale
+"calibration" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/10 Testing: system
+5/10 Test: system
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/system_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"system" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+seed=1 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.532 heading_deg=0.017 loc_rms_mm=0.396 loc_max_mm=0.694 tracking_rms_mm=15.893 seconds=2.200 mean_solver_ms=0.174 worst_solver_ms=0.318
+seed=2 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.555 heading_deg=0.013 loc_rms_mm=0.413 loc_max_mm=0.715 tracking_rms_mm=15.921 seconds=2.200 mean_solver_ms=0.181 worst_solver_ms=0.420
+seed=3 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.541 heading_deg=0.014 loc_rms_mm=0.398 loc_max_mm=0.704 tracking_rms_mm=15.890 seconds=2.200 mean_solver_ms=0.201 worst_solver_ms=0.438
+seed=4 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.549 heading_deg=0.014 loc_rms_mm=0.407 loc_max_mm=0.691 tracking_rms_mm=15.926 seconds=2.200 mean_solver_ms=0.184 worst_solver_ms=0.473
+seed=5 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.515 heading_deg=0.019 loc_rms_mm=0.389 loc_max_mm=0.657 tracking_rms_mm=15.907 seconds=2.200 mean_solver_ms=0.194 worst_solver_ms=0.426
+seed=6 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.541 heading_deg=0.017 loc_rms_mm=0.402 loc_max_mm=0.679 tracking_rms_mm=15.916 seconds=2.200 mean_solver_ms=0.207 worst_solver_ms=0.427
+seed=7 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.521 heading_deg=0.018 loc_rms_mm=0.380 loc_max_mm=0.682 tracking_rms_mm=15.903 seconds=2.200 mean_solver_ms=0.203 worst_solver_ms=0.424
+seed=8 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.536 heading_deg=0.017 loc_rms_mm=0.410 loc_max_mm=0.713 tracking_rms_mm=15.899 seconds=2.200 mean_solver_ms=0.175 worst_solver_ms=0.431
+repeatability_final_error_std_mm=0.013
+seed=15 disturbance=1 reverse=0 dropout=0 braking=0 final_mm=1.710 heading_deg=0.360 loc_rms_mm=1.833 loc_max_mm=2.286 tracking_rms_mm=31.080 seconds=5.280 mean_solver_ms=0.331 worst_solver_ms=0.920
+seed=16 disturbance=0 reverse=1 dropout=0 braking=0 final_mm=5.078 heading_deg=0.095 loc_rms_mm=0.263 loc_max_mm=0.476 tracking_rms_mm=11.770 seconds=1.760 mean_solver_ms=0.195 worst_solver_ms=0.528
+seed=17 disturbance=0 reverse=0 dropout=1 braking=0 final_mm=5.133 heading_deg=0.026 loc_rms_mm=0.419 loc_max_mm=0.730 tracking_rms_mm=18.788 seconds=2.300 mean_solver_ms=0.207 worst_solver_ms=0.611
+seed=18 disturbance=0 reverse=0 dropout=0 braking=1 final_mm=4.218 heading_deg=0.032 loc_rms_mm=0.039 loc_max_mm=0.078 tracking_rms_mm=7.564 seconds=0.920 mean_solver_ms=0.143 worst_solver_ms=0.278
+Coupled estimator/NMPC tests passed; physical validation still required.
+<end of output>
+Test time =   0.36 sec
+----------------------------------------------------------
+Test Passed.
+"system" end time: Sep 21 10:55 ora legale Europa occidentale
+"system" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/10 Testing: autonomous_units
+6/10 Test: autonomous_units
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/autonomous_units_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"autonomous_units" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Autonomous mm units: 600mm target, final Y=597.596mm; wheel inches preserved.
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"autonomous_units" end time: Sep 21 10:55 ora legale Europa occidentale
+"autonomous_units" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/10 Testing: driver_input
+7/10 Test: driver_input
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/driver_input_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"driver_input" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Driver input: connection states 1/2, disconnection/errors, held, toggles, remapping, opposing inputs and reconnect passed.
+<end of output>
+Test time =   0.14 sec
+----------------------------------------------------------
+Test Passed.
+"driver_input" end time: Sep 21 10:55 ora legale Europa occidentale
+"driver_input" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/10 Testing: automatic_calibration
+8/10 Test: automatic_calibration
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/automatic_calibration_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"automatic_calibration" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Automatic stationary bias and bidirectional geometry calibration tests passed
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"automatic_calibration" end time: Sep 21 10:55 ora legale Europa occidentale
+"automatic_calibration" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/10 Testing: calibration_routine
+9/10 Test: calibration_routine
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/calibration_routine_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"calibration_routine" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Calibration routine: 5537 checks passed
+<end of output>
+Test time =   0.05 sec
+----------------------------------------------------------
+Test Passed.
+"calibration_routine" end time: Sep 21 10:55 ora legale Europa occidentale
+"calibration_routine" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/10 Testing: chassis_adapter
+10/10 Test: chassis_adapter
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/chassis_adapter_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+"chassis_adapter" start time: Sep 21 10:55 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Chassis adapter lifecycle, calibration lease, reconnect and diagnostic tests passed.
+<end of output>
+Test time =   2.38 sec
+----------------------------------------------------------
+Test Passed.
+"chassis_adapter" end time: Sep 21 10:55 ora legale Europa occidentale
+"chassis_adapter" time elapsed: 00:00:02
+----------------------------------------------------------
+
+End testing: Sep 21 10:55 ora legale Europa occidentale

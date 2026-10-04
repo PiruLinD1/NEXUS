@@ -1,0 +1,243 @@
+{
+  "file": "docs/usb-passive-20261003-192152-873.csv",
+  "excluded_ports": [
+    4,
+    9
+  ],
+  "comparisons": {
+    "pods_native_imu": {
+      "points_mm": [
+        [
+          553.0191202124937,
+          667.7356527028254
+        ],
+        [
+          -55.25878841472789,
+          96.78502043130784
+        ]
+      ],
+      "errors_mm": [
+        [
+          -46.9808797875063,
+          67.7356527028254
+        ],
+        [
+          -55.25878841472789,
+          96.78502043130784
+        ]
+      ],
+      "error_norms_mm": [
+        82.43374134834532,
+        111.44897431987583
+      ]
+    },
+    "blue_drive_forward_lateral_pod_native_imu": {
+      "points_mm": [
+        [
+          556.8567226835705,
+          675.246214580763
+        ],
+        [
+          -53.916768670521954,
+          97.2121356802651
+        ]
+      ],
+      "errors_mm": [
+        [
+          -43.143277316429476,
+          75.24621458076297
+        ],
+        [
+          -53.916768670521954,
+          97.2121356802651
+        ]
+      ],
+      "error_norms_mm": [
+        86.73716150726032,
+        111.16302113287877
+      ]
+    },
+    "blue_drive_forward_assume_no_side_slip_native_imu": {
+      "points_mm": [
+        [
+          353.7682221756406,
+          827.9173078201466
+        ],
+        [
+          -102.52966786355836,
+          282.1900082587012
+        ]
+      ],
+      "errors_mm": [
+        [
+          -246.23177782435943,
+          227.91730782014656
+        ],
+        [
+          -102.52966786355836,
+          282.1900082587012
+        ]
+      ],
+      "error_norms_mm": [
+        335.5240492342213,
+        300.2391272856645
+      ]
+    },
+    "forward_pod_assume_no_side_slip_native_imu": {
+      "points_mm": [
+        [
+          349.93061970456205,
+          820.4067459422091
+        ],
+        [
+          -103.87168760776794,
+          281.762893009749
+        ]
+      ],
+      "errors_mm": [
+        [
+          -250.06938029543795,
+          220.4067459422091
+        ],
+        [
+          -103.87168760776794,
+          281.762893009749
+        ]
+      ],
+      "error_norms_mm": [
+        333.33740956900994,
+        300.29927632897983
+      ]
+    },
+    "pods_blue_drive_heading_nominal_track_287mm": {
+      "points_mm": [
+        [
+          553.2412454269331,
+          664.1808999863501
+        ],
+        [
+          -76.28069850102395,
+          93.48556786341759
+        ]
+      ],
+      "errors_mm": [
+        [
+          -46.75875457306688,
+          64.18089998635014
+        ],
+        [
+          -76.28069850102395,
+          93.48556786341759
+        ]
+      ],
+      "error_norms_mm": [
+        79.40761331435533,
+        120.65776544652968
+      ]
+    }
+  },
+  "interval_totals": [
+    {
+      "drive_center_mm": 1058.489979809987,
+      "forward_pod_mm": 1049.60770308,
+      "forward_center_with_configured_offset_mm": 1049.4927145545626,
+      "lateral_center_with_configured_offset_mm": 266.6142061609688,
+      "heading_deg": -0.32941786
+    },
+    {
+      "drive_center_mm": 4268.711274722098,
+      "forward_pod_mm": 4162.01836292,
+      "forward_center_with_configured_offset_mm": 4288.088187381515,
+      "lateral_center_with_configured_offset_mm": 172.3170386153052,
+      "heading_deg": 361.16344327999997
+    }
+  ],
+  "blue_motor_agreement": {
+    "l": {
+      "blue_pair_max_difference_mm": 3.1120616826461203,
+      "blue_revs_per_green_reported_rev": 3.010931398449723,
+      "blue_minus_3_green_max_mm": 19.709723808554735
+    },
+    "r": {
+      "blue_pair_max_difference_mm": 2.0747078921664213,
+      "blue_revs_per_green_reported_rev": 3.0103333561203565,
+      "blue_minus_3_green_max_mm": 17.37567793557785
+    }
+  },
+  "blue_drive_heading_comparison": {
+    "difference_from_imu_degrees_min_max": [
+      -1.2578843951425172,
+      1.910622732084326
+    ],
+    "at_markers_deg": [
+      -0.032996753436916826,
+      1.4252881792048548
+    ],
+    "effective_track_from_final_turn_mm": 288.13364505178157
+  },
+  "forward_pod_vs_drive_regressions": {
+    "all_moving": {
+      "windows": 191,
+      "rank": 2,
+      "pod_per_drive_scale": 0.9969182299300584,
+      "apparent_forward_offset_mm": 16.62562098403077,
+      "residual_rms_mm": 0.8099218922092818
+    },
+    "mostly_straight": {
+      "windows": 31,
+      "rank": 2,
+      "pod_per_drive_scale": 1.0005948752412914,
+      "apparent_forward_offset_mm": 15.292697318702393,
+      "residual_rms_mm": 0.6332761580726209
+    },
+    "clockwise": {
+      "windows": 97,
+      "rank": 2,
+      "pod_per_drive_scale": 0.997854506574158,
+      "apparent_forward_offset_mm": 17.257909697117597,
+      "residual_rms_mm": 0.8621724806793889
+    },
+    "counterclockwise": {
+      "windows": 45,
+      "rank": 2,
+      "pod_per_drive_scale": 0.9976052749826209,
+      "apparent_forward_offset_mm": 14.028913159205725,
+      "residual_rms_mm": 0.8423102960919113
+    }
+  },
+  "inertial_ranges": {
+    "pitch_deg": [
+      -4.089275,
+      0.717471
+    ],
+    "roll_deg": [
+      -6.669719,
+      -1.440217
+    ],
+    "gyro_x_dps": [
+      -9.247108,
+      5.371258
+    ],
+    "gyro_y_dps": [
+      -5.981628,
+      3.69274
+    ],
+    "gyro_z_dps": [
+      -53.254799,
+      50.630207
+    ],
+    "accel_x_g": [
+      -0.255493,
+      0.327271
+    ],
+    "accel_y_g": [
+      -0.47522,
+      0.082153
+    ],
+    "accel_z_g": [
+      0.819092,
+      1.139038
+    ]
+  },
+  "caveat": "Drive encoder travel can slip; fitted offset includes unequal effective wheel travel. No calibration applied."
+}

@@ -1,0 +1,53 @@
+Start testing: Oct 03 19:44 ora legale Europa occidentale
+----------------------------------------------------------
+3/14 Testing: estimator
+3/14 Test: estimator
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-calibration-audit/Release/estimator_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-calibration-audit
+"estimator" start time: Oct 03 19:44 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+two-turn simulation: raw IMU -720.0 deg, heading -0.000000 deg, confidence 0.674, position sigma 62.61 mm, heading sigma 3.721 deg; shifted counter gives identical confidence
+20-second relocated-pod loop: ideal 0.000000 mm; simulated 2% gyro scale error X 66.6 Y -60.8 mm, heading -7.20 deg
+1.2 m out + 1.2 m back, 5 s each, no Distance: ideal final error 0.000 mm; uncertainty uncalibrated 243.9 mm / 20.36 deg, calibrated 84.7 mm / 3.84 deg; lateral rejection count 1
+cached forward pod at 2.7 m/s: synchronous-only gate 27.0 mm, bounded 10 ms hold gate 54.0 mm, actual 54.0 mm
+20 manual closed cycles, synthetic gyro lag 0 ms: X 0.000 Y -0.000 mm; X terms forward 0.000 lateral -0.000 offset 0.000 mm; heading 0.00000 deg
+20 manual closed cycles, synthetic gyro lag 10 ms: X -51.367 Y -0.756 mm; X terms forward -51.332 lateral -0.035 offset 0.000 mm; heading 0.00000 deg
+independent 500 mm / 30 deg arc + inverse, gyro current frame: final X 0.000000 Y -0.000000 mm, heading 0.00000000 deg; max per-sample pose difference 10 ms vs 6/14 ms 0 mm
+independent 500 mm / 30 deg arc + inverse, gyro previous frame: final X -4.957495 Y 0.934991 mm, heading 0.00000000 deg; max per-sample pose difference 10 ms vs 6/14 ms 0 mm
+closed heading with unreported pod dropout: offset X 2.783 Y 0.856 mm; rejected 0, unusable F/L/G 2/2/0
+noisy simulation: 12 runs, position RMS 0.346 mm, max 0.640 mm, heading max 0.0565 deg
+stationary regression: confidence 0.901 -> 0.901 over 120 s with all pods; missing lateral sensing still increases uncertainty
+bounded wheel jitter at rest: sigma 17.69 -> 17.69 mm, 0.781 -> 0.781 deg over 119 s; final pose -0.0049 -0.0058 mm
+quantized noisy 10 um/s creep over 120 s: position error 0.0373 mm, heading error 0.022802 deg (0.601306 deg bound, 251 quiet intervals), bias 0.000000 deg/s
+wall drift simulation: no correction 88.64 mm, delayed correction 9.39 mm; 900 paired updates 1.25 ms; worst range update 37.50 us (host only)
+two-Distance X/Y correction: X 36.00 -> 0.18 mm, Y 81.00 -> 9.38 mm
+raw V5 5% biased wall: position error 17.93 mm, reported Y sigma 95.15 mm after 2,000 readings
+velocity comparison (old EMA -> compensated): acceleration RMS 0.04041 -> 0.01206 m/s, 0.05916 -> 0.01576 rad/s; noise-only 0.00517 -> 0.00529 m/s; 25 Hz held samples 0.18575 -> 0.17961 m/s
+per-sensor wall calibration model: verified 10 mm noise 8.06 mm drift versus inherited conservative model 63.00 mm (synthetic calibrated readings)
+Estimator: 71380 checks passed; sizeof(Estimator)=33320 bytes
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"estimator" end time: Oct 03 19:44 ora legale Europa occidentale
+"estimator" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/14 Testing: chassis_adapter
+14/14 Test: chassis_adapter
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-calibration-audit/Release/chassis_adapter_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-calibration-audit
+"chassis_adapter" start time: Oct 03 19:44 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Chassis adapter lifecycle, calibration lease, reconnect, timing, trace and diagnostic tests passed.
+<end of output>
+Test time =  14.70 sec
+----------------------------------------------------------
+Test Passed.
+"chassis_adapter" end time: Oct 03 19:44 ora legale Europa occidentale
+"chassis_adapter" time elapsed: 00:00:14
+----------------------------------------------------------
+
+End testing: Oct 03 19:44 ora legale Europa occidentale

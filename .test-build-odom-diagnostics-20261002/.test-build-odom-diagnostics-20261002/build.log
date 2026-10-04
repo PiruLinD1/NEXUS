@@ -1,0 +1,443 @@
+Compilazione avviata 02.10.2026 17:41:36.
+Il livello di dettaglio della registrazione è impostato su: Normal.
+     1>Progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" sul nodo 1 (destinazioni predefinite).
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ZERO_CHECK.vcxproj" (2) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 1 (destinazioni predefinite).
+     2>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+       InitializeBuildStatus:
+         Creazione di "x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild".
+       CustomBuild:
+         Tutti gli output sono aggiornati.
+       FinalizeBuildStatus:
+         Eliminazione del file "x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\ZERO_CHECK.lastbuildstate".
+     2>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ZERO_CHECK.vcxproj" (destinazioni predefinite) completata.
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\arm_motion_test.vcxproj" (3) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 1 (destinazioni predefinite).
+     3>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\nexus_core.vcxproj" (4) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\arm_motion_test.vcxproj" (3) sul nodo 1 (destinazioni predefinite).
+     4>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\".
+         Creazione directory "nexus_core.dir\Release\nexus_core.tlog\".
+       InitializeBuildStatus:
+         Creazione di "nexus_core.dir\Release\nexus_core.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "nexus_core.dir\Release\nexus_core.tlog\unsuccessfulbuild".
+       CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+       ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\nexus_core.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "nexus_core.dir\Release\nexus_core_MD.tlog\".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D _CRT_SECURE_NO_WARNINGS /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /permissive- /Fo"nexus_core.dir\Release\\" /Fd"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\nexus_core.pdb" /external:W4 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\src\nexus\estimator.cpp" "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\src\nexus\controller.cpp" "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\src\nexus\calibration.cpp" "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\src\nexus\automatic_calibration.cpp"
+         estimator.cpp
+         controller.cpp
+         calibration.cpp
+         automatic_calibration.cpp
+         Generazione del codice in corso...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\Lib.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\nexus_core.lib" /NOLOGO /MACHINE:X64  /machine:x64 nexus_core.dir\Release\estimator.obj
+         nexus_core.dir\Release\controller.obj
+         nexus_core.dir\Release\calibration.obj
+         nexus_core.dir\Release\automatic_calibration.obj
+         nexus_core.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\nexus_core.lib
+       FinalizeBuildStatus:
+         Eliminazione del file "nexus_core.dir\Release\nexus_core.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "nexus_core.dir\Release\nexus_core.tlog\nexus_core.lastbuildstate".
+     4>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\nexus_core.vcxproj" (destinazioni predefinite) completata.
+     3>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "arm_motion_test.dir\Release\arm_motion_test.tlog\".
+       InitializeBuildStatus:
+         Creazione di "arm_motion_test.dir\Release\arm_motion_test.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "arm_motion_test.dir\Release\arm_motion_test.tlog\unsuccessfulbuild".
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\startup_test.vcxproj" (15) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 4 (destinazioni predefinite).
+    15>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "startup_test.dir\Release\startup_test.tlog\".
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\nexus_calibrate.vcxproj" (14) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 3 (destinazioni predefinite).
+    14>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\system_test.vcxproj" (16) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 2 (destinazioni predefinite).
+    16>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+    14>PrepareForBuild:
+         Creazione directory "nexus_calibrate.dir\Release\nexus_calibrate.tlog\".
+    16>PrepareForBuild:
+         Creazione directory "system_test.dir\Release\system_test.tlog\".
+    14>InitializeBuildStatus:
+         Creazione di "nexus_calibrate.dir\Release\nexus_calibrate.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "nexus_calibrate.dir\Release\nexus_calibrate.tlog\unsuccessfulbuild".
+    16>InitializeBuildStatus:
+         Creazione di "system_test.dir\Release\system_test.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+    15>InitializeBuildStatus:
+         Creazione di "startup_test.dir\Release\startup_test.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+    16>InitializeBuildStatus:
+         Aggiornamento timestamp di "system_test.dir\Release\system_test.tlog\unsuccessfulbuild".
+    15>InitializeBuildStatus:
+         Aggiornamento timestamp di "startup_test.dir\Release\startup_test.tlog\unsuccessfulbuild".
+     3>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+       ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+    15>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+    14>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+     3>MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\arm_motion_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "arm_motion_test.dir\Release\arm_motion_test_MD.tlog\".
+    16>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+     3>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"arm_motion_test.dir\Release\\" /Fd"arm_motion_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\arm_motion_test.cpp"
+         arm_motion_test.cpp
+    14>ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+    15>ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+    14>ComputeStdModulesCompileInputs:
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+    15>MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\startup_test.dir\Release\microsoft\STL".
+    14>MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\nexus_calibrate.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "nexus_calibrate.dir\Release\nexus_calibrate_MD.tlog\".
+    15>SetModuleDependencies:
+         Creazione directory "startup_test.dir\Release\startup_test_MD.tlog\".
+    16>ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\system_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "system_test.dir\Release\system_test_MD.tlog\".
+    14>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"nexus_calibrate.dir\Release\\" /Fd"nexus_calibrate.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tools\nexus_calibrate.cpp"
+    15>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"startup_test.dir\Release\\" /Fd"startup_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\startup_test.cpp"
+    16>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"system_test.dir\Release\\" /Fd"system_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\system_test.cpp"
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\estimator_test.vcxproj" (11) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 3 (destinazioni predefinite).
+    11>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "estimator_test.dir\Release\estimator_test.tlog\".
+       InitializeBuildStatus:
+         Creazione di "estimator_test.dir\Release\estimator_test.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "estimator_test.dir\Release\estimator_test.tlog\unsuccessfulbuild".
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\driver_input_test.vcxproj" (12) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 4 (destinazioni predefinite).
+    12>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "driver_input_test.dir\Release\driver_i.4501F4DC.tlog\".
+       InitializeBuildStatus:
+         Creazione di "driver_input_test.dir\Release\driver_i.4501F4DC.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "driver_input_test.dir\Release\driver_i.4501F4DC.tlog\unsuccessfulbuild".
+    14>ClCompile:
+         nexus_calibrate.cpp
+    15>ClCompile:
+         startup_test.cpp
+    16>ClCompile:
+         system_test.cpp
+    12>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+    11>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+       ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\estimator_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "estimator_test.dir\Release\estimator_test_MD.tlog\".
+    12>ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\driver_input_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "driver_input_test.dir\Release\driver_i.4501F4DC_MD.tlog\".
+    11>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"estimator_test.dir\Release\\" /Fd"estimator_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\estimator_test.cpp"
+    12>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"driver_input_test.dir\Release\\" /Fd"driver_input_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\driver_input_test.cpp"
+    11>ClCompile:
+         estimator_test.cpp
+    12>ClCompile:
+         driver_input_test.cpp
+    15>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\startup_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/startup_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/startup_test.lib" /MACHINE:X64  /machine:x64 startup_test.dir\Release\startup_test.obj
+     3>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\arm_motion_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/arm_motion_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/arm_motion_test.lib" /MACHINE:X64  /machine:x64 arm_motion_test.dir\Release\arm_motion_test.obj
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\mechanism_test.vcxproj" (13) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 2 (destinazioni predefinite).
+    13>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "mechanism_test.dir\Release\mechanism_test.tlog\".
+       InitializeBuildStatus:
+         Creazione di "mechanism_test.dir\Release\mechanism_test.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "mechanism_test.dir\Release\mechanism_test.tlog\unsuccessfulbuild".
+    15>Link:
+         startup_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\startup_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "startup_test.dir\Release\startup_test.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "startup_test.dir\Release\startup_test.tlog\startup_test.lastbuildstate".
+    15>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\startup_test.vcxproj" (destinazioni predefinite) completata.
+    12>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\driver_input_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/driver_input_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/driver_input_test.lib" /MACHINE:X64  /machine:x64 driver_input_test.dir\Release\driver_input_test.obj
+    13>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+     3>Link:
+         arm_motion_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\arm_motion_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "arm_motion_test.dir\Release\arm_motion_test.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "arm_motion_test.dir\Release\arm_motion_test.tlog\arm_motion_test.lastbuildstate".
+     3>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\arm_motion_test.vcxproj" (destinazioni predefinite) completata.
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\chassis_adapter_test.vcxproj" (9) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 3 (destinazioni predefinite).
+     9>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "chassis_adapter_test.dir\Release\chassis_.80137E12.tlog\".
+       InitializeBuildStatus:
+         Creazione di "chassis_adapter_test.dir\Release\chassis_.80137E12.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "chassis_adapter_test.dir\Release\chassis_.80137E12.tlog\unsuccessfulbuild".
+    13>ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+    12>Link:
+         driver_input_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\driver_input_test.exe
+    13>MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\mechanism_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "mechanism_test.dir\Release\mechanism_test_MD.tlog\".
+     9>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+    13>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"mechanism_test.dir\Release\\" /Fd"mechanism_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\mechanism_test.cpp"
+         mechanism_test.cpp
+    12>FinalizeBuildStatus:
+         Eliminazione del file "driver_input_test.dir\Release\driver_i.4501F4DC.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "driver_input_test.dir\Release\driver_i.4501F4DC.tlog\driver_input_test.lastbuildstate".
+    12>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\driver_input_test.vcxproj" (destinazioni predefinite) completata.
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\calibration_test.vcxproj" (8) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 4 (destinazioni predefinite).
+     8>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "calibration_test.dir\Release\calibration_test.tlog\".
+       InitializeBuildStatus:
+         Creazione di "calibration_test.dir\Release\calibration_test.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "calibration_test.dir\Release\calibration_test.tlog\unsuccessfulbuild".
+       CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+     9>ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\chassis_adapter_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "chassis_adapter_test.dir\Release\chassis_.80137E12_MD.tlog\".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\fake_pros" /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"chassis_adapter_test.dir\Release\\" /Fd"chassis_adapter_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\chassis_adapter_test.cpp" "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\src\nexus\chassis.cpp"
+         chassis_adapter_test.cpp
+     8>ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\calibration_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "calibration_test.dir\Release\calibration_test_MD.tlog\".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"calibration_test.dir\Release\\" /Fd"calibration_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\calibration_test.cpp"
+         calibration_test.cpp
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\automatic_calibration_test.vcxproj" (5) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 4 (destinazioni predefinite).
+     5>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "automatic_calibration_test.dir\Release\automati.C7A5A5D4.tlog\".
+       InitializeBuildStatus:
+         Creazione di "automatic_calibration_test.dir\Release\automati.C7A5A5D4.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "automatic_calibration_test.dir\Release\automati.C7A5A5D4.tlog\unsuccessfulbuild".
+       CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+       ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\automatic_calibration_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "automatic_calibration_test.dir\Release\automati.C7A5A5D4_MD.tlog\".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"automatic_calibration_test.dir\Release\\" /Fd"automatic_calibration_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\automatic_calibration_test.cpp"
+    16>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\system_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/system_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/system_test.lib" /MACHINE:X64  /machine:x64 system_test.dir\Release\system_test.obj
+     5>ClCompile:
+         automatic_calibration_test.cpp
+    11>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\estimator_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/estimator_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/estimator_test.lib" /MACHINE:X64  /machine:x64 estimator_test.dir\Release\estimator_test.obj
+    16>Link:
+         system_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\system_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "system_test.dir\Release\system_test.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "system_test.dir\Release\system_test.tlog\system_test.lastbuildstate".
+    16>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\system_test.vcxproj" (destinazioni predefinite) completata.
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\controller_test.vcxproj" (10) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 2 (destinazioni predefinite).
+    10>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "controller_test.dir\Release\controller_test.tlog\".
+       InitializeBuildStatus:
+         Creazione di "controller_test.dir\Release\controller_test.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "controller_test.dir\Release\controller_test.tlog\unsuccessfulbuild".
+    11>Link:
+         estimator_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\estimator_test.exe
+    10>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+    11>FinalizeBuildStatus:
+         Eliminazione del file "estimator_test.dir\Release\estimator_test.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "estimator_test.dir\Release\estimator_test.tlog\estimator_test.lastbuildstate".
+    11>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\estimator_test.vcxproj" (destinazioni predefinite) completata.
+    14>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\nexus_calibrate.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/nexus_calibrate.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/nexus_calibrate.lib" /MACHINE:X64  /machine:x64 nexus_calibrate.dir\Release\nexus_calibrate.obj
+    10>ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\controller_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "controller_test.dir\Release\controller_test_MD.tlog\".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"controller_test.dir\Release\\" /Fd"controller_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\controller_test.cpp"
+         controller_test.cpp
+    14>Link:
+         nexus_calibrate.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\nexus_calibrate.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "nexus_calibrate.dir\Release\nexus_calibrate.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "nexus_calibrate.dir\Release\nexus_calibrate.tlog\nexus_calibrate.lastbuildstate".
+    14>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\nexus_calibrate.vcxproj" (destinazioni predefinite) completata.
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\autonomous_units_test.vcxproj" (7) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 2 (destinazioni predefinite).
+     7>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "autonomous_units_test.dir\Release\autonomo.860BCA4F.tlog\".
+       InitializeBuildStatus:
+         Creazione di "autonomous_units_test.dir\Release\autonomo.860BCA4F.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "autonomous_units_test.dir\Release\autonomo.860BCA4F.tlog\unsuccessfulbuild".
+       CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+       ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\autonomous_units_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "autonomous_units_test.dir\Release\autonomo.860BCA4F_MD.tlog\".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"autonomous_units_test.dir\Release\\" /Fd"autonomous_units_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\autonomous_units_test.cpp"
+         autonomous_units_test.cpp
+     5>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\automatic_calibration_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/automatic_calibration_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/automatic_calibration_test.lib" /MACHINE:X64  /machine:x64 automatic_calibration_test.dir\Release\automatic_calibration_test.obj
+         automatic_calibration_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\automatic_calibration_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "automatic_calibration_test.dir\Release\automati.C7A5A5D4.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "automatic_calibration_test.dir\Release\automati.C7A5A5D4.tlog\automatic_calibration_test.lastbuildstate".
+     5>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\automatic_calibration_test.vcxproj" (destinazioni predefinite) completata.
+     9>ClCompile:
+         chassis.cpp
+     1>Compilazione di "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\calibration_routine_test.vcxproj" (6) dal progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (1) sul nodo 3 (destinazioni predefinite).
+     6>PrepareForBuild:
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "calibration_routine_test.dir\Release\calibrat.45AF56D8.tlog\".
+       InitializeBuildStatus:
+         Creazione di "calibration_routine_test.dir\Release\calibrat.45AF56D8.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "calibration_routine_test.dir\Release\calibrat.45AF56D8.tlog\unsuccessfulbuild".
+     8>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\calibration_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/calibration_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/calibration_test.lib" /MACHINE:X64  /machine:x64 calibration_test.dir\Release\calibration_test.obj
+     6>CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+       ComputeStdModulesCompileInputs:
+         Lettura del file manifesto della libreria 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\modules.json' che fornisce i dati per la libreria 'microsoft/STL'.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+         È in corso l'aggiunta di 'C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\modules\std.compat.ixx' di origine del modulo dalla libreria 'microsoft/STL' da compilare con questo progetto.
+       MakeDirsForCl:
+         Creazione directory "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\calibration_routine_test.dir\Release\microsoft\STL".
+       SetModuleDependencies:
+         Creazione directory "calibration_routine_test.dir\Release\calibrat.45AF56D8_MD.tlog\".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\CL.exe /c /I"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\..\include" /nologo /W1 /WX- /diagnostics:column /O2 /Ob2 /D _MBCS /D WIN32 /D _WINDOWS /D NDEBUG /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /std:c++latest /Fo"calibration_routine_test.dir\Release\\" /Fd"calibration_routine_test.dir\Release\vc145.pdb" /external:W1 /TP /errorReport:queue "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\tests\calibration_routine_test.cpp"
+         calibration_routine_test.cpp
+     8>Link:
+         calibration_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\calibration_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "calibration_test.dir\Release\calibration_test.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "calibration_test.dir\Release\calibration_test.tlog\calibration_test.lastbuildstate".
+     8>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\calibration_test.vcxproj" (destinazioni predefinite) completata.
+     7>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\autonomous_units_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/autonomous_units_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/autonomous_units_test.lib" /MACHINE:X64  /machine:x64 autonomous_units_test.dir\Release\autonomous_units_test.obj
+         autonomous_units_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\autonomous_units_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "autonomous_units_test.dir\Release\autonomo.860BCA4F.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "autonomous_units_test.dir\Release\autonomo.860BCA4F.tlog\autonomous_units_test.lastbuildstate".
+     7>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\autonomous_units_test.vcxproj" (destinazioni predefinite) completata.
+     6>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\calibration_routine_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/calibration_routine_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/calibration_routine_test.lib" /MACHINE:X64  /machine:x64 calibration_routine_test.dir\Release\calibration_routine_test.obj
+         calibration_routine_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\calibration_routine_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "calibration_routine_test.dir\Release\calibrat.45AF56D8.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "calibration_routine_test.dir\Release\calibrat.45AF56D8.tlog\calibration_routine_test.lastbuildstate".
+     6>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\calibration_routine_test.vcxproj" (destinazioni predefinite) completata.
+    10>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\controller_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/controller_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/controller_test.lib" /MACHINE:X64  /machine:x64 controller_test.dir\Release\controller_test.obj
+         controller_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\controller_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "controller_test.dir\Release\controller_test.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "controller_test.dir\Release\controller_test.tlog\controller_test.lastbuildstate".
+    10>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\controller_test.vcxproj" (destinazioni predefinite) completata.
+     9>ClCompile:
+         Generazione del codice in corso...
+    13>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\mechanism_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/mechanism_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/mechanism_test.lib" /MACHINE:X64  /machine:x64 mechanism_test.dir\Release\mechanism_test.obj
+         mechanism_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\mechanism_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "mechanism_test.dir\Release\mechanism_test.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "mechanism_test.dir\Release\mechanism_test.tlog\mechanism_test.lastbuildstate".
+    13>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\mechanism_test.vcxproj" (destinazioni predefinite) completata.
+     9>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe /OUT:"C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\chassis_adapter_test.exe" /INCREMENTAL:NO /NOLOGO Release\nexus_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/chassis_adapter_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-odom-diagnostics-20261002/Release/chassis_adapter_test.lib" /MACHINE:X64  /machine:x64 chassis_adapter_test.dir\Release\chassis_adapter_test.obj
+         chassis_adapter_test.dir\Release\chassis.obj
+         chassis_adapter_test.vcxproj -> C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\Release\chassis_adapter_test.exe
+       FinalizeBuildStatus:
+         Eliminazione del file "chassis_adapter_test.dir\Release\chassis_.80137E12.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "chassis_adapter_test.dir\Release\chassis_.80137E12.tlog\chassis_adapter_test.lastbuildstate".
+     9>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\chassis_adapter_test.vcxproj" (destinazioni predefinite) completata.
+     1>PrepareForBuild:
+         Creazione directory "x64\Release\ALL_BUILD\".
+         L'output strutturato è abilitato. La formattazione della diagnostica del compilatore rifletterà la gerarchia degli errori. Per altri dettagli, vedere https://aka.ms/cpp/structured-output.
+         Creazione directory "x64\Release\ALL_BUILD\ALL_BUILD.tlog\".
+       InitializeBuildStatus:
+         Creazione di "x64\Release\ALL_BUILD\ALL_BUILD.tlog\unsuccessfulbuild". È stato specificato "AlwaysCreate".
+         Aggiornamento timestamp di "x64\Release\ALL_BUILD\ALL_BUILD.tlog\unsuccessfulbuild".
+       CustomBuild:
+         Building Custom Rule C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/CMakeLists.txt
+       FinalizeBuildStatus:
+         Eliminazione del file "x64\Release\ALL_BUILD\ALL_BUILD.tlog\unsuccessfulbuild" in corso.
+         Aggiornamento timestamp di "x64\Release\ALL_BUILD\ALL_BUILD.tlog\ALL_BUILD.lastbuildstate".
+     1>Compilazione progetto "C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build-odom-diagnostics-20261002\ALL_BUILD.vcxproj" (destinazioni predefinite) completata.
+
+Compilazione completata.
+    Avvisi: 0
+    Errori: 0
+
+Tempo trascorso 00:00:29.66

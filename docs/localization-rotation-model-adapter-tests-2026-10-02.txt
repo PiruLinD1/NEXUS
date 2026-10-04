@@ -1,0 +1,43 @@
+Rotation test-model correction: targeted adapter validation, 2026-10-02
+Build directory: .test-build-adapter-review
+Build command: cmake --build .test-build-adapter-review --config Release --target chassis_adapter_test --parallel 4
+Build result: exit code 0.
+Test command (both attempts): ctest --test-dir .test-build-adapter-review -C Release -R '^chassis_adapter$' --output-on-failure
+
+FIRST ATTEMPT: captured terminal output, tool chunk bf3dc6 (CTest overwrote LastTest.log on retry).
+Test project C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-adapter-review
+    Start 14: chassis_adapter
+1/1 Test #14: chassis_adapter ..................***Failed    1.08 sec
+FAILED: inclusive raw maximum survives SI floating-point rounding
+
+0% tests passed, 1 tests failed out of 1
+Total Test time (real) =   1.14 sec
+The following tests FAILED:
+    14 - chassis_adapter (Failed)
+Errors while running CTest
+
+The failing check already existed and was not changed. Its cause was not established.
+No source changes were made between the two test attempts.
+The leftover LastTestsFailed.log contains 14:chassis_adapter, last written 23:35:51.
+
+SECOND ATTEMPT: full CTest LastTest.log below, copied after PASS, last written 23:36:10.
+This validates a test-double correction, not a hardware fix for the physical 30 mm residual.
+Start testing: Oct 02 23:35 ora legale Europa occidentale
+----------------------------------------------------------
+14/14 Testing: chassis_adapter
+14/14 Test: chassis_adapter
+Command: "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-adapter-review/Release/chassis_adapter_test.exe"
+Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-adapter-review
+"chassis_adapter" start time: Oct 02 23:35 ora legale Europa occidentale
+Output:
+----------------------------------------------------------
+Chassis adapter lifecycle, calibration lease, reconnect, timing, trace and diagnostic tests passed.
+<end of output>
+Test time =  14.46 sec
+----------------------------------------------------------
+Test Passed.
+"chassis_adapter" end time: Oct 02 23:36 ora legale Europa occidentale
+"chassis_adapter" time elapsed: 00:00:14
+----------------------------------------------------------
+
+End testing: Oct 02 23:36 ora legale Europa occidentale

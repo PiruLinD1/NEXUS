@@ -1,0 +1,160 @@
+UpdateCTestConfiguration  from :C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/DartConfiguration.tcl
+Test project C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+      Start  1: log_preparation
+
+1: Test command: C:\Python314\python.exe "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/tests/prepare_dynamics_test.py" "--calibrate" "C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build/Release/nexus_calibrate.exe"
+1: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+1: Test timeout computed to be: 10000000
+1: ...........
+1: ----------------------------------------------------------------------
+1: Ran 11 tests in 0.896s
+1: 
+1: OK
+ 1/12 Test  #1: log_preparation ..................   Passed    1.52 sec
+test 2
+      Start  2: estimator
+
+2: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\estimator_test.exe
+2: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+2: Test timeout computed to be: 10000000
+2: two-turn simulation: raw IMU -720.0 deg, heading -0.000000 deg, confidence 0.674, position sigma 62.61 mm, heading sigma 3.721 deg; shifted counter gives identical confidence
+2: noisy simulation: 12 runs, position RMS 0.346 mm, max 0.640 mm, heading max 0.0565 deg
+2: stationary regression: confidence 0.901 -> 0.901 over 120 s with all pods; missing lateral sensing still increases uncertainty
+2: wall drift simulation: no correction 81.00 mm, delayed correction 9.11 mm; 900 paired updates 3.98 ms; worst range update 144.20 us (host only)
+2: raw V5 5% biased wall: position error 17.93 mm, reported Y sigma 95.15 mm after 2,000 readings
+2: Estimator: 18656 checks passed; sizeof(Estimator)=26664 bytes
+ 2/12 Test  #2: estimator ........................   Passed    0.10 sec
+test 3
+      Start  3: controller
+
+3: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\controller_test.exe
+3: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+3: Test timeout computed to be: 10000000
+3: straight           pos_mm=3.492     heading_deg=0.000     time_s=1.820  rms_mm=5.242     mean_ms=0.255     worst_ms=0.383     settled=1 improves=84
+3: reverse            pos_mm=3.494     heading_deg=0.000     time_s=1.680  rms_mm=5.377     mean_ms=0.326     worst_ms=0.754     settled=1 improves=77
+3: curve pose         pos_mm=3.045     heading_deg=0.008     time_s=2.040  rms_mm=4.329     mean_ms=0.305     worst_ms=0.784     settled=1 improves=95
+3: point off axis     pos_mm=3.049     heading_deg=36.244    time_s=1.860  rms_mm=4.782     mean_ms=0.297     worst_ms=0.574     settled=1 improves=86
+3: large heading      pos_mm=2.372     heading_deg=0.038     time_s=2.240  rms_mm=3.901     mean_ms=0.513     worst_ms=3.095     settled=1 improves=105
+3: behind point       pos_mm=1.843     heading_deg=178.724   time_s=2.740  rms_mm=3.016     mean_ms=0.384     worst_ms=3.040     settled=1 improves=131
+3: behind pose        pos_mm=1.527     heading_deg=0.077     time_s=3.540  rms_mm=2.867     mean_ms=0.475     worst_ms=2.924     settled=1 improves=170
+3: lateral pose       pos_mm=0.524     heading_deg=0.143     time_s=2.540  rms_mm=2.179     mean_ms=0.602     worst_ms=4.787     settled=1 improves=119
+3: rolling lateral    pos_mm=0.457     heading_deg=0.144     time_s=2.920  rms_mm=35.643    mean_ms=0.527     worst_ms=2.246     settled=1 improves=140
+3: reverse curve      pos_mm=3.077     heading_deg=0.005     time_s=1.900  rms_mm=4.834     mean_ms=0.388     worst_ms=1.715     settled=1 improves=88
+3: short pose         pos_mm=0.431     heading_deg=0.169     time_s=1.160  rms_mm=0.849     mean_ms=0.336     worst_ms=1.264     settled=1 improves=47
+3: fast braking       pos_mm=3.202     heading_deg=0.000     time_s=0.780  rms_mm=5.752     mean_ms=0.513     worst_ms=7.124     settled=1 improves=32
+3: turn 170 deg       pos_mm=0.000     heading_deg=0.166     time_s=1.180  rms_mm=0.000     mean_ms=0.361     worst_ms=2.337     settled=1 improves=49
+3: turn across wrap   pos_mm=0.000     heading_deg=0.217     time_s=0.480  rms_mm=0.000     mean_ms=0.248     worst_ms=0.402     settled=1 improves=13
+3: pose across wrap   pos_mm=3.402     heading_deg=0.014     time_s=1.500  rms_mm=5.405     mean_ms=0.345     worst_ms=0.649     settled=1 improves=68
+3: initial reverse    pos_mm=0.771     heading_deg=0.105     time_s=2.420  rms_mm=107.415   mean_ms=0.657     worst_ms=2.022     settled=1 improves=116
+3: turn while moving  pos_mm=26.295    heading_deg=0.536     time_s=1.680  rms_mm=60.044    mean_ms=0.757     worst_ms=4.429     settled=1 improves=63
+3: low battery        pos_mm=1.537     heading_deg=0.001     time_s=2.760  rms_mm=2.139     mean_ms=0.472     worst_ms=3.719     settled=1 improves=132
+3: push recovery      pos_mm=0.166     heading_deg=0.117     time_s=5.900  rms_mm=49.808    mean_ms=0.568     worst_ms=3.467     settled=1 improves=289
+3: collision slip     pos_mm=3.255     heading_deg=0.012     time_s=2.340  rms_mm=55.842    mean_ms=0.427     worst_ms=1.280     settled=1 improves=110
+3: motor mismatch     pos_mm=3.314     heading_deg=0.369     time_s=1.780  rms_mm=8.036     mean_ms=0.361     worst_ms=1.460     settled=1 improves=82
+3: command latency    pos_mm=2.952     heading_deg=0.005     time_s=1.800  rms_mm=4.788     mean_ms=0.333     worst_ms=0.901     settled=1 improves=82
+3: high speed         pos_mm=3.554     heading_deg=0.010     time_s=2.680  rms_mm=4.736     mean_ms=0.326     worst_ms=2.536     settled=1 improves=127
+3: tight tolerance    pos_mm=0.753     heading_deg=0.013     time_s=1.900  rms_mm=4.597     mean_ms=0.376     worst_ms=3.027     settled=1 improves=89
+3: repeat A           pos_mm=2.603     heading_deg=0.007     time_s=1.660  rms_mm=5.150     mean_ms=0.277     worst_ms=0.604     settled=1 improves=75
+3: repeat B           pos_mm=2.603     heading_deg=0.007     time_s=1.660  rms_mm=5.150     mean_ms=0.282     worst_ms=0.616     settled=1 improves=75
+3: reference x=0.100 y=0.000 acceleration=3.500 heading_integration_error=0.003
+3: reference x=0.000 y=-1.000 acceleration=3.500 heading_integration_error=0.012
+3: reference x=-0.100 y=0.000 acceleration=3.500 heading_integration_error=0.003
+3: reference x=0.001 y=0.001 acceleration=3.500 heading_integration_error=0.001
+3: Controller simulation tests passed. Host timings are not V5 deadline measurements.
+ 3/12 Test  #3: controller .......................   Passed    1.75 sec
+test 4
+      Start  4: calibration
+
+4: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\calibration_test.exe
+4: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+4: Test timeout computed to be: 10000000
+4: Calibration fits, observability, residual rejection and persistence tests passed
+ 4/12 Test  #4: calibration ......................   Passed    0.09 sec
+test 5
+      Start  5: system
+
+5: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\system_test.exe
+5: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+5: Test timeout computed to be: 10000000
+5: seed=1 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.532 heading_deg=0.017 loc_rms_mm=0.396 loc_max_mm=0.694 tracking_rms_mm=15.893 seconds=2.200 mean_solver_ms=0.516 worst_solver_ms=5.466
+5: seed=2 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.555 heading_deg=0.013 loc_rms_mm=0.413 loc_max_mm=0.715 tracking_rms_mm=15.921 seconds=2.200 mean_solver_ms=0.535 worst_solver_ms=5.562
+5: seed=3 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.541 heading_deg=0.014 loc_rms_mm=0.398 loc_max_mm=0.704 tracking_rms_mm=15.890 seconds=2.200 mean_solver_ms=0.455 worst_solver_ms=4.443
+5: seed=4 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.549 heading_deg=0.014 loc_rms_mm=0.407 loc_max_mm=0.691 tracking_rms_mm=15.926 seconds=2.200 mean_solver_ms=0.368 worst_solver_ms=1.077
+5: seed=5 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.515 heading_deg=0.019 loc_rms_mm=0.389 loc_max_mm=0.657 tracking_rms_mm=15.907 seconds=2.200 mean_solver_ms=0.362 worst_solver_ms=1.437
+5: seed=6 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.541 heading_deg=0.017 loc_rms_mm=0.402 loc_max_mm=0.679 tracking_rms_mm=15.916 seconds=2.200 mean_solver_ms=0.352 worst_solver_ms=0.927
+5: seed=7 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.521 heading_deg=0.018 loc_rms_mm=0.380 loc_max_mm=0.682 tracking_rms_mm=15.903 seconds=2.200 mean_solver_ms=0.351 worst_solver_ms=2.521
+5: seed=8 disturbance=0 reverse=0 dropout=0 braking=0 final_mm=5.536 heading_deg=0.017 loc_rms_mm=0.410 loc_max_mm=0.713 tracking_rms_mm=15.899 seconds=2.200 mean_solver_ms=0.405 worst_solver_ms=1.546
+5: repeatability_final_error_std_mm=0.013
+5: seed=15 disturbance=1 reverse=0 dropout=0 braking=0 final_mm=1.732 heading_deg=0.375 loc_rms_mm=1.904 loc_max_mm=2.301 tracking_rms_mm=27.886 seconds=6.560 mean_solver_ms=0.515 worst_solver_ms=5.699
+5: seed=16 disturbance=0 reverse=1 dropout=0 braking=0 final_mm=5.078 heading_deg=0.095 loc_rms_mm=0.263 loc_max_mm=0.476 tracking_rms_mm=11.770 seconds=1.760 mean_solver_ms=0.342 worst_solver_ms=1.250
+5: seed=17 disturbance=0 reverse=0 dropout=1 braking=0 final_mm=5.133 heading_deg=0.026 loc_rms_mm=0.419 loc_max_mm=0.730 tracking_rms_mm=18.788 seconds=2.300 mean_solver_ms=0.456 worst_solver_ms=1.246
+5: seed=18 disturbance=0 reverse=0 dropout=0 braking=1 final_mm=4.218 heading_deg=0.032 loc_rms_mm=0.039 loc_max_mm=0.078 tracking_rms_mm=7.564 seconds=0.920 mean_solver_ms=0.422 worst_solver_ms=1.942
+5: Coupled estimator/NMPC tests passed; physical validation still required.
+ 5/12 Test  #5: system ...........................   Passed    0.79 sec
+test 6
+      Start  6: autonomous_units
+
+6: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\autonomous_units_test.exe
+6: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+6: Test timeout computed to be: 10000000
+6: Autonomous mm units: 600mm target, final Y=597.596mm; wheel inches preserved.
+ 6/12 Test  #6: autonomous_units .................   Passed    0.35 sec
+test 7
+      Start  7: driver_input
+
+7: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\driver_input_test.exe
+7: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+7: Test timeout computed to be: 10000000
+7: Driver input: connection states 1/2, disconnection/errors, held, toggles, remapping, opposing inputs and reconnect passed.
+ 7/12 Test  #7: driver_input .....................   Passed    0.27 sec
+test 8
+      Start  8: automatic_calibration
+
+8: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\automatic_calibration_test.exe
+8: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+8: Test timeout computed to be: 10000000
+8: Automatic stationary bias and bidirectional geometry calibration tests passed
+ 8/12 Test  #8: automatic_calibration ............   Passed    0.17 sec
+test 9
+      Start  9: calibration_routine
+
+9: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\calibration_routine_test.exe
+9: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+9: Test timeout computed to be: 10000000
+9: Calibration routine: 5537 checks passed
+ 9/12 Test  #9: calibration_routine ..............   Passed    0.08 sec
+test 10
+      Start 10: mechanism
+
+10: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\mechanism_test.exe
+10: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+10: Test timeout computed to be: 10000000
+10: Mechanism manual grab sequences passed
+10/12 Test #10: mechanism ........................   Passed    0.07 sec
+test 11
+      Start 11: startup
+
+11: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\startup_test.exe
+11: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+11: Test timeout computed to be: 10000000
+11: Startup sequencing passed
+11/12 Test #11: startup ..........................   Passed    0.08 sec
+test 12
+      Start 12: chassis_adapter
+
+12: Test command: C:\Users\rugge\Documents\vex-vscode-projects\SX_SAWP\.test-build\Release\chassis_adapter_test.exe
+12: Working Directory: C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build
+12: Test timeout computed to be: 10000000
+12: Chassis adapter lifecycle, calibration lease, reconnect and diagnostic tests passed.
+12/12 Test #12: chassis_adapter ..................   Passed    5.82 sec
+
+100% tests passed, 0 tests failed out of 12
+
+Total Test time (real) =  11.29 sec

@@ -1,0 +1,10 @@
+^C:\USERS\RUGGE\DOCUMENTS\VEX-VSCODE-PROJECTS\SX_SAWP\.TEST-BUILD-COMBINED-PATH-PROBE\OUT\CMAKEFILES\CAA528AEC5BB97447A381482F2843866\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-combined-path-probe -BC:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-combined-path-probe/out --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-combined-path-probe/out/combined_probe.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

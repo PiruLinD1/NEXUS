@@ -1,0 +1,40 @@
+Test project C:/Users/rugge/Documents/vex-vscode-projects/SX_SAWP/.test-build-audit-20261002
+      Start  1: log_preparation
+ 1/14 Test  #1: log_preparation ..................   Passed    0.52 sec
+      Start  2: odometry_trace_log
+ 2/14 Test  #2: odometry_trace_log ...............   Passed    0.35 sec
+      Start  3: estimator
+ 3/14 Test  #3: estimator ........................   Passed    0.15 sec
+      Start  4: controller
+ 4/14 Test  #4: controller .......................   Passed    1.53 sec
+      Start  5: calibration
+ 5/14 Test  #5: calibration ......................   Passed    0.04 sec
+      Start  6: system
+ 6/14 Test  #6: system ...........................   Passed    0.26 sec
+      Start  7: autonomous_units
+ 7/14 Test  #7: autonomous_units .................   Passed    0.08 sec
+      Start  8: driver_input
+ 8/14 Test  #8: driver_input .....................   Passed    0.02 sec
+      Start  9: automatic_calibration
+ 9/14 Test  #9: automatic_calibration ............   Passed    0.02 sec
+      Start 10: calibration_routine
+10/14 Test #10: calibration_routine ..............   Passed    0.02 sec
+      Start 11: mechanism
+11/14 Test #11: mechanism ........................***Failed    0.06 sec
+Lift -3.906 -> -3.98: 
+height button must reach and stop at the selected level
+
+      Start 12: arm_motion
+12/14 Test #12: arm_motion .......................   Passed    0.06 sec
+      Start 13: startup
+13/14 Test #13: startup ..........................   Passed    0.02 sec
+      Start 14: chassis_adapter
+14/14 Test #14: chassis_adapter ..................   Passed   14.40 sec
+
+93% tests passed, 1 tests failed out of 14
+
+Total Test time (real) =  17.71 sec
+
+The following tests FAILED:
+	 11 - mechanism (Failed)
+Errors while running CTest

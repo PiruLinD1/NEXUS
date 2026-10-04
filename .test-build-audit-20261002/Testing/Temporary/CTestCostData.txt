@@ -1,0 +1,15 @@
+log_preparation 8 0.0626441
+estimator 9 0.0150234
+controller 8 0.201588
+calibration 8 0.00994258
+system 8 0.0378411
+autonomous_units 8 0.00708426
+driver_input 8 0.00757611
+automatic_calibration 8 0.00600165
+calibration_routine 8 0.00709091
+mechanism 6 0
+arm_motion 8 0.00859354
+startup 9 0.00854272
+chassis_adapter 9 1.62204
+odometry_trace_log 2 0.186991
+---
