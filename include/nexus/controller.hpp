@@ -43,7 +43,7 @@ private:
     using Matrix = std::array<std::array<double, nx>, nx>;
     using InputJacobian = std::array<std::array<double, nu>, nx>;
     using Gain = std::array<std::array<double, nx>, nu>;
-    struct Knot { Pose pose{}; double v = 0, omega = 0, time = 0; };
+    struct Knot { Pose pose{}; double v = 0, omega = 0, time = 0, curvature = 0; };
     struct Reference { State state{}; Input input{}; bool terminal = false; };
     struct Derivatives { State x{}; Input u{}; Matrix xx{}; std::array<double, nu> uu{}; };
     struct TimedCommand { double issuedAt = 0; Input voltage{}; };
@@ -53,7 +53,12 @@ private:
     State integrate(State, const Input&, double dt, Matrix* a = nullptr,
                     InputJacobian* b = nullptr, double lateralVelocity = 0) const;
     void makePath(const DriveState&, bool chooseDirection = false);
-    void buildPath(const DriveState&, bool reverse);
+    void buildPath(const DriveState&, bool reverse, double tangentScale = .85,
+                   bool finalApproach = true);
+    void buildBestPath(const DriveState&, bool reverse, bool finalApproach = true);
+    double pathScore() const;
+    void buildRoute(const DriveState&);
+    void timePath(const DriveState&, bool reverse);
     void buildCorrectionPath(const DriveState&, bool reverse, double stagingDistance);
     Reference sample(double time, double scale, double voltage) const;
     double cost(const State&, const Input&, const Reference&, bool terminal,
@@ -74,6 +79,10 @@ private:
     double horizonDt_ = 0.075, lastScale_ = 1, lastReplan_ = 0, runTime_ = 0;
     bool active_ = false, warm_ = false, pathReverse_ = false;
     bool pathEndReverse_ = false;
+    bool arrivalHold_ = false;
+    Pose arrivalPose_{};
+    std::size_t routeNext_ = 0;
+    std::array<double, maxRoutePoints - 1> routeTimes_{};
     Voltage previous_{};
     double commandTime_ = 0;
     std::size_t commandFirst_ = 0, commandCount_ = 0;

@@ -27,27 +27,25 @@ struct Output {
 };
 enum class State {
     off, fault, preLiftStart, armZero1, armBackoff0, armZero2, armTop1, armBackoffTop,
-    armTop2, preArmClearance, liftTop1, liftBackoff, liftTop2, preLiftLow,
-    preArmZero, prepared, collecting, classifyFirst, classifySecond, capture,
+    armTop2, liftTop1, liftBackoff, liftTop2, preLiftLow,
+    prepared, collecting, classifyFirst, classifySecond, capture,
     pickupWait, pickupLift, pickupArm, carrying, releaseArm90, releaseWait, returnArmClearance,
-    returnLiftLow, returnArmZero, reversing, clearSensor, pickupEndstop, carryingEndstop, stopped,
+    returnArmZero, reversing, clearSensor, pickupEndstop, carryingEndstop, stopped,
     returnLiftClearance, returnLiftBottom, releaseClampWait
 };
 inline const char* phaseLabel(State state) {
     switch (state) {
-    case State::preLiftStart: return "Reset lift: anticipo di 1 secondo";
+    case State::preLiftStart: return "Lift: reset completo prima del braccio";
     case State::armZero1: return "Braccio: primo zero";
     case State::armBackoff0: return "Braccio: distacco dallo zero";
     case State::armZero2: return "Braccio: secondo zero";
     case State::armTop1: return "Braccio: primo finecorsa alto";
     case State::armBackoffTop: return "Braccio: distacco dall'alto";
     case State::armTop2: return "Braccio: secondo finecorsa alto";
-    case State::preArmClearance: return "Braccio: posizione di passaggio";
-    case State::liftTop1: return "Braccio pronto: attesa reset lift";
+    case State::liftTop1: return "Braccio allo stop 2: lift calibrato";
     case State::liftBackoff: return "Lift: distacco dall'alto";
     case State::liftTop2: return "Lift: secondo finecorsa alto";
-    case State::preLiftLow: return "Lift: discesa";
-    case State::preArmZero: return "Braccio: ritorno a zero";
+    case State::preLiftLow: return "Lift: discesa massima allo stop 2";
     case State::prepared: return "PreMatch completato";
     case State::fault: return "Errore meccanismi";
     default: return "Macro meccanismi";
@@ -84,6 +82,7 @@ public:
         cancel(); calibrated = false; output.armHold = output.armCoast = false;
         error = ""; pinSeen = false; present = false; edge = false;
         grabSelected = endstopSelected = false;
+        startupEndstopHold = false;
         encoderSign = 1; encoderDirectionKnown = false;
         enter(State::preLiftStart, in.now);
         preMatchLiftActive = true;
@@ -121,7 +120,7 @@ public:
     bool release(const Input& in) {
         if (!calibrated) return false;
         if (state == State::prepared || state == State::off || state == State::stopped
-            || state == State::returnLiftLow || state == State::returnArmZero) {
+            || state == State::returnArmZero) {
             // R2 also works after switching to manual with valid references.
             // Release in place at endstop 2 even below the normal low position.
             // Otherwise reuse the lift interlock before moving the arm to 90.
@@ -183,6 +182,16 @@ public:
         liftProgressTracking = liftOverloadTracking = false;
         output.lift = 0;
     }
+    bool requestLiftBottom(const Input& in) {
+        if (!driverLiftAvailable() || !in.valid || !std::isfinite(in.lift)) return false;
+        driverLiftTarget = extraLiftLowAvailable(in)
+            ? liftLow() - cfg::liftEndstopExtraLowerRotations : liftLow();
+        driverLiftTargetKnown = driverLiftActive = true;
+        driverLiftTiming = driverLiftContact = driverLiftPaused = false;
+        liftOverloadTracking = liftProgressTracking = stable = false;
+        return true;
+    }
+    bool driverLiftMoving() const { return driverLiftActive; }
     bool driverLiftAvailable() const {
         return calibrated && (state == State::prepared || state == State::off
             || state == State::pickupArm || state == State::pickupEndstop
@@ -300,10 +309,12 @@ public:
                 releasePodStart = in.forwardPodDegrees;
         }
         const auto elapsed = in.now - since;
-        const bool timed = state >= State::preLiftStart && state <= State::preArmZero;
+        // Lift reset has a separate deadline for each contact/backoff. Its
+        // total duration must not expire the waiting arm's motion timer.
+        const bool timed = state > State::preLiftStart && state <= State::preLiftLow;
         const bool moving = state == State::pickupLift || state == State::pickupArm
             || state == State::releaseArm90 || state == State::returnArmClearance
-            || state == State::returnLiftLow || state == State::returnArmZero || state == State::pickupEndstop
+            || state == State::returnArmZero || state == State::pickupEndstop
             || state == State::returnLiftClearance || state == State::returnLiftBottom;
         if ((timed || moving) && elapsed > cfg::motionTimeoutMs) { fail("timeout movimento"); return; }
         if (preMatchLiftActive) {
@@ -313,9 +324,9 @@ public:
         const double low = liftLow();
         switch (state) {
         case State::preLiftStart:
-            // Lift homing is already running on its own clock. Start the arm
-            // after one second, even if the lift has not finished yet.
-            if (elapsed >= cfg::preMatchArmDelayMs) {
+            // Keep the arm still until both upper lift contacts and the
+            // repeatability check finish. The lift is fully raised first.
+            if (!preMatchLiftActive) {
                 enter(State::armZero1, in.now);
                 if (home(in, true, -1)) { zeroMeasurements[0] = in.arm; zero = in.arm; coastArm(); enter(State::armBackoff0, in.now); }
             } else output.armHold = true;
@@ -384,28 +395,36 @@ public:
                 if (std::min(in.arm, topMeasurements[0]) - zero < cfg::minimumArmTravelDeg) {
                     fail("corsa braccio insufficiente per i target"); break;
                 }
-                coastArm(); enter(State::preArmClearance, in.now);
+                output.closed = true;
+                // The new startup pose lowers the lift while the arm stays at
+                // stop 2. COAST lets gravity pull it away as descent begins.
+                startupEndstopHold = true;
+                holdStartupEndstop(); enter(State::liftTop1, in.now);
             }
             break;
-        case State::preArmClearance:
-            if (armTo(in, cfg::armClearanceDeg)) enter(State::liftTop1, in.now);
-            break;
         case State::liftTop1:
-            holdArm(cfg::armClearanceDeg);
+            holdStartupEndstop();
             if (!preMatchLiftActive) enter(State::preLiftLow, in.now);
             break;
         case State::preLiftLow:
-            holdArm(cfg::armClearanceDeg);
-            if (liftTo(in, low)) enter(State::preArmZero, in.now);
-            break;
-        case State::preArmZero:
-            if (home(in, true, -1)) {
-                zero = in.arm; calibrated = true; output.closed = false;
-                driverLiftTarget = low; driverLiftTargetKnown = true;
-                coastArm(); enter(State::prepared, in.now);
+            holdStartupEndstop();
+            // The extra-low pose is allowed only while the Rotation still
+            // confirms the measured second arm endstop. Keep the normal low
+            // reference for pickup and R2 return; only this target is lower.
+            if (std::abs(in.arm - (topMeasurements[0] + topMeasurements[1]) / 2)
+                > cfg::repeatArmToleranceDeg) {
+                fail("Lift basso: serve finecorsa 2"); break;
+            }
+            if (liftTo(in, low - cfg::liftEndstopExtraLowerRotations)) {
+                calibrated = true; output.closed = true; endstopSelected = true;
+                driverLiftTarget = low - cfg::liftEndstopExtraLowerRotations;
+                driverLiftTargetKnown = true;
+                enter(State::prepared, in.now);
             }
             break;
-        case State::prepared: break;
+        case State::prepared:
+            if (startupEndstopHold) holdStartupEndstop();
+            break;
         case State::collecting:
             // Retained as a harmless compatibility state; R1 now starts grab()
             // directly, so object counting and proximity are no longer used.
@@ -472,9 +491,21 @@ public:
             output.armHold = true;
             if (elapsed >= cfg::releasePauseMs && releasePodTracking
                 && std::isfinite(in.forwardPodDegrees) && std::isfinite(releasePodStart)
-                && std::abs(in.forwardPodDegrees - releasePodStart) >= cfg::releaseReturnPodDegrees)
-                enter(in.lift < low - cfg::liftToleranceRot
-                    ? State::returnLiftClearance : State::returnArmClearance, in.now);
+                && std::abs(in.forwardPodDegrees - releasePodStart) >= cfg::releaseReturnPodDegrees) {
+                if (in.lift < low - cfg::liftToleranceRot) enter(State::returnLiftClearance, in.now);
+                else {
+                    // At the passage height, 0..144 degrees is already on the
+                    // final frontward arc. Do not first swing back to 144.
+                    const double armAngle = in.arm - zero;
+                    const bool passageReady = std::abs(in.lift - (liftTop - cfg::returnLiftRotations))
+                                                  <= cfg::liftToleranceRot
+                        && std::abs(in.liftVelocity) <= cfg::stallVelocityRpm;
+                    const bool frontwardArc = armAngle >= -cfg::armToleranceDeg
+                        && armAngle <= cfg::armClearanceDeg + cfg::armReturnClearanceToleranceDeg
+                        && std::abs(in.armVelocity) <= cfg::stallVelocityRpm;
+                    enter(passageReady && frontwardArc ? State::returnArmZero : State::returnArmClearance, in.now);
+                }
+            }
             break;
         case State::returnLiftClearance:
             // Below baseline the arm may stay at endstop 2, but must not swing
@@ -485,15 +516,18 @@ public:
                 enter(State::returnArmClearance, in.now);
             }
             break;
-        case State::returnArmClearance:
-            if (armTo(in, cfg::armClearanceDeg)) enter(State::returnLiftLow, in.now);
+        case State::returnArmClearance: {
+            // These movements share the normal lift range already used by
+            // the independent driver height control. Run them together, with
+            // separate arm/lift settling and progress observers. Extra-low
+            // recovery above must complete before entering this phase.
+            const bool armReady = armTo(in, cfg::armClearanceDeg);
+            if (state != State::returnArmClearance) break;
+            const bool liftReady = liftTo(in, liftTop - cfg::returnLiftRotations);
+            if (state != State::returnArmClearance) break;
+            if (armReady && liftReady) enter(State::returnArmZero, in.now);
             break;
-        case State::returnLiftLow:
-            holdArm(cfg::armClearanceDeg);
-            // Set the requested passage height from either direction before
-            // allowing the arm to reach its front endstop.
-            if (liftTo(in, liftTop - cfg::returnLiftRotations)) enter(State::returnArmZero, in.now);
-            break;
+        }
         case State::returnArmZero:
             if (home(in, true, -1)) {
                 zero = in.arm; output.closed = false; pinSeen = false; present = false;
@@ -523,7 +557,10 @@ public:
         }
         // Pauses and lift-only moves retain the endpoint release. A new arm
         // command restores the usual profile braking and intermediate HOLD.
-        if (output.arm || output.armProfileActive) output.armCoast = false;
+        if (output.arm || output.armProfileActive) {
+            output.armCoast = false;
+            startupEndstopHold = false;
+        }
         if (output.armCoast) output.armHold = output.armBrake = false;
     }
 private:
@@ -538,6 +575,7 @@ private:
     bool endstopContact = false;
     double zero = 0, liftTop = 0;
     bool preMatchLiftActive = false;
+    bool startupEndstopHold = false; // Support the new low startup pose until an arm movement.
     State preMatchLiftState = State::liftTop1;
     std::uint32_t preMatchLiftSince = 0;
     ArmMotion armMotion;
@@ -571,7 +609,8 @@ private:
             && std::abs(position - upper) <= cfg::repeatArmToleranceDeg;
     }
     bool extraLiftLowAvailable(const Input& in) const {
-        return (state == State::carryingEndstop || state == State::stopped)
+        return (state == State::carryingEndstop || state == State::stopped
+                || state == State::prepared || state == State::off)
             && in.valid && atArmUpperEndstop(armPosition(in.arm));
     }
     void trackReleasePod(const Input& in) {
@@ -585,7 +624,8 @@ private:
         if (atEndstop) {
             // R2 at the upper endstop releases in place, then reuses the same
             // pause/clearance/lift/zero return sequence, skipping the 90 move.
-            coastArm();
+            if (startupEndstopHold) holdStartupEndstop();
+            else coastArm();
             output.closed = false;
             enter(State::releaseWait, now);
         } else enter(State::releaseArm90, now);
@@ -686,18 +726,22 @@ private:
         armTargetDegrees = target;
         output.arm = 0; output.armHold = true;
     }
+    void holdStartupEndstop() {
+        output.armCoast = false;
+        holdArm((topMeasurements[0] + topMeasurements[1]) / 2 - zero);
+    }
     void coastArm() {
+        startupEndstopHold = false;
         output.arm = 0; output.armProfileActive = output.armHold = output.armBrake = false;
         output.armCoast = true;
     }
     bool armTo(const Input& in, double target) {
         armTargetDegrees = target; output.armProfileActive = true;
-        // Clearance is a passage before lowering the lift and homing the arm.
+        // Clearance is the passage before homing the arm; the lift reaches its
+        // passage height concurrently during R2 return.
         // Accept its wider range from the first approach, so R2 does not spend
         // corrections chasing the normal 2-degree positioning tolerance.
-        const double tolerance = !calibrated && state == State::preArmClearance
-            ? cfg::armPreMatchClearanceToleranceDeg
-            : state == State::returnArmClearance ? cfg::armReturnClearanceToleranceDeg
+        const double tolerance = state == State::returnArmClearance ? cfg::armReturnClearanceToleranceDeg
             : cfg::armToleranceDeg;
         const auto command = armMotion.update(in.now, in.arm - zero, target, tolerance);
         output.arm = command.power; output.armHold = command.hold; output.armBrake = command.brake;

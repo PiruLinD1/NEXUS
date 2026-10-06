@@ -11,6 +11,7 @@
 #include "pros/rtos.hpp"
 #include "pros/apix.h"
 #include <atomic>
+#include <functional>
 #include <memory>
 
 namespace nexus {
@@ -52,7 +53,7 @@ struct ArcadeCurves {
     double forward = 0.55, turn = 0.55;
 };
 enum class MotionStatus { idle, running, settled, timedOut, cancelled, sensorFault, solverFault, invalidRequest };
-enum class CalibrationSensors { driveEncoders, trackingPods };
+enum class CalibrationSensors { driveEncoders, trackingPods, characterization };
 const char* statusName(MotionStatus status);
 struct MotionResult {
     MotionStatus status = MotionStatus::idle;
@@ -128,9 +129,12 @@ public:
     std::uint32_t droppedOdometryTrace(); // Saturating count, including trailing losses.
     MotionResult moveToPoint(double x, double y, MoveOptions options = {});
     MotionResult moveToPose(double x, double y, double heading, MoveOptions options = {});
+    // One continuous route through 2..8 points; stop only at its final pose.
+    MotionResult moveThrough(std::initializer_list<Waypoint> points, double heading, MoveOptions options = {});
     MotionResult turnToHeading(double heading, MoveOptions options = {});
     std::uint32_t startMoveToPoint(double x, double y, MoveOptions options = {});
     std::uint32_t startMoveToPose(double x, double y, double heading, MoveOptions options = {});
+    std::uint32_t startMoveThrough(std::initializer_list<Waypoint> points, double heading, MoveOptions options = {});
     std::uint32_t startTurnToHeading(double heading, MoveOptions options = {});
     MotionResult waitUntilDone(std::uint32_t handle);
     void cancel();
@@ -181,6 +185,8 @@ private:
     std::atomic<bool> begun_{false};
     bool requested_ = false, autonomousMode_ = false, connectedMode_ = false;
     bool manual_ = false, calibrating_ = false, configurationPending_ = false;
+    // Characterization zero commands coast; revocation uses passive BRAKE.
+    bool characterizationMode_ = false, characterizationBraking_ = false;
     CalibrationSensors calibrationSensors_ = CalibrationSensors::driveEncoders;
     DynamicsConfig pendingDynamics_{};
     std::atomic<std::uint32_t> requestCounter_{0}, commandGeneration_{0}, cancellationEpoch_{0};
@@ -212,6 +218,7 @@ private:
     bool stopped() const;
     std::uint32_t submit(Target target, MoveOptions options);
     void brake(); // Requires mutex while tasks are running.
+    void restoreDriveCoast(); // Requires mutex; new accepted motion only.
 };
 
 // Blocking sequence: a timeout ends only its motion. Faults/cancellation skip later steps.
@@ -220,9 +227,14 @@ public:
     explicit Sequence(Chassis& chassis);
     Sequence& setPose(double x, double y, double heading);
     Sequence& moveToPoint(double x, double y, MoveOptions options = {});
-    Sequence& moveToPose(double x, double y, double heading, MoveOptions options = {});
+    // Optional caller-task actuator update; false revokes this motion and later steps.
+    Sequence& moveToPose(double x, double y, double heading, MoveOptions options = {},
+                         const std::function<bool()>& update = {});
+    Sequence& moveThrough(std::initializer_list<Waypoint> points, double heading, MoveOptions options = {},
+                          const std::function<bool()>& update = {});
     Sequence& turnToHeading(double heading, MoveOptions options = {});
     Sequence& wait(std::uint32_t milliseconds);
+    Sequence& abort(MotionStatus status = MotionStatus::cancelled);
     template <typename Action> Sequence& action(Action action) {
         if (canContinue()) action();
         return *this;
@@ -234,6 +246,7 @@ private:
     MotionResult result_{MotionStatus::settled};
     bool modeAutonomous_ = false, modeConnected_ = false;
     bool canContinue();
+    void awaitMotion(std::uint32_t handle, const std::function<bool()>& update);
     std::uint32_t submit(Target target, MoveOptions options, bool poseOnly = false);
 };
 } // namespace nexus

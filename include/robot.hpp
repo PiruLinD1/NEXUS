@@ -38,6 +38,7 @@ bool updateMacros(); // R1/R2 macros, B/DOWN lift levels; X tap toggles, hold 40
 
 // Same nexus::Sequence underneath; plain statements for movements and mechanisms.
 // Timeout ends only its move; faults/cancellation skip later commands. Scope exit stops all motors.
+enum class LiftMove { none, bottom, upStep };
 class Auton {
 public:
     Auton();
@@ -48,15 +49,20 @@ public:
     Auton& operator=(Auton&&) = delete;
     void setPose(double x, double y, double heading);
     void moveToPoint(double x, double y, nexus::MoveOptions options = {});
-    void moveToPose(double x, double y, double heading, nexus::MoveOptions options = {});
+    void moveToPose(double x, double y, double heading, nexus::MoveOptions options = {}, LiftMove liftMove = LiftMove::none);
+    void moveThrough(std::initializer_list<nexus::Waypoint> points, double heading, nexus::MoveOptions options = {}, LiftMove liftMove = LiftMove::none);
     void turnToHeading(double heading, nexus::MoveOptions options = {});
     void wait(std::uint32_t milliseconds);
     void intake(bool enabled);
     void pinza(bool closed);
     void lift(int power);
+    void liftToBottom(); // Wait for the calibrated lowest permitted lift position.
     void braccio(int power);
     nexus::MotionResult result() const;
 private:
     std::optional<nexus::Sequence> sequence_;
+    bool beginLift(LiftMove move);
+    bool updateLift();
+    void finishLift();
 };
 } // namespace robot

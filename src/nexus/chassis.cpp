@@ -351,7 +351,22 @@ void Chassis::estimatorLoop() {
     }
 }
 
-void Chassis::brake() { hw_.left.brake(); hw_.right.brake(); diagnostics_.command = {}; }
+void Chassis::brake() {
+    if (characterizationMode_ && !characterizationBraking_) {
+        hw_.left.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
+        hw_.right.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
+        characterizationBraking_ = true;
+    }
+    hw_.left.brake(); hw_.right.brake(); diagnostics_.command = {};
+}
+
+void Chassis::restoreDriveCoast() {
+    if (characterizationBraking_) {
+        hw_.left.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
+        hw_.right.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
+    }
+    characterizationMode_ = characterizationBraking_ = false;
+}
 
 void Chassis::publish() {
     diagnostics_.generation = generation_;
@@ -367,7 +382,7 @@ bool Chassis::practiceAllowed() const {
 }
 bool Chassis::freshCalibrationSensors(double now, CalibrationSensors required) const {
     const auto& sensors = diagnostics_.sensors;
-    const bool evidence = required == CalibrationSensors::trackingPods
+    const bool evidence = (required == CalibrationSensors::trackingPods || required == CalibrationSensors::characterization)
         ? sensors.forwardValid && sensors.lateralValid
         : required == CalibrationSensors::driveEncoders && sensors.leftValid && sensors.rightValid;
     return sensors.gyroValid && evidence &&
@@ -559,6 +574,7 @@ void Chassis::requestLoop() {
                     manual_ = modeMatches && !pros::competition::is_disabled();
                     diagnostics_.status = MotionStatus::idle;
                     if (!manual_) { brake(); break; }
+                    restoreDriveCoast();
                     const double forward = curve(value.throttle, value.arcadeCurves.forward);
                     const double rotation = curve(value.turn, value.arcadeCurves.turn) * .75;
                     const double scale = std::max<double>(1.0, std::abs(forward) + std::abs(rotation));
@@ -574,7 +590,10 @@ void Chassis::requestLoop() {
                     generation_ = value.generation; brake();
                     const auto& target = value.target;
                     const auto& options = value.options;
-                    const bool valid = finite(target.pose.x) && finite(target.pose.y) && finite(target.pose.theta) &&
+                    bool validRoute = target.viaCount < maxRoutePoints && (!target.turnOnly || target.viaCount == 0);
+                    for (std::size_t i = 0; validRoute && i < target.viaCount; ++i)
+                        validRoute = finite(target.via[i].x) && finite(target.via[i].y) && finite(target.via[i].theta);
+                    const bool valid = validRoute && finite(target.pose.x) && finite(target.pose.y) && finite(target.pose.theta) &&
                         finite(options.maxSpeed) && options.maxSpeed > 0 && options.timeout > 0 && options.timeout <= 120000 &&
                         finite(options.positionTolerance) && options.positionTolerance > 0 &&
                         finite(options.headingTolerance) && options.headingTolerance > 0 &&
@@ -585,6 +604,7 @@ void Chassis::requestLoop() {
                         diagnostics_.status = MotionStatus::cancelled; break;
                     }
                     target_ = target; options_ = optionsToCore(options);
+                    restoreDriveCoast();
                     autonomousMode_ = value.autonomous; connectedMode_ = value.connected;
                     requestedAt_ = lastControlAt_ = now; requested_ = true;
                     diagnostics_.status = MotionStatus::running;
@@ -605,6 +625,10 @@ void Chassis::requestLoop() {
                     result.value = generation_;
                     calibrationAt_ = now;
                     brake();
+                    if (calibrating_) {
+                        restoreDriveCoast();
+                        characterizationMode_ = calibrationSensors_ == CalibrationSensors::characterization;
+                    }
                     diagnostics_.status = MotionStatus::idle;
                     result.accepted = true;
                     break;
@@ -620,8 +644,14 @@ void Chassis::requestLoop() {
                         diagnostics_.command = {
                             std::clamp(value.left, -limit, limit),
                             std::clamp(value.right, -limit, limit)};
-                        hw_.left.move_voltage(static_cast<int>(diagnostics_.command.left * 1000));
-                        hw_.right.move_voltage(static_cast<int>(diagnostics_.command.right * 1000));
+                        // Explicit brake() in COAST mode disables motor effort.
+                        if (calibrationSensors_ == CalibrationSensors::characterization &&
+                            std::abs(diagnostics_.command.left) < .0005 && std::abs(diagnostics_.command.right) < .0005) {
+                            hw_.left.brake(); hw_.right.brake();
+                        } else {
+                            hw_.left.move_voltage(static_cast<int>(diagnostics_.command.left * 1000));
+                            hw_.right.move_voltage(static_cast<int>(diagnostics_.command.right * 1000));
+                        }
                         result.accepted = true;
                     } else { calibrating_ = false; brake(); }
                     break;
@@ -728,6 +758,9 @@ std::uint32_t Chassis::startMoveToPoint(double x, double y, MoveOptions options)
 std::uint32_t Chassis::startMoveToPose(double x, double y, double heading, MoveOptions options) {
     return submit({poseToCore(x, y, heading), true, false}, options);
 }
+std::uint32_t Chassis::startMoveThrough(std::initializer_list<Waypoint> points, double heading, MoveOptions options) {
+    return submit(routeToCore(points, heading), options);
+}
 std::uint32_t Chassis::startTurnToHeading(double heading, MoveOptions options) {
     const RobotPose pose = getPose();
     return submit({poseToCore(pose.x, pose.y, heading), true, true}, options);
@@ -746,6 +779,9 @@ MotionResult Chassis::moveToPoint(double x, double y, MoveOptions options) {
 }
 MotionResult Chassis::moveToPose(double x, double y, double heading, MoveOptions options) {
     return waitUntilDone(startMoveToPose(x, y, heading, options));
+}
+MotionResult Chassis::moveThrough(std::initializer_list<Waypoint> points, double heading, MoveOptions options) {
+    return waitUntilDone(startMoveThrough(points, heading, options));
 }
 MotionResult Chassis::turnToHeading(double heading, MoveOptions options) {
     return waitUntilDone(startTurnToHeading(heading, options));
@@ -805,10 +841,38 @@ Sequence& Sequence::moveToPoint(double x, double y, MoveOptions options) {
     }
     return *this;
 }
-Sequence& Sequence::moveToPose(double x, double y, double heading, MoveOptions options) {
+Sequence& Sequence::moveToPose(double x, double y, double heading, MoveOptions options,
+                               const std::function<bool()>& update) {
+    if (canContinue()) awaitMotion(submit({poseToCore(x, y, heading), true, false}, options), update);
+    return *this;
+}
+Sequence& Sequence::moveThrough(std::initializer_list<Waypoint> points, double heading, MoveOptions options,
+                                const std::function<bool()>& update) {
+    if (canContinue()) awaitMotion(submit(routeToCore(points, heading), options), update);
+    return *this;
+}
+void Sequence::awaitMotion(std::uint32_t handle, const std::function<bool()>& update) {
+    if (!handle) result_ = {MotionStatus::cancelled};
+    else if (!update) result_ = chassis_.waitUntilDone(handle);
+    else while (canContinue()) {
+        const auto snapshot = chassis_.diagnostics();
+        if (snapshot.generation == handle && !snapshot.motionActive) {
+            result_ = {snapshot.status}; break;
+        }
+        // Run actuator control in the caller's task while motion workers
+        // drive. No helper task survives this step or captures its stack.
+        if (!update()) { abort(MotionStatus::sensorFault); break; }
+        pros::delay(10);
+    }
+}
+Sequence& Sequence::abort(MotionStatus status) {
     if (canContinue()) {
-        const auto handle = submit({poseToCore(x, y, heading), true, false}, options);
-        result_ = handle ? chassis_.waitUntilDone(handle) : MotionResult{MotionStatus::cancelled};
+        Chassis::Request abandoned;
+        abandoned.kind = Chassis::RequestKind::move;
+        abandoned.generation = generation_;
+        // Revoke only this sequence's generation; never cancel a replacement.
+        chassis_.abandon(abandoned);
+        result_ = {status};
     }
     return *this;
 }

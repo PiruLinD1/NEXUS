@@ -55,6 +55,7 @@ auton.setPose(0, 0, 0);
 auton.intake(true);
 auton.moveToPoint(0, 600);
 auton.moveToPose(600, 900, 90, {.maxSpeed = 1000});
+auton.moveThrough({{400, 1100}, {0, 1200}, {-300, 1200}}, -90, {.maxSpeed = 1200});
 auton.pinza(true);
 auton.wait(200);
 auton.lift(127);
@@ -72,6 +73,12 @@ auton.intake(false);
 Le coordinate sono posizioni assolute nella mappa; `setPose` dichiara la posa iniziale del robot. X positivo a destra, Y positivo in avanti, heading 0 lungo +Y e positivo in senso orario. `moveToPoint` lascia libero l'heading finale; `moveToPose` impone anche l'orientamento. `maxSpeed` è in **mm/s**, i timeout e `wait` in **ms**. Lift e braccio accettano potenze da `-127` a `127`; il comando resta attivo fino al successivo comando o all'arresto. `pinza(true)` chiude e `pinza(false)` apre; `intake(true)` avvia e `intake(false)` ferma.
 
 I movimenti attendono l'arrivo oppure il proprio timeout prima della riga successiva. **Il timeout ferma soltanto quella mossa: le istruzioni successive dell'oggetto `auton` continuano**, comprese attese e meccanismi. `auton.result()` resta `timedOut` dopo la scadenza, fino all'esito della mossa successiva: non viene presentata come un arrivo riuscito. Perdita della localizzazione, guasto del solver, richiesta non valida o annullamento bloccano invece le istruzioni successive. Al termine della funzione l'oggetto arresta automaticamente tutti i motori e mostra `Auton: ...` sul display. Il cambio modalità gara annulla il movimento. Non sono pianificati ostacoli: scegli punti che lascino spazio al robot e alle curve.
+
+`moveThrough({{x1, y1}, {x2, y2}, ...}, heading, opzioni)` percorre da 2 a 8 punti in una sola traiettoria: i primi guidano il passaggio senza fermate intermedie, mentre l'ultimo è la destinazione precisa con l'heading indicato. I punti guida non impongono un orientamento; la curva ricava una tangente continua dal percorso. Il timeout vale per l'intero percorso e `reverse` ne seleziona il verso. Usa `moveToPose` per una presa o un rilascio che richiede l'arresto, e raggruppa in `moveThrough` i punti che servono solo a indicare dove passare.
+
+Il planner confronta diverse forme della curva usando tempo previsto, sterzo e lunghezza, entro i limiti di velocità e accelerazione configurati. Se il robot raggiunge la posa prima del riferimento e può frenare dentro la tolleranza, anticipa la frenata. Una volta fermo con margine dentro la tolleranza, mantiene quella posa durante l'attesa di assestamento; l'arrivo richiede comunque posizione, heading e velocità misurati entro i limiti.
+
+`auton.liftToBottom()` attende la quota minima consentita dal prematch: fondo normale, oppure altre 0,68 rotazioni sotto il fondo con braccio allo stop 2. Per muovere il lift insieme al telaio, aggiungi `LiftMove::upStep` oppure `LiftMove::bottom` come quinto argomento di `auton.moveToPose(...)` o quarto argomento di `auton.moveThrough(...)`. La salita è di uno step configurato (1,38 rotazioni) dalla quota corrente. Il controllo del lift prosegue durante la guida e la riga successiva attende entrambi i movimenti. Un guasto del lift arresta anche la mossa del telaio e blocca i comandi successivi.
 
 ## Preparare un nuovo robot
 
@@ -164,6 +171,11 @@ Configurazione richiesta: nessun GPS e al massimo due Distance, preferibilmente 
 Per usi avanzati rimane disponibile `robot::chassis()`, con movimenti diretti, avvio asincrono e annullamento. `getPose()` restituisce mm/gradi; `diagnostics()` espone la fotografia interna di stima e controllo in unità SI. `src/robot.cpp`, `include/nexus/` e `src/nexus/` contengono l'implementazione della libreria e normalmente non richiedono modifiche per scrivere tasti o autonomous.
 
 ## Calibrazione e log
+
+Per accelerazione, rilascio in coast, rotazioni e ingresso rapido in curva usa la
+[caratterizzazione USB](docs/characterization.md): menu L1+R1, poi DOWN. Include
+18 prove a intensita crescente, registrazione sul PC e analisi dei parametri
+misurati; ogni prova parte soltanto tenendo R1.
 
 Impostare `logTelemetry = true` per scrivere `/usd/nexus-log.csv` a circa 20 Hz in un task a priorità bassa. Il file viene sostituito ad ogni avvio: copiarlo prima della prova successiva. Il log distingue tensione comandata e tensione terminale misurata, con timestamp separato per i campioni motore. L'API PROS non espone timestamp hardware sincronizzati: l'istante di lettura è un'approssimazione, da considerare nel fit delle latenze.
 

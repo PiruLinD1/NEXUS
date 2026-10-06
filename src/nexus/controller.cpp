@@ -46,6 +46,8 @@ void Controller::reconfigure(DynamicsConfig config) {
 void Controller::reset() {
     active_ = warm_ = false;
     pathReverse_ = pathEndReverse_ = false;
+    arrivalHold_ = false;
+    routeNext_ = 0;
     previous_ = {};
     stats_ = {};
     pathTime_ = settledTime_ = runTime_ = lastReplan_ = 0;
@@ -225,9 +227,23 @@ void Controller::start(const DriveState& state, Target target, MotionOptions opt
     if (!finite(state) || !std::isfinite(target.pose.x) || !std::isfinite(target.pose.y) ||
         !std::isfinite(target.pose.theta) || !std::isfinite(options.maxSpeed) ||
         !std::isfinite(options.positionTolerance) || !std::isfinite(options.headingTolerance) ||
-        !std::isfinite(options.settleTime) || !std::isfinite(options.timeout)) return;
+        !std::isfinite(options.settleTime) || !std::isfinite(options.timeout) ||
+        target.viaCount >= maxRoutePoints || (target.turnOnly && target.viaCount)) return;
+    for (std::size_t i = 0; i < target.viaCount; ++i)
+        if (!std::isfinite(target.via[i].x) || !std::isfinite(target.via[i].y)) return;
     target_ = target;
     target_.pose.theta = wrap(target_.pose.theta);
+    // Repeated coordinates carry no extra geometric constraint. Removing
+    // zero-length legs also avoids a spurious in-place turn at a guide point.
+    target_.viaCount = 0;
+    Pose previous = state.pose;
+    for (std::size_t i = 0; i < target.viaCount; ++i) {
+        const Pose next = i + 1 == target.viaCount ? target.pose : target.via[i + 1];
+        if (std::hypot(target.via[i].x - previous.x, target.via[i].y - previous.y) < .001 ||
+            std::hypot(target.via[i].x - next.x, target.via[i].y - next.y) < .001) continue;
+        target_.via[target_.viaCount++] = target.via[i];
+        previous = target.via[i];
+    }
     options_ = options;
     options_.maxSpeed = bound(options_.maxSpeed, 0.02, config_.maxSpeed);
     options_.positionTolerance = std::max(0.001, options_.positionTolerance);
@@ -240,7 +256,13 @@ void Controller::start(const DriveState& state, Target target, MotionOptions opt
 }
 
 void Controller::makePath(const DriveState& state, bool chooseDirection) {
-    buildPath(state, pathReverse_);
+    arrivalHold_ = false;
+    while (routeNext_ < target_.viaCount &&
+           std::hypot(state.pose.x - target_.via[routeNext_].x,
+                      state.pose.y - target_.via[routeNext_].y) < .001) ++routeNext_;
+    if (routeNext_ < target_.viaCount) { buildRoute(state); return; }
+    if (chooseDirection) buildPath(state, pathReverse_);
+    else buildBestPath(state, pathReverse_);
     if (!chooseDirection || target_.turnOnly || exhausted()) return;
 
     // Compare feasible correction paths, preferring less steering as well as
@@ -252,11 +274,10 @@ void Controller::makePath(const DriveState& state, bool chooseDirection) {
         const double opposedSpeed = std::max(0.0, reverse ? state.v : -state.v);
         // Seconds-equivalent penalty per radian of total heading variation.
         // Counting the whole path penalizes an S/loop even if final yaw is zero.
-        constexpr double steeringPenalty = .35;
         double steering = 0;
         for (std::size_t i = 1; i < pathCount_; ++i)
             steering += std::abs(path_[i].pose.theta - path_[i - 1].pose.theta);
-        return trajectoryDuration() + opposedSpeed / (config_.maxAcceleration * .7) + steeringPenalty * steering;
+        return trajectoryDuration() + .35 * steering + opposedSpeed / (config_.maxAcceleration * .7);
     };
     double bestScore = score(pathReverse_);
     bool bestReverse = pathReverse_;
@@ -303,6 +324,87 @@ void Controller::makePath(const DriveState& state, bool chooseDirection) {
     else buildPath(state, bestReverse);
 }
 
+double Controller::pathScore() const {
+    double steering = 0, length = 0;
+    for (std::size_t i = 1; i < pathCount_; ++i) {
+        steering += std::abs(path_[i].pose.theta - path_[i - 1].pose.theta);
+        length += std::hypot(path_[i].pose.x - path_[i - 1].pose.x,
+                             path_[i].pose.y - path_[i - 1].pose.y);
+    }
+    return trajectoryDuration() + .35 * steering + .2 * length / options_.maxSpeed;
+}
+
+void Controller::buildBestPath(const DriveState& state, bool reverse, bool finalApproach) {
+    // Concentrating curvature into a short tangent can make a geometrically
+    // small bend much slower. Compare a bounded set under the same wheel and
+    // lateral acceleration limits; also penalize extra steering and distance.
+    buildPath(state, reverse, .85, finalApproach);
+    if (target_.turnOnly || std::hypot(target_.pose.x - state.pose.x,
+                                     target_.pose.y - state.pose.y) < .10) return;
+    double best = pathScore(), tangent = .85;
+    for (double candidate : {1.0, 1.2}) {
+        buildPath(state, reverse, candidate, finalApproach);
+        const double score = pathScore();
+        if (score < best) { best = score; tangent = candidate; }
+    }
+    if (tangent != 1.2) buildPath(state, reverse, tangent, finalApproach);
+}
+
+void Controller::buildRoute(const DriveState& state) {
+    const Target destination = target_;
+    std::array<Knot, pathCapacity> route{};
+    const std::size_t segments = destination.viaCount - routeNext_ + 1;
+    std::size_t written = 0;
+    DriveState segmentStart = state;
+    for (std::size_t segment = 0; segment < segments; ++segment) {
+        const std::size_t point = routeNext_ + segment;
+        const bool last = point == destination.viaCount;
+        Pose endpoint = last ? destination.pose : destination.via[point];
+        if (!last) {
+            const Pose next = point + 1 == destination.viaCount ? destination.pose : destination.via[point + 1];
+            double ax = endpoint.x - segmentStart.pose.x, ay = endpoint.y - segmentStart.pose.y;
+            double bx = next.x - endpoint.x, by = next.y - endpoint.y;
+            const double a = std::hypot(ax, ay), b = std::hypot(bx, by);
+            if (a > 1e-6) { ax /= a; ay /= a; }
+            if (b > 1e-6) { bx /= b; by /= b; }
+            // The angle bisector gives both segments the same travel tangent.
+            // A repeated coordinate simply uses the nonzero neighbouring leg.
+            const bool hairpin = std::hypot(ax + bx, ay + by) < 1e-6;
+            endpoint.theta = std::atan2(hairpin ? bx : ax + bx, hairpin ? by : ay + by)
+                             - (pathReverse_ ? pi : 0);
+            // If the last leg is aligned with the requested final heading,
+            // establish that heading at its entrance. A bisector here would
+            // create an unnecessary S-bend along an otherwise straight leg.
+            if (point + 1 == destination.viaCount && destination.constrainHeading &&
+                std::abs(wrap(std::atan2(bx, by) - destination.pose.theta -
+                              (pathReverse_ ? pi : 0))) < radians(10))
+                endpoint.theta = destination.pose.theta;
+        }
+        target_ = {endpoint, last ? destination.constrainHeading : true, false};
+        buildBestPath(segmentStart, pathReverse_, last);
+        const std::size_t end = (segment + 1) * (pathCapacity - 1) / segments;
+        const std::size_t intervals = end - written;
+        const double shift = written ? route[written].pose.theta - path_[0].pose.theta : 0;
+        for (std::size_t j = segment ? 1 : 0; j <= intervals; ++j) {
+            const std::size_t source = (j * (pathCapacity - 1) + intervals / 2) / intervals;
+            route[written + j] = path_[source];
+            route[written + j].pose.theta += shift;
+        }
+        written = end;
+        segmentStart = {endpoint, 0, 0};
+    }
+    target_ = destination;
+    path_ = route;
+    pathCount_ = pathCapacity;
+    pathTime_ = 0;
+    pathEndReverse_ = pathReverse_;
+    // One global acceleration/braking profile, with no zero-speed boundary
+    // at guide points. Only the final destination is a stopping constraint.
+    timePath(state, pathReverse_);
+    for (std::size_t segment = 0; segment + 1 < segments; ++segment)
+        routeTimes_[routeNext_ + segment] = path_[(segment + 1) * (pathCapacity - 1) / segments].time;
+}
+
 void Controller::buildCorrectionPath(const DriveState& state, bool reverse, double stagingDistance) {
     const Target finalTarget = target_;
     const double heading = finalTarget.constrainHeading ? finalTarget.pose.theta : state.pose.theta;
@@ -339,7 +441,7 @@ void Controller::buildCorrectionPath(const DriveState& state, bool reverse, doub
     pathCount_ = pathCapacity;
 }
 
-void Controller::buildPath(const DriveState& state, bool reverse) {
+void Controller::buildPath(const DriveState& state, bool reverse, double tangentScale, bool finalApproach) {
     pathEndReverse_ = reverse;
     pathTime_ = 0;
     pathCount_ = pathCapacity;
@@ -363,7 +465,6 @@ void Controller::buildPath(const DriveState& state, bool reverse) {
         }
         return;
     }
-    const double direction = reverse ? -1 : 1;
     const double travelOffset = reverse ? pi : 0;
     const double startAngle = state.pose.theta + travelOffset;
     const double bearing = std::atan2(dx, dy);
@@ -376,7 +477,7 @@ void Controller::buildPath(const DriveState& state, bool reverse) {
     // Align before the endpoint, leaving a straight braking corridor instead
     // of demanding the last countersteer at the same instant as the stop.
     // Join at zero curvature, with no intermediate stop or direction change.
-    const double approach = target_.constrainHeading && distance > .35 ?
+    const double approach = finalApproach && target_.constrainHeading && distance > .35 ?
                             std::min(.12, distance * .15) : 0;
     const double curveEndX = target_.pose.x - approach * std::sin(endAngle);
     const double curveEndY = target_.pose.y - approach * std::cos(endAngle);
@@ -385,7 +486,7 @@ void Controller::buildPath(const DriveState& state, bool reverse) {
     const std::size_t curveIntervals = approach > 0 ? 96 : pathCount_ - 1;
     // Scale the tangents with the remaining distance. A fixed minimum tangent
     // makes millimetre-scale terminal corrections form loops and near-cusps.
-    const double tangent = distance * 0.85;
+    const double tangent = distance * tangentScale;
     const double vx0 = tangent * std::sin(startAngle), vy0 = tangent * std::cos(startAngle);
     const double vx1 = tangent * std::sin(endAngle), vy1 = tangent * std::cos(endAngle);
     // Collinear opposing endpoint tangents create a cusp in a plain Hermite
@@ -397,7 +498,6 @@ void Controller::buildPath(const DriveState& state, bool reverse) {
     const double endCross = (vx1 * dy - vy1 * dx) / (tangent * distance);
     const double bow = (std::min(startProjection, endProjection) < -0.3 &&
                         std::max<double>(std::abs(startCross), std::abs(endCross)) < 0.25) ? 0.4 * distance : 0;
-    std::array<double, pathCapacity> length{}, curvature{}, velocity{}, limits{};
     double lastHeading = state.pose.theta;
     for (std::size_t i = 0; i < pathCount_; ++i) {
         const double t = std::min(1.0, static_cast<double>(i) / curveIntervals);
@@ -433,8 +533,18 @@ void Controller::buildPath(const DriveState& state, bool reverse) {
         const double heading = std::atan2(xp, yp) - travelOffset;
         lastHeading += wrap(heading - lastHeading);
         path_[i].pose = {x, y, lastHeading};
-        if (i) length[i] = length[i - 1] + std::hypot(x - path_[i - 1].pose.x, y - path_[i - 1].pose.y);
-        curvature[i] = (yp * xpp - xp * ypp) / (derivative * derivative * derivative);
+        path_[i].curvature = (yp * xpp - xp * ypp) / (derivative * derivative * derivative);
+    }
+    timePath(state, reverse);
+}
+
+void Controller::timePath(const DriveState& state, bool reverse) {
+    const double direction = reverse ? -1 : 1;
+    std::array<double, pathCapacity> length{}, curvature{}, velocity{}, limits{};
+    for (std::size_t i = 0; i < pathCount_; ++i) {
+        if (i) length[i] = length[i - 1] + std::hypot(path_[i].pose.x - path_[i - 1].pose.x,
+                                                    path_[i].pose.y - path_[i - 1].pose.y);
+        curvature[i] = path_[i].curvature;
         const double k = std::abs(curvature[i]);
         const double wheelRatio = 1 + k * config_.trackWidth / 2;
         limits[i] = std::min(options_.maxSpeed, config_.maxSpeed / wheelRatio);
@@ -507,7 +617,7 @@ Controller::Reference Controller::sample(double time, double scale, double volta
     DriveState s{{mix(a.pose.x, b.pose.x), mix(a.pose.y, b.pose.y), mix(a.pose.theta, b.pose.theta)},
                   mix(a.v, b.v) * scale, mix(a.omega, b.omega) * scale};
     ref.terminal = time >= path_[pathCount_ - 1].time;
-    if (ref.terminal) { s.pose = path_[pathCount_ - 1].pose; s.v = s.omega = 0; }
+    if (ref.terminal) { s.pose = arrivalHold_ ? arrivalPose_ : path_[pathCount_ - 1].pose; s.v = s.omega = 0; }
     ref.state = encode(s);
     const double acceleration = ref.terminal ? 0 : (b.v - a.v) / interval * scale * scale;
     const double angularAcceleration = ref.terminal ? 0 : (b.omega - a.omega) / interval * scale * scale;
@@ -718,18 +828,50 @@ Voltage Controller::update(const Estimate& estimate, double dt, double batteryVo
     const double scale = bound(uncertaintyScale * (1 - 0.55 * bound(estimate.slip, 0.0, 1.0)) *
                                (estimate.health == Health::degraded ? 0.7 : 1.0), 0.25, 1.0) * voltageScale;
     lastScale_ = scale;
+    while (routeNext_ < target_.viaCount && pathTime_ >= routeTimes_[routeNext_]) {
+        const Pose point = target_.via[routeNext_];
+        const Pose next = routeNext_ + 1 == target_.viaCount ? target_.pose : target_.via[routeNext_ + 1];
+        const double dx = currentState.pose.x - point.x, dy = currentState.pose.y - point.y;
+        const double legX = next.x - point.x, legY = next.y - point.y;
+        const double length = std::max(1e-6, std::hypot(legX, legY));
+        if (std::hypot(dx, dy) > .05 &&
+            !(dx * legX + dy * legY >= 0 && std::abs(dx * legY - dy * legX) / length < .15)) break;
+        ++routeNext_;
+    }
     // Re-plan after large disturbances and terminal lateral errors. A fresh
     // nonlinear trajectory supplies escape directions unavailable to a local
     // quadratic optimizer linearized at a stationary differential drive.
     const double goalError = std::hypot(currentState.pose.x - target_.pose.x, currentState.pose.y - target_.pose.y);
-    // A point move does not request its spline's arrival heading. Once inside
-    // the requested position tolerance, brake toward the terminal point instead
-    // of finishing the timed curve/heading (which can drive back out of it).
-    if (!target_.constrainHeading && !target_.turnOnly && goalError <= options_.positionTolerance)
+    // If the physical robot reaches the permitted arrival pose ahead of the
+    // timed reference, brake there instead of driving away to finish the curve.
+    // A normally tracked pose trajectory keeps its timed deceleration intact.
+    const auto scheduled = sample(pathTime_, scale, voltage);
+    const bool arrivalHeading = (!target_.constrainHeading && !target_.turnOnly) ||
+        std::abs(wrap(currentState.pose.theta - target_.pose.theta)) <= options_.headingTolerance;
+    const bool scheduledOutside = std::hypot(scheduled.state[0] - target_.pose.x,
+                                            scheduled.state[1] - target_.pose.y) > options_.positionTolerance;
+    const double speed = std::hypot(currentState.v, estimate.state.lateralV);
+    const double stoppingDistance = speed * (config_.commandLatency + dt) +
+                                    speed * speed / (2 * config_.maxAcceleration * .7);
+    const bool canBrakeInside = goalError + stoppingDistance <= options_.positionTolerance;
+    if (routeNext_ == target_.viaCount && !target_.turnOnly && arrivalHeading &&
+        goalError <= options_.positionTolerance &&
+        (!target_.constrainHeading || (scheduledOutside && canBrakeInside)))
         pathTime_ = trajectoryDuration();
+    if (arrivalHold_ && (goalError > options_.positionTolerance || !arrivalHeading)) arrivalHold_ = false;
+    if (!arrivalHold_ && routeNext_ == target_.viaCount && pathTime_ >= trajectoryDuration() &&
+        goalError + stoppingDistance <= options_.positionTolerance * .75 && arrivalHeading && speed < .01 &&
+        std::abs(currentState.omega) < radians(1)) {
+        // The requested tolerance defines an acceptable resting pose. Hold
+        // that measured pose during the settling dwell instead of restarting
+        // to chase the exact centre. A push outside tolerance releases it.
+        arrivalPose_ = currentState.pose;
+        arrivalHold_ = true;
+    }
     const auto current = sample(pathTime_, scale, voltage);
     const double trackingError = std::hypot(currentState.pose.x - current.state[0], currentState.pose.y - current.state[1]);
-    const bool terminalCorrection = current.terminal && goalError > options_.positionTolerance &&
+    const bool terminalCorrection = current.terminal &&
+                                    (goalError > options_.positionTolerance || routeNext_ < target_.viaCount) &&
                                     std::hypot(currentState.v, estimate.state.lateralV) < 0.15;
     if (!target_.turnOnly && runTime_ - lastReplan_ > 0.6 &&
         (trackingError > 0.25 || terminalCorrection)) {
@@ -826,8 +968,8 @@ bool Controller::settled(const Estimate& estimate, double dt) {
         settledTime_ = 0;
         return false;
     }
-    const bool position = target_.turnOnly || std::hypot(estimate.state.pose.x - target_.pose.x,
-                                      estimate.state.pose.y - target_.pose.y) <= options_.positionTolerance;
+    const bool position = routeNext_ == target_.viaCount && (target_.turnOnly || std::hypot(estimate.state.pose.x - target_.pose.x,
+                                      estimate.state.pose.y - target_.pose.y) <= options_.positionTolerance);
     const bool heading = (!target_.constrainHeading && !target_.turnOnly) ||
                          std::abs(wrap(estimate.state.pose.theta - target_.pose.theta)) <= options_.headingTolerance;
     const bool stopped = std::hypot(estimate.state.v, estimate.state.lateralV) < 0.035 &&

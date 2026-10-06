@@ -91,13 +91,15 @@ public:
 };
 enum class MotorGearset { blue, green };
 enum motor_encoder_units_e_t { E_MOTOR_ENCODER_DEGREES };
-enum motor_brake_mode_e_t { E_MOTOR_BRAKE_COAST };
+enum motor_brake_mode_e_t { E_MOTOR_BRAKE_COAST, E_MOTOR_BRAKE_BRAKE };
 class MotorGroup {
 public:
     std::array<std::atomic<bool>, 8> connected{};
     std::array<std::atomic<double>, 8> position{};
     std::array<std::atomic<unsigned>, 8> gearingWrites{}, unitWrites{}, brakeWrites{};
+    std::array<std::atomic<motor_brake_mode_e_t>, 8> brakeMode{};
     mutable std::array<std::atomic<unsigned>, 8> positionReads{};
+    std::atomic<unsigned> brakeCalls{0};
     std::atomic<int> voltage{0};
     std::size_t count;
     explicit MotorGroup(std::initializer_list<std::int8_t> ports) : count(ports.size()) {
@@ -115,8 +117,9 @@ public:
         if (!connected[index]) return PROS_ERR;
         ++unitWrites[index]; return 1;
     }
-    int set_brake_mode(motor_brake_mode_e_t, std::uint8_t index) {
+    int set_brake_mode(motor_brake_mode_e_t mode, std::uint8_t index) {
         if (!connected[index]) return PROS_ERR;
+        brakeMode[index] = mode;
         ++brakeWrites[index]; return 1;
     }
     int set_encoder_units_all(motor_encoder_units_e_t value) {
@@ -127,7 +130,7 @@ public:
     }
     int move_voltage(int value) { voltage = value; return 1; }
     int move(int value) { return move_voltage(value * 12000 / 127); }
-    int brake() { return move_voltage(0); }
+    int brake() { ++brakeCalls; return move_voltage(0); }
 };
 constexpr unsigned E_IMU_STATUS_CALIBRATING = 1, E_IMU_STATUS_ERROR = 0xff;
 struct Vector { double x, y, z; };

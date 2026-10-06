@@ -24,6 +24,18 @@ int main() {
     const auto options = optionsToCore({.maxSpeed = 800, .timeout = 4000, .positionTolerance = 5});
     require(close(options.maxSpeed, .8) && close(options.positionTolerance, .005)
         && close(options.timeout, 4), "speed mm/s, tolerance mm, timeout ms convert independently");
+    const auto route = routeToCore({{-300, 380}, {-420, 400}, {-530, 380}}, -90);
+    require(route.viaCount == 2 && close(route.via[0].x, -.3) && close(route.via[0].y, .38)
+        && close(route.via[1].x, -.42) && close(route.via[1].y, .4) && close(route.via[0].theta, 0)
+        && close(route.pose.x, -.53) && close(route.pose.y, .38) && close(route.pose.theta, -pi / 2)
+        && route.constrainHeading && !route.turnOnly,
+        "route owns converted intermediate coordinates and only its final heading");
+    require(routeToCore({}, 0).viaCount >= maxRoutePoints
+        && routeToCore({{0, 0}}, 0).viaCount >= maxRoutePoints
+        && routeToCore({{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}, {7, 7}, {8, 8}}, 0).viaCount >= maxRoutePoints,
+        "route conversion marks invalid point counts without truncating or indexing storage");
+    require(routeToCore({{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}, {7, 7}}, 0).viaCount == 7,
+        "the largest route retains all seven guides and its destination");
     require(close(3.25 * inch, .08255) && close(2.125 * inch, .053975),
             "wheel diameters remain inches and convert to correct physical diameters");
 

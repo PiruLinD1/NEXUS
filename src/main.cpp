@@ -11,25 +11,30 @@ constexpr nexus::ArcadeCurves joystickCurves{
 };
 
 // AUTONOMOUS: mm, degrees, milliseconds.
-// Test del planner e del controller: 600 mm a destra e 600 mm avanti.
+// Percorso di presa e rilascio con lift sincronizzato ai movimenti.
 // Il punto di partenza fisico diventa (0, 0), con il muso lungo +Y.
 void autonomous() {
     if (!waitUntilReady(true)) return;
     Auton auton;
     auton.setPose(0, 0, 0);
 
-    // Percorso a tappe: ogni posa impone anche il proprio heading finale.
+    // I punti guida si attraversano; le prese e i rilasci hanno una fermata precisa.
     // Ogni timeout conclude la sua mossa; all'uscita Auton arresta i motori.
-    auton.moveToPose(600, 600, 0,{.maxSpeed = 3000, .timeout = 10000,
-                                .positionTolerance = 100});
-    auton.moveToPose(600, 1600, 0,  {.maxSpeed = 3000, .timeout = 10000,
-                                .positionTolerance = 100});
-    auton.moveToPose(-600, 1600, 180, {.maxSpeed = 3000, .timeout = 10000,
-                                .positionTolerance = 100});
-    auton.moveToPose(-900, 1200, 180, {.maxSpeed = 3000, .timeout = 10000,
-                                .positionTolerance = 50});
-    auton.moveToPose(0, 0, 0, {.maxSpeed = 3000, .timeout = 18000,
-                                .positionTolerance = 10});
+    auton.moveToPose(-500, 380, -90, { .maxSpeed = 3000, .timeout = 10000, .positionTolerance = 50});
+    auton.pinza(false);
+    auton.moveToPose(0, 380, -90, {.reverse = true, .maxSpeed = 3000, .timeout = 10000, .positionTolerance = 50});
+    auton.liftToBottom();
+    auton.turnToHeading(-45);
+    auton.moveToPose(-600, 780, -45, {.maxSpeed = 3000, .timeout = 10000, .positionTolerance = 50});
+    auton.pinza(true);
+    auton.moveToPose(-800, 650, 180, {.maxSpeed = 3000, .timeout = 10000, .positionTolerance = 50}, LiftMove::upStep);
+    auton.pinza(false);
+    auton.moveToPose(-800, 1000, 180, {.reverse = true, .maxSpeed = 3000, .timeout = 10000, .positionTolerance = 50});
+    auton.turnToHeading(-135);
+    auton.moveToPose(-1250, 520, -135, {.maxSpeed = 3000, .timeout = 10000, .positionTolerance = 50}, LiftMove::bottom);
+    auton.pinza(true);
+
+
 }
 
 // DRIVER: button assignments.

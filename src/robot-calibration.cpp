@@ -3,6 +3,7 @@
 #include "robot/calibration_support.hpp"
 #include "nexus/automatic_calibration.hpp"
 #include "nexus/calibration_routine.hpp"
+#include "nexus/characterization.hpp"
 #include "nexus/pod_offset_calibration.hpp"
 #include "pros/llemu.hpp"
 #include <atomic>
@@ -14,7 +15,8 @@ namespace {
 using namespace nexus;
 using namespace nexus::calibration;
 enum class Phase { idle, menu, stationary, armed, geometryStationary, turning, review,
-                   podArmed, podRunning, podReview, result, leaving };
+                   podArmed, podRunning, podReview, characterizationArmed,
+                   characterizationRunning, result, leaving };
 constexpr std::uint32_t connectedFlag = 1u << 16;
 constexpr std::uint32_t bit(Button button) {
     return 1u << (static_cast<int>(button) - static_cast<int>(L1));
@@ -76,6 +78,37 @@ public:
             if (presses & bit(A)) beginStationary(now, false);
             else if (presses & bit(X)) { phase_ = Phase::armed; lastRender_ = 0; }
             else if (presses & bit(Y)) { phase_ = Phase::podArmed; lastRender_ = 0; }
+            else if (presses & bit(DOWN)) {
+                detail::setCharacterizationTelemetry(true);
+                message_[0] = '\0';
+                phase_ = Phase::characterizationArmed; lastRender_ = 0;
+            }
+        } else if (phase_ == Phase::characterizationArmed) {
+            if (presses & bit(B)) {
+                detail::setCharacterizationTelemetry(false);
+                phase_ = Phase::menu; lastRender_ = 0;
+            } else if (presses & (bit(LEFT) | bit(RIGHT))) {
+                if (presses & bit(LEFT))
+                    characterizationTrial_ = (characterizationTrial_ + characterizationTrialCount - 1)
+                                             % characterizationTrialCount;
+                else characterizationTrial_ = (characterizationTrial_ + 1) % characterizationTrialCount;
+                message_[0] = '\0';
+                lastRender_ = 0;
+            } else if (presses & bit(R1)) beginCharacterization();
+        } else if (phase_ == Phase::characterizationRunning) {
+            const auto output = characterization_.update(chassis().diagnostics().sensors, seconds(),
+                                                        (bits & bit(R1)) && !(bits & bit(B)));
+            if (output.stage == CharacterizationStage::aborted)
+                finishCharacterization(characterizationFailureName(output.failure));
+            else if (output.stage == CharacterizationStage::complete)
+                finishCharacterization("Prova conclusa: rilascia R1");
+            else if (!chassis().calibrationVoltage(lease_, output.voltage.left, output.voltage.right)) {
+                characterization_.abort(CharacterizationFailure::notPermitted);
+                finishCharacterization("Comando revocato: prova annullata");
+            } else if (!recordCharacterization(pros::millis())) {
+                characterization_.abort(CharacterizationFailure::loggingUnavailable);
+                finishCharacterization("Dati persi: prova annullata");
+            }
         } else if (phase_ == Phase::podArmed) {
             if (presses & bit(B)) phase_ = Phase::menu;
             else if (presses & bit(R1)) beginPodOffsets();
@@ -192,10 +225,79 @@ private:
     StationaryResult stationaryResult_{};
     AutomaticGeometryResult geometry_{};
     PodOffsetRoutine podRoutine_;
+    CharacterizationRoutine characterization_;
+    unsigned characterizationTrial_ = 0;
+    std::uint32_t characterizationRun_ = 0, lastCharacterizationRecord_ = 0;
+    CharacterizationStage lastCharacterizationStage_ = CharacterizationStage::idle;
+    double lastCharacterizationSensor_ = -1;
 
     static bool fresh(const SensorSample& sample, double now) {
         return std::isfinite(sample.timestamp) && sample.timestamp > 0
             && now >= sample.timestamp && now - sample.timestamp <= 0.10;
+    }
+    bool recordCharacterization(std::uint32_t now, bool force = false) {
+        const auto output = characterization_.output();
+        if (!force && output.stage == lastCharacterizationStage_ && now - lastCharacterizationRecord_ < 20)
+            return true;
+        const auto data = chassis().diagnostics();
+        // A phase can advance from the pre-command sample while publication
+        // still sees the previous logged acquisition. Wait for fresh sensor
+        // evidence; retain the pending phase transition for that first frame.
+        if (!force && data.sensors.timestamp <= lastCharacterizationSensor_) return true;
+        if (!detail::publishCharacterization(characterizationRun_, output.trialId,
+            static_cast<std::uint32_t>(output.stage), static_cast<std::uint32_t>(output.failure),
+            data)) return false;
+        lastCharacterizationRecord_ = now;
+        lastCharacterizationStage_ = output.stage;
+        lastCharacterizationSensor_ = data.sensors.timestamp;
+        return true;
+    }
+    void characterizationMessage(const char* message) {
+        stopLease();
+        std::snprintf(message_.data(), message_.size(), "%s", message);
+        phase_ = Phase::characterizationArmed;
+        // A held R1 at the end of a run never starts the next one.
+        waitForRelease_ = true;
+        lastRender_ = 0;
+    }
+    void finishCharacterization(const char* message) {
+        // Releasing only this lease preserves a newer competition owner's
+        // command if the trial was cancelled by a mode/lifecycle transition.
+        stopLease();
+        if (!recordCharacterization(pros::millis(), true)) {
+            characterization_.abort(CharacterizationFailure::loggingUnavailable);
+            (void)recordCharacterization(pros::millis(), true);
+            message = "Dati persi: prova annullata";
+        }
+        characterizationMessage(message);
+    }
+    void beginCharacterization() {
+        if (!stopOutputs()) { exit(false); return; }
+        context_ = detail::calibrationContext();
+        if (context_.imuCalibrationFailed) {
+            characterizationMessage("IMU: riavvia fermo per calibrare"); return;
+        }
+        lease_ = chassis().beginCalibration(CalibrationSensors::characterization);
+        if (!lease_) {
+            characterizationMessage("Servono due pod e IMU validi"); return;
+        }
+        ++characterizationRun_;
+        lastCharacterizationSensor_ = -1;
+        if (!characterization_.start(chassis().diagnostics().sensors, seconds(),
+                                     characterizationTrial_, context_.estimator)) {
+            finishCharacterization(characterizationFailureName(characterization_.output().failure));
+            return;
+        }
+        phase_ = Phase::characterizationRunning;
+        message_[0] = '\0';
+        lastRender_ = 0;
+        if (!chassis().calibrationVoltage(lease_, 0, 0)) {
+            characterization_.abort(CharacterizationFailure::notPermitted);
+            finishCharacterization("Comando revocato: prova annullata");
+        } else if (!recordCharacterization(pros::millis(), true)) {
+            characterization_.abort(CharacterizationFailure::loggingUnavailable);
+            finishCharacterization("Dati persi: prova annullata");
+        }
     }
     void beginPodOffsets() {
         if (!stopOutputs()) { exit(false); return; }
@@ -256,11 +358,17 @@ private:
     }
     void requestExit() {
         stopLease();
+        detail::setCharacterizationTelemetry(false);
         phase_ = Phase::leaving;
         lastRender_ = 0;
     }
     void exit(bool stopMechanisms = true) {
+        if (phase_ == Phase::characterizationRunning) {
+            characterization_.abort(CharacterizationFailure::notPermitted);
+            finishCharacterization("Prova annullata: controllo interrotto");
+        }
         stopLease();
+        detail::setCharacterizationTelemetry(false);
         if (stopMechanisms && practiceEnabled()) { lift(0); braccio(0); intake(false); }
         phase_ = Phase::idle; lease_ = 0; chordStart_ = 0;
         resetDriverRequested = true;
@@ -287,8 +395,30 @@ private:
             screen.put(3, "X: offset pod + carreggiata");
             screen.put(4, "B: esci e torna alla guida");
             screen.put(5, "Y: offset SOLO POD+IMU, due riferimenti");
-            screen.put(6, "Geometria: area libera, ruote a terra");
+            screen.put(6, "GIU: prove dinamica, una alla volta");
             screen.put(7, "Le scale assolute richiedono misure");
+        } else if (phase_ == Phase::characterizationArmed || phase_ == Phase::characterizationRunning) {
+            const auto* trial = characterizationTrial(characterizationTrial_);
+            screen.put(0, "DINAMICA | prova %u/%u", characterizationTrial_ + 1,
+                       static_cast<unsigned>(characterizationTrialCount));
+            screen.put(1, "%s", trial ? trial->name : "Prova non valida");
+            const double voltage = trial ? std::max(std::abs(trial->voltage.left),
+                                                    std::abs(trial->voltage.right)) : 0;
+            screen.put(2, "Livello %u/3 | max %.1f V", characterizationTrial_ / 6 + 1, voltage);
+            if (phase_ == Phase::characterizationArmed) {
+                screen.put(3, "SINISTRA/DESTRA: scegli la prova");
+                screen.put(4, "Tieni R1: avvia | B: menu");
+                screen.put(5, "Tieni R1 anche durante il rilascio libero");
+                screen.put(6, "%s", message_[0] ? message_.data() : "Area libera, ruote a terra");
+                screen.put(7, "Una prova; poi serve un nuovo R1");
+            } else {
+                const auto output = characterization_.output();
+                screen.put(3, "%s | %.2f s", characterizationStageName(output.stage), output.elapsed);
+                screen.put(4, "SX %+.1f V | DX %+.1f V", output.voltage.left, output.voltage.right);
+                screen.put(5, "Spazio %.0f mm | %.0f deg/s", output.distance / millimeter, degrees(output.omega));
+                screen.put(6, "TIENI R1 anche durante il rilascio libero");
+                screen.put(7, "Rilascia R1 o premi B: arresto");
+            }
         } else if (phase_ == Phase::podArmed) {
             screen.put(0, "OFFSET POD | riferimento sul telaio");
             screen.put(1, "Segna il centro geometrico e il pavimento");

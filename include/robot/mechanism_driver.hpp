@@ -50,8 +50,7 @@ inline const char* driverLabel(State state, bool calibrated) {
     case State::releaseClampWait: return "R2: attesa apertura";
     case State::releaseWait: return "R2: spostati 0.5 giri";
     case State::returnLiftClearance: return "Ritorno: rialzo lift";
-    case State::returnArmClearance: return "Ritorno: braccio";
-    case State::returnLiftLow: return "Ritorno: lift quota 3";
+    case State::returnArmClearance: return "Ritorno: braccio + lift";
     case State::returnArmZero: return "Ritorno: zero";
     case State::returnLiftBottom: return "Ritorno: lift fondo";
     default: return phaseLabel(state);

@@ -9,9 +9,7 @@ inline constexpr int armDirection = 1, liftDirection = -1;
 inline constexpr double encoderDegreesPerArmDegree = 7.0; // 7 encoder turns per arm turn.
 inline constexpr double armClearanceDeg = 144.0; // Physical arm angle, independent of the encoder gearing.
 inline constexpr double armClearanceEncoderDegrees = armClearanceDeg * encoderDegreesPerArmDegree;
-inline constexpr double armPreMatchClearanceToleranceDeg = 5.0;
 inline constexpr double armReturnClearanceToleranceDeg = 5.0; // R2 return only: accept 139..149 arm degrees.
-inline constexpr std::uint32_t preMatchArmDelayMs = 1000; // Lift reset starts first.
 inline constexpr double liftLowerRotations = 3.25; // Low pin pickup position, measured down from the calibrated top.
 inline constexpr double pickupLiftRotations = 0.18; // Clearance rise after closing the clamp.
 inline constexpr double returnLiftRotations = 3.0; // Distance below the calibrated top before the front arm endstop.

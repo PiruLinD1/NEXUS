@@ -1,6 +1,7 @@
 #include "nexus/chassis.hpp"
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 
 namespace {
 std::array<std::atomic<std::uint32_t>, 3> packetClockCalls{};
@@ -247,6 +248,11 @@ int main() {
     const auto beforeSpike = chassis->diagnostics().sensors;
     for (std::size_t i = 0; i < 3; ++i) left.position[i] = right.position[i] = 10400;
     const auto spike = oneEstimatorCycle();
+    if (spike.leftValid || spike.rightValid)
+        std::cerr << "motor spike diagnostic: interval_ms=" << 1000 * (spike.timestamp - beforeSpike.timestamp)
+                  << " before_s=" << beforeSpike.timestamp << " after_s=" << spike.timestamp
+                  << " left_delta=" << spike.left - beforeSpike.left
+                  << " right_delta=" << spike.right - beforeSpike.right << '\n';
     require(!spike.leftValid && !spike.rightValid, "400 degree instantaneous motor spike is rejected");
     pros::delay(100);
     for (std::size_t i = 0; i < 3; ++i) left.position[i] = right.position[i] = 10000;
@@ -442,6 +448,89 @@ int main() {
     require(successful.result().status == MotionStatus::settled && completedAction,
             "sequence retains ownership across its own pose, movement, wait and action");
 
+    const auto routeHandle = chassis->startMoveThrough({{300, 100}, {450, 300}, {600, 600}}, 90, {.maxSpeed = 400});
+    require(routeHandle && eventually([&] {
+        const auto snapshot = chassis->diagnostics();
+        return snapshot.controlGeneration == routeHandle && snapshot.target.viaCount == 2
+            && std::abs(snapshot.target.via[0].x - .3) < 1e-12
+            && std::abs(snapshot.target.via[0].y - .1) < 1e-12
+            && std::abs(snapshot.target.via[1].x - .45) < 1e-12
+            && std::abs(snapshot.target.pose.x - .6) < 1e-12
+            && std::abs(snapshot.target.pose.theta - pi / 2) < 1e-12;
+    }), "a route request owns all points after its initializer list expires and publishes one generation");
+    chassis->cancel();
+    require(chassis->waitUntilDone(routeHandle).status == MotionStatus::cancelled,
+            "route handles honor explicit cancellation");
+
+    Sequence parallelRoute(*chassis);
+    unsigned routeUpdates = 0;
+    bool afterRouteTimeout = false;
+    parallelRoute.moveThrough({{300, 100}, {600, 600}}, 90,
+        {.maxSpeed = 400, .timeout = 120, .settleTime = 20}, [&] {
+            ++routeUpdates;
+            return true;
+        }).action([&] { afterRouteTimeout = true; });
+    require(routeUpdates > 1 && afterRouteTimeout && parallelRoute.result().status == MotionStatus::timedOut
+            && !chassis->busy() && left.voltage == 0 && right.voltage == 0,
+            "route actuator updates run until the whole route timeout and later actions remain permitted");
+
+    Sequence failedRoute(*chassis);
+    unsigned failedRouteUpdates = 0;
+    bool afterRouteFault = false;
+    failedRoute.moveThrough({{300, 100}, {600, 600}}, 90, {.maxSpeed = 400}, [&] {
+        return ++failedRouteUpdates < 3;
+    }).action([&] { afterRouteFault = true; });
+    require(failedRouteUpdates == 3 && !afterRouteFault && failedRoute.result().status == MotionStatus::sensorFault
+            && eventually([&] { return !chassis->busy() && left.voltage == 0 && right.voltage == 0; }),
+            "an actuator fault revokes a whole route and prevents later mechanism actions");
+
+    Sequence parallelLift(*chassis);
+    unsigned liftUpdates = 0;
+    bool overlapping = false, afterParallel = false;
+    parallelLift.moveToPose(600, 600, 90, {.maxSpeed = 400, .timeout = 120, .settleTime = 20}, [&] {
+        ++liftUpdates;
+        overlapping = overlapping || chassis->busy();
+        return true;
+    }).action([&] { afterParallel = true; });
+    require(liftUpdates > 1 && overlapping && afterParallel
+            && parallelLift.result().status == MotionStatus::timedOut,
+            "actuator control runs repeatedly during pose motion and a navigation timeout still permits later steps");
+
+    Sequence failedLift(*chassis);
+    unsigned failedLiftUpdates = 0;
+    bool afterLiftFault = false;
+    failedLift.moveToPose(600, 600, 90, {.maxSpeed = 400, .timeout = 1000}, [&] {
+        return ++failedLiftUpdates < 3;
+    }).action([&] { afterLiftFault = true; });
+    require(failedLiftUpdates == 3 && !afterLiftFault
+            && failedLift.result().status == MotionStatus::sensorFault
+            && eventually([&] { return !chassis->busy() && left.voltage == 0 && right.voltage == 0; }),
+            "an actuator fault revokes the pose motion, stops the wheels and blocks subsequent clamp actions");
+
+    Sequence replacedLift(*chassis);
+    std::uint32_t newerPose = 0;
+    replacedLift.moveThrough({{300, 100}, {600, 600}}, 90, {.maxSpeed = 400, .timeout = 1000}, [&] {
+        newerPose = chassis->startMoveToPose(700, 800, 0, {.maxSpeed = 400});
+        return false;
+    });
+    require(newerPose && replacedLift.result().status == MotionStatus::cancelled && chassis->busy()
+            && chassis->diagnostics().generation == newerPose,
+            "an old route actuator callback cannot revoke a replacement movement");
+    chassis->cancel();
+
+    Sequence disabledLift(*chassis);
+    unsigned disabledLiftUpdates = 0;
+    disabledLift.moveThrough({{300, 100}, {600, 600}}, 90, {.maxSpeed = 400, .timeout = 1000}, [&] {
+        ++disabledLiftUpdates;
+        pros::test::disabled = true;
+        return true;
+    });
+    require(disabledLiftUpdates == 1 && disabledLift.result().status == MotionStatus::cancelled
+            && eventually([&] { return left.voltage == 0 && right.voltage == 0; }),
+            "disabling during a combined route prevents further actuator updates and stops the chassis");
+    pros::test::disabled = false;
+    chassis->cancel();
+
     Sequence timeouts(*chassis);
     for (unsigned kind = 0; kind < 3; ++kind) {
         const MoveOptions shortTimeout{.maxSpeed = 400, .timeout = 120, .settleTime = 20};
@@ -478,6 +567,21 @@ int main() {
         .moveToPoint(120, -340);
     require(!invalidAction && invalid.result().status == MotionStatus::invalidRequest && !chassis->busy(),
             "invalid requests still block later autonomous commands");
+
+    require(chassis->moveThrough({}, 0).status == MotionStatus::invalidRequest
+        && chassis->moveThrough({{0, 0}}, 0).status == MotionStatus::invalidRequest
+        && chassis->moveThrough({{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}, {7, 7}, {8, 8}}, 0).status == MotionStatus::invalidRequest
+        && chassis->moveThrough({{std::numeric_limits<double>::quiet_NaN(), 0}, {600, 600}}, 0).status == MotionStatus::invalidRequest
+        && chassis->moveThrough({{300, 100}, {600, std::numeric_limits<double>::infinity()}}, 0).status == MotionStatus::invalidRequest
+        && chassis->moveThrough({{300, 100}, {600, 600}}, std::numeric_limits<double>::quiet_NaN()).status == MotionStatus::invalidRequest,
+        "route entry points reject malformed counts and nonfinite guide, destination or heading values");
+    Sequence invalidRoute(*chassis);
+    bool invalidRouteUpdate = false, invalidRouteAction = false;
+    invalidRoute.moveThrough({}, 0, {}, [&] { invalidRouteUpdate = true; return true; })
+        .action([&] { invalidRouteAction = true; });
+    require(invalidRoute.result().status == MotionStatus::invalidRequest && !invalidRouteUpdate && !invalidRouteAction
+            && !chassis->busy() && left.voltage == 0 && right.voltage == 0,
+            "invalid route prevents actuator updates and all later sequence commands");
 
     lateral.connected = false;
     require(eventually([&] { return !chassis->diagnostics().sensors.lateralValid; }), "lateral dropout is visible");
@@ -917,6 +1021,91 @@ int main() {
         fastLeft->voltage == 0 && fastRight->voltage == 0; }, 300) &&
         !fast->calibrationVoltage(stalePodLease, 3, -3),
         "pod lease expires without a command renewal and cannot resume from a stale token");
+
+    const auto allBrakeModes = [&](pros::motor_brake_mode_e_t mode) {
+        for (std::size_t i = 0; i < 3; ++i)
+            if (fastLeft->brakeMode[i] != mode || fastRight->brakeMode[i] != mode) return false;
+        return true;
+    };
+    const auto characterizationStopped = [&] {
+        return !fast->diagnostics().calibrationActive && fastLeft->voltage == 0 && fastRight->voltage == 0
+            && allBrakeModes(pros::E_MOTOR_BRAKE_BRAKE);
+    };
+    fastLateral->connected = false;
+    require(eventually([&] { return !fast->diagnostics().sensors.lateralValid; }) &&
+            fast->beginCalibration(CalibrationSensors::characterization) == 0,
+            "characterization cannot start without both tracking pods");
+    fastLateral->connected = true;
+    require(eventually([&] { return fast->diagnostics().sensors.lateralValid; }),
+            "characterization fixture recovers the lateral pod");
+    const auto characterizationLease = fast->beginCalibration(CalibrationSensors::characterization);
+    require(characterizationLease && fast->diagnostics().calibrationActive &&
+            fastLeft->voltage == 0 && fastRight->voltage == 0 && allBrakeModes(pros::E_MOTOR_BRAKE_COAST),
+            "characterization starts at zero in COAST using pods and IMU without motor encoders");
+    require(fast->calibrationVoltage(characterizationLease, 9, -10) &&
+            fastLeft->voltage == 6000 && fastRight->voltage == -6000 &&
+            fast->diagnostics().command.left == 6 && fast->diagnostics().command.right == -6,
+            "characterization clamps both signs to six volts and reports the applied command");
+    const auto leftBrakeCalls = fastLeft->brakeCalls.load(), rightBrakeCalls = fastRight->brakeCalls.load();
+    require(fast->calibrationVoltage(characterizationLease, 0, 0) &&
+            fastLeft->brakeCalls > leftBrakeCalls && fastRight->brakeCalls > rightBrakeCalls &&
+            fastLeft->voltage == 0 && fastRight->voltage == 0 && allBrakeModes(pros::E_MOTOR_BRAKE_COAST) &&
+            fast->diagnostics().calibrationActive,
+            "characterization zero disables motor effort with explicit COAST brake calls and retains its lease");
+    require(fast->calibrationVoltage(characterizationLease, 3, 1) &&
+            fast->endCalibration(characterizationLease) && characterizationStopped(),
+            "ending characterization applies passive BRAKE on every drive motor");
+    require(!fast->calibrationVoltage(characterizationLease, 3, 3) && characterizationStopped(),
+            "an ended characterization token cannot restart motor effort or remove passive braking");
+    fast->arcade(30, 0);
+    require(eventually([&] { return fastLeft->voltage > 0 && fastRight->voltage > 0 &&
+                                   allBrakeModes(pros::E_MOTOR_BRAKE_COAST); }),
+            "the next accepted driver command restores normal COAST behavior");
+    fast->cancel();
+
+    const auto cancelledCharacterization = fast->beginCalibration(CalibrationSensors::characterization);
+    require(cancelledCharacterization && fast->calibrationVoltage(cancelledCharacterization, 3, -3),
+            "characterization cancellation fixture starts");
+    fast->cancel();
+    require(eventually(characterizationStopped) &&
+            !fast->calibrationVoltage(cancelledCharacterization, 3, -3),
+            "explicit cancellation passively brakes characterization and revokes its old token");
+
+    const auto expiredCharacterization = fast->beginCalibration(CalibrationSensors::characterization);
+    require(expiredCharacterization && allBrakeModes(pros::E_MOTOR_BRAKE_COAST) &&
+            fast->calibrationVoltage(expiredCharacterization, 3, 3),
+            "a fresh characterization lease restores COAST after a prior safety stop");
+    require(eventually(characterizationStopped, 350) &&
+            !fast->calibrationVoltage(expiredCharacterization, 3, 3),
+            "characterization watchdog passively brakes and rejects renewal after expiry");
+
+    const auto disabledCharacterization = fast->beginCalibration(CalibrationSensors::characterization);
+    require(disabledCharacterization && fast->calibrationVoltage(disabledCharacterization, 3, 3),
+            "characterization disable fixture starts");
+    pros::test::disabled = true;
+    require(eventually(characterizationStopped) &&
+            fast->beginCalibration(CalibrationSensors::characterization) == 0,
+            "disable passively brakes characterization and blocks new leases");
+    pros::test::disabled = false;
+    require(!fast->calibrationVoltage(disabledCharacterization, 3, 3) && characterizationStopped(),
+            "re-enabling cannot revive an old characterization lease");
+
+    const auto lostCharacterization = fast->beginCalibration(CalibrationSensors::characterization);
+    require(lostCharacterization && fast->calibrationVoltage(lostCharacterization, 3, 3),
+            "characterization sensor-loss fixture starts");
+    fastLateral->connected = false;
+    require(eventually(characterizationStopped) &&
+            !fast->calibrationVoltage(lostCharacterization, 3, 3),
+            "tracking-pod loss revokes characterization with passive BRAKE");
+    fastLateral->connected = true;
+    require(eventually([&] { return fast->diagnostics().sensors.lateralValid &&
+                                   fast->diagnostics().estimate.health != Health::lost; }),
+            "characterization sensor-loss fixture recovers before ordinary motion");
+    const auto afterCharacterization = fast->startMoveToPoint(0, 0, {.timeout = 1000, .settleTime = 20});
+    require(afterCharacterization && allBrakeModes(pros::E_MOTOR_BRAKE_COAST) &&
+            fast->waitUntilDone(afterCharacterization).status == MotionStatus::settled,
+            "the next accepted autonomous move restores normal COAST and can settle");
+
     // The encoder-free diagnostic mode must not even read the drive counters.
     // Deliberately contradictory values cannot enter pose, slip or quiet.
     for (unsigned i = 0; i < 3; ++i) {

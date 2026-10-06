@@ -42,6 +42,11 @@ std::array<std::unique_ptr<pros::Distance>, nexus::maxRanges> ranges;
 std::unique_ptr<nexus::Chassis> drive;
 std::unique_ptr<pros::Task> displayTask;
 std::unique_ptr<pros::Task> odometryUsbTask;
+struct CharacterizationRecord { std::array<double, 36> fields{}; };
+pros::c::queue_t characterizationQueue = nullptr;
+std::atomic<bool> characterizationTelemetry{false};
+std::uint32_t characterizationSequence = 0, characterizationDropped = 0; // Calibration service only.
+constexpr const char* characterizationHeader = "NXCHAR_HEADER,version,sequence,run,trial,stage,failure,t_s,sensor_s,cmd_left_v,cmd_right_v,applied_left_v,applied_right_v,battery_v,x_m,y_m,heading_rad,v_mps,lateral_mps,omega_radps,forward_m,lateral_m,gyro_rad,left_wheel_mps,right_wheel_mps,accel_x_g,accel_y_g,accel_z_g,valid_mask,dropped,imu_scale,forward_scale,lateral_scale,forward_offset_m,lateral_offset_m,track_width_m,motor_s";
 std::unique_ptr<pros::Task> startupTask;
 startup::Initialization initialization;
 std::atomic<bool> clampClosed{false}, intakeEnabled{false};
@@ -329,18 +334,62 @@ void drawDiagnostics(const nexus::Diagnostics& data, unsigned page) {
     } else pros::lcd::print(7, "Auton:%s | LCD frecce: IMU", nexus::statusName(lastAutonStatus.load()));
 }
 
+// Only the selected 600 RPM motors share this conversion. In particular the
+// 200 RPM centre motors must never enter a fit with the 600 RPM wheel ratio.
+std::array<double, 2> measuredDriveSide(pros::MotorGroup& motors, std::size_t count, std::uint8_t mask) {
+    double voltage = 0, speed = 0;
+    unsigned selected = 0, valid = 0;
+    for (std::size_t i = 0; i < count && i < 8; ++i) {
+        if (!(mask & (1u << i))) continue;
+        ++selected;
+        const auto measured = motors.get_voltage(static_cast<std::uint8_t>(i));
+        const double rpm = motors.get_actual_velocity(static_cast<std::uint8_t>(i));
+        if (measured != PROS_ERR && std::abs(measured) <= 14000 && std::isfinite(rpm) && std::abs(rpm) <= 1000) {
+            voltage += measured * .001;
+            speed += rpm / 60 * nexus::pi * config::driveWheelDiameter * nexus::inch * config::wheelRPM / config::motorRPM;
+            ++valid;
+        }
+    }
+    const double invalid = std::numeric_limits<double>::quiet_NaN();
+    return selected && valid == selected ? std::array<double, 2>{voltage / valid, speed / valid}
+                                         : std::array<double, 2>{invalid, invalid};
+}
+
 void odometryUsbLoop(const nexus::EstimatorConfig& startupConfig) {
     // The independent consumer can block on USB without holding any chassis or
     // sensor mutex. A full bounded queue drops trace frames, never sensor input.
-    if (!drive->startOdometryTrace()) {
+    const bool odometryEnabled = config::logOdometryUsb && drive->startOdometryTrace();
+    if (config::logOdometryUsb && !odometryEnabled) {
         std::printf("NXOD_ERROR,trace unavailable\n");
-        return;
     }
     unsigned lines = 0;
+    double lastCharacterizationRun = -1;
     std::uint32_t lastControlTrace = 0;
     for (;;) {
+        CharacterizationRecord record;
+        for (unsigned batch = 0; characterizationQueue && batch < 16 &&
+             pros::c::queue_recv(characterizationQueue, &record, 0); ++batch) {
+            // A complete line is emitted in one stdio operation, only here.
+            if (record.fields[2] != lastCharacterizationRun ||
+                static_cast<unsigned>(record.fields[1]) % 50 == 1 || record.fields[4] >= 4)
+                std::puts(characterizationHeader);
+            lastCharacterizationRun = record.fields[2];
+            std::array<char, 1536> line{};
+            std::size_t used = static_cast<std::size_t>(std::snprintf(line.data(), line.size(), "NXCHAR"));
+            for (std::size_t i = 0; i < record.fields.size(); ++i) {
+                const bool integer = i < 6 || i == 27 || i == 28;
+                const int written = integer
+                    ? std::snprintf(line.data() + used, line.size() - used, ",%.0f", record.fields[i])
+                    : std::snprintf(line.data() + used, line.size() - used, ",%.9f", record.fields[i]);
+                if (written < 0 || static_cast<std::size_t>(written) >= line.size() - used) { used = 0; break; }
+                used += static_cast<std::size_t>(written);
+            }
+            if (used) std::puts(line.data());
+        }
+        const bool characterizing = characterizationTelemetry.load();
         nexus::OdometryTrace trace;
         for (unsigned batch = 0; batch < 16 && drive->popOdometryTrace(trace); ++batch) {
+            if (characterizing) continue; // Drain old trace without flooding USB during a trial.
             if (lines++ % 100 == 0) {
                 std::printf("NXOD_STATUS,dropped,%lu\n", static_cast<unsigned long>(drive->droppedOdometryTrace()));
                 std::printf("NXOD_CONFIG,startup,forward_scale=%.9f,lateral_scale=%.9f,gyro_scale=%.9f,forward_offset_mm=%.6f,lateral_offset_mm=%.6f,track_mm=%.6f,native_imu=%u\n",
@@ -367,7 +416,7 @@ void odometryUsbLoop(const nexus::EstimatorConfig& startupConfig) {
                 static_cast<unsigned>(trace.validMask), static_cast<unsigned>(trace.rejectedMask),
                 static_cast<unsigned>(trace.stationary), static_cast<unsigned>(trace.headingSource));
         }
-        if (pros::millis() - lastControlTrace >= 100) {
+        if (odometryEnabled && !characterizing && pros::millis() - lastControlTrace >= 100) {
             lastControlTrace = pros::millis();
             const auto data = drive->diagnostics();
             std::printf("NXCTRL,9,%.6f,%lu,%s,%u,%.2f,%.2f,%.2f,%u,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.3f,%.3f,%u,%u,%.3f\n",
@@ -403,25 +452,9 @@ void diagnosticsLoop() {
         }
         previousLcdButtons = lcdButtons;
         if (log) {
-            const auto readSide = [](pros::MotorGroup& motors, std::size_t count) {
-                double voltage = 0, speed = 0;
-                std::size_t valid = 0;
-                for (std::size_t i = 0; i < count; ++i) {
-                    const auto measured = motors.get_voltage(static_cast<std::uint8_t>(i));
-                    const double rpm = motors.get_actual_velocity(static_cast<std::uint8_t>(i));
-                    if (measured != PROS_ERR && std::isfinite(rpm) && std::abs(rpm) <= 1000) {
-                        voltage += measured * 0.001;
-                        speed += rpm / 60 * nexus::pi * config::driveWheelDiameter * nexus::inch
-                                 * config::wheelRPM / config::motorRPM;
-                        ++valid;
-                    }
-                }
-                const double invalid = std::numeric_limits<double>::quiet_NaN();
-                return std::array<double, 2>{valid ? voltage / valid : invalid, valid ? speed / valid : invalid};
-            };
             const double before = static_cast<double>(pros::micros()) * 1e-6;
-            const auto left = readSide(leftMotors, config::leftPorts.size());
-            const auto right = readSide(rightMotors, config::rightPorts.size());
+            const auto left = measuredDriveSide(leftMotors, config::leftPorts.size(), config::leftOdometryMask);
+            const auto right = measuredDriveSide(rightMotors, config::rightPorts.size(), config::rightOdometryMask);
             const double motorTime = (before + static_cast<double>(pros::micros()) * 1e-6) / 2;
             std::fprintf(log, "%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.8f,%.8f,%.8f,%.4f,%.4f,%d,%.4f,%.4f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.3f,%.6f,%u,%d,%.6f,%.4f,%.4f,%.6f,%.6f,%.4f,%.4f,%.4f,%.2f,%.2f,%.2f,%d,%d,%d,%.6f,%.4f,%.2f,%lu,%lu,%d,%d,%d,%d,%d,%d,%.6f,%lu,%u,%u,%.3f,%lu,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%lu,%u,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.3f,%.3f,%lu,%.6f,%.3f,%lu,%.3f,%.3f,%.3f,%.3f\n",
                 data.estimate.timestamp, state.pose.x / nexus::millimeter, state.pose.y / nexus::millimeter,
@@ -523,10 +556,9 @@ bool initializeHardware() {
     std::printf("NEXUS heading: native IMU; local bias correction disabled; native calibration: %s\n",
                 imuCalibrationStatus);
     displayTask = std::make_unique<pros::Task>(diagnosticsLoop, TASK_PRIORITY_DEFAULT - 1, 8192, "nexus-diagnostics");
-    if (config::logOdometryUsb) {
-        odometryUsbTask = std::make_unique<pros::Task>([traceConfig = activeEstimatorConfig] { odometryUsbLoop(traceConfig); },
-            TASK_PRIORITY_DEFAULT - 1, 8192, "nexus-usb-trace");
-    }
+    characterizationQueue = pros::c::queue_create(64, sizeof(CharacterizationRecord));
+    odometryUsbTask = std::make_unique<pros::Task>([traceConfig = activeEstimatorConfig] { odometryUsbLoop(traceConfig); },
+        TASK_PRIORITY_DEFAULT - 1, 8192, "nexus-usb-trace");
     detail::startCalibrationService();
     return true;
 }
@@ -907,6 +939,41 @@ bool updateMacros() {
 }
 
 namespace detail {
+void setCharacterizationTelemetry(bool enabled) { characterizationTelemetry = enabled; }
+
+bool publishCharacterization(std::uint32_t run, std::uint32_t trial,
+        std::uint32_t stage, std::uint32_t failure, const nexus::Diagnostics& data) {
+    if (!characterizationQueue) return false;
+    const double now = static_cast<double>(pros::micros()) * 1e-6;
+    const auto left = measuredDriveSide(leftMotors, config::leftPorts.size(), config::leftOdometryMask);
+    const auto right = measuredDriveSide(rightMotors, config::rightPorts.size(), config::rightOdometryMask);
+    const double motorTime = (now + static_cast<double>(pros::micros()) * 1e-6) / 2;
+    const auto batteryMv = pros::battery::get_voltage();
+    const double battery = batteryMv == PROS_ERR ? std::numeric_limits<double>::quiet_NaN() : batteryMv * .001;
+    const auto& s = data.sensors;
+    const auto& e = data.estimate;
+    const unsigned rejected = e.rejectedIncrementMask;
+    const unsigned valid = (s.forwardValid && !(rejected & 1) ? 1u : 0u)
+        | (s.lateralValid && !(rejected & 2) ? 2u : 0u)
+        | (s.gyroValid && !(rejected & 16) ? 4u : 0u)
+        | (s.accelerationValid ? 8u : 0u)
+        | (std::isfinite(left[0]) && std::isfinite(left[1]) ? 16u : 0u)
+        | (std::isfinite(right[0]) && std::isfinite(right[1]) ? 32u : 0u)
+        | (std::isfinite(battery) && battery > 0 && battery < 15 ? 64u : 0u);
+    const auto& c = activeEstimatorConfig;
+    CharacterizationRecord record{{1, static_cast<double>(++characterizationSequence),
+        static_cast<double>(run), static_cast<double>(trial), static_cast<double>(stage), static_cast<double>(failure),
+        now, s.timestamp, data.command.left, data.command.right, left[0], right[0], battery,
+        e.state.pose.x, e.state.pose.y, e.state.pose.theta, e.state.v, e.state.lateralV, e.state.omega,
+        s.forward, s.lateral, s.gyro, left[1], right[1],
+        s.accelerationG[0], s.accelerationG[1], s.accelerationG[2],
+        static_cast<double>(valid), static_cast<double>(characterizationDropped),
+        c.gyroScale, c.forwardScale, c.lateralScale, c.forwardOffset, c.lateralOffset, c.trackWidth, motorTime}};
+    if (pros::c::queue_append(characterizationQueue, &record, 0)) return true;
+    ++characterizationDropped;
+    return false;
+}
+
 CalibrationContext calibrationContext() {
     // Written only at initialization and by the persistent calibration service.
     return {activeEstimatorConfig, activeProfile, imuCalibrationFailed};
@@ -950,8 +1017,12 @@ void Auton::setPose(double x, double y, double heading) {
 void Auton::moveToPoint(double x, double y, nexus::MoveOptions options) {
     if (sequence_) sequence_->moveToPoint(x, y, options);
 }
-void Auton::moveToPose(double x, double y, double heading, nexus::MoveOptions options) {
-    if (sequence_) sequence_->moveToPose(x, y, heading, options);
+void Auton::moveToPose(double x, double y, double heading, nexus::MoveOptions options, LiftMove liftMove) {
+    if (!sequence_) return;
+    if (liftMove == LiftMove::none) { sequence_->moveToPose(x, y, heading, options); return; }
+    if (!beginLift(liftMove)) { sequence_->abort(nexus::MotionStatus::sensorFault); finishLift(); return; }
+    sequence_->moveToPose(x, y, heading, options, [this] { return updateLift(); });
+    finishLift();
 }
 void Auton::turnToHeading(double heading, nexus::MoveOptions options) {
     if (sequence_) sequence_->turnToHeading(heading, options);
@@ -967,6 +1038,51 @@ void Auton::pinza(bool closed) {
 }
 void Auton::lift(int power) {
     if (sequence_) sequence_->action([power] { if (power) mechanisms.cancel(); robot::lift(power); });
+}
+bool Auton::beginLift(LiftMove move) {
+    bool accepted = false;
+    if (sequence_) sequence_->action([&] {
+        const auto in = mechanismInput();
+        if (!mechanisms.driverLiftAvailable() || !in.valid) return;
+        mechanisms.cancelDriverLiftTarget();
+        if (move == LiftMove::bottom) accepted = mechanisms.requestLiftBottom(in);
+        else if (move == LiftMove::upStep) {
+            mechanisms.adjustDriverLift(1, in);
+            accepted = true;
+        }
+    });
+    return accepted && updateLift();
+}
+bool Auton::updateLift() {
+    bool healthy = false;
+    if (sequence_) sequence_->action([&] {
+        mechanisms.updateDriverLift(mechanismInput());
+        robot::lift(mechanisms.output.lift);
+        applyMacroArm();
+        healthy = mechanisms.calibrated && mechanisms.state != mechanism::State::fault
+            && mechanisms.state != mechanism::State::stopped;
+    });
+    return healthy;
+}
+void Auton::finishLift() {
+    while (sequence_ && mechanisms.driverLiftMoving()) {
+        if (!updateLift()) { sequence_->abort(nexus::MotionStatus::sensorFault); break; }
+        sequence_->wait(10);
+    }
+    mechanisms.cancelDriverLiftTarget();
+    robot::lift(0);
+}
+void Auton::liftToBottom() {
+    if (!sequence_) return;
+    if (!beginLift(LiftMove::bottom)) { sequence_->abort(nexus::MotionStatus::sensorFault); finishLift(); return; }
+    finishLift();
+}
+void Auton::moveThrough(std::initializer_list<nexus::Waypoint> points, double heading, nexus::MoveOptions options, LiftMove liftMove) {
+    if (!sequence_) return;
+    if (liftMove == LiftMove::none) { sequence_->moveThrough(points, heading, options); return; }
+    if (!beginLift(liftMove)) { sequence_->abort(nexus::MotionStatus::sensorFault); finishLift(); return; }
+    sequence_->moveThrough(points, heading, options, [this] { return updateLift(); });
+    finishLift();
 }
 void Auton::braccio(int power) {
     if (sequence_) sequence_->action([power] { if (power) mechanisms.cancel(); robot::braccio(power); });

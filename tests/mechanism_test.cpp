@@ -8,6 +8,7 @@
 #include <iostream>
 using namespace robot::mechanism;
 constexpr double liftLow = -cfg::liftLowerRotations;
+constexpr double liftPreMatch = liftLow - cfg::liftEndstopExtraLowerRotations;
 constexpr double liftPickup = liftLow + cfg::pickupLiftRotations;
 constexpr double liftLevel1 = liftPickup + cfg::driverLiftStepRotations;
 constexpr double liftLevel2 = liftLevel1 + cfg::driverLiftStepRotations;
@@ -83,11 +84,23 @@ struct Rig {
         controller.output.armCoast = false;
         arm = position;
     }
-    void setup() {
+    void preMatch() {
         start(); until(State::prepared);
-        require(controller.calibrated && !controller.output.closed, "preMatch must leave the clamp open and calibrate");
-        require(std::abs(arm) < 0.1 && std::abs(lift - (liftOffset + liftLow)) < 0.03, "preMatch lower position");
-        require(controller.output.armCoast && motor.coasting(), "completed preMatch leaves the lower arm stop in COAST");
+        require(controller.calibrated && controller.output.closed, "preMatch must leave the clamp closed and calibrate");
+        require(arm == maxArm && std::abs(lift - (liftOffset + liftPreMatch)) < 0.03, "preMatch extra-low position at endstop 2");
+        require(!controller.output.armCoast && motor.holding(), "completed preMatch supports the second arm stop in HOLD");
+        require(!controller.output.intake, "preMatch does not start intake at endstop 2");
+    }
+    void setup() {
+        // Existing pickup/return scenarios start at the normal front low pose.
+        // Reach it through the production R2 path after the new startup pose.
+        preMatch();
+        const bool depart = autoDepartAfterRelease;
+        autoDepartAfterRelease = true;
+        step(false, true); until(State::prepared);
+        autoDepartAfterRelease = depart;
+        require(std::abs(arm) < 0.1 && std::abs(lift - (liftOffset + liftLow)) < 0.03
+                && !controller.output.closed, "R2 sets up the normal pickup position after preMatch");
     }
     void height(int direction, double target) {
         step(false, false, direction);
@@ -123,6 +136,56 @@ struct LiftReadout {
 int main() {
     require(cfg::intakeReverseHoldMs == 400 && cfg::liftEndstopExtraLowerRotations == 0.68,
             "X requires 400ms to reverse and the extra-low level is 0.68 rotations");
+    for (double origin : {-5.0, 0.0, 7.0}) for (int polarity : {-1, 1}) {
+        Rig startup; startup.liftOffset = origin; startup.lift += origin;
+        startup.encoderPolarity = polarity; startup.preMatch();
+        const std::array<double, 2> references{startup.controller.liftMeasurements[0], startup.controller.liftMeasurements[1]};
+        const double bottom = startup.lift;
+        for (int i = 0; i < 30; ++i) startup.step();
+        startup.step(false, false, -1);
+        require(startup.lift == bottom && !startup.controller.output.lift
+                && startup.arm == startup.maxArm && startup.motor.holding()
+                && startup.controller.output.closed && !startup.controller.output.intake,
+                "READY and DOWN retain the closed extra-low startup pose without intake or further descent");
+        startup.height(1, origin + liftPreMatch + cfg::driverLiftStepRotations);
+        startup.height(-1, origin + liftLow);
+        startup.height(-1, origin + liftPreMatch);
+        startup.step(true);
+        startup.until(State::pickupLift);
+        while (startup.controller.state == State::pickupLift) {
+            startup.step();
+            require(startup.arm == startup.maxArm && startup.motor.holding()
+                    && startup.controller.output.closed,
+                    "first R1 raises from the extra-low startup pose before moving away from endstop 2");
+        }
+        require(std::abs(startup.lift - (origin + liftPickup)) < 0.03,
+                "startup extra travel does not alter the normal pickup clearance");
+        startup.until(State::carrying);
+        require(std::abs(startup.arm - cfg::armPickupDeg) <= cfg::armToleranceDeg
+                && !startup.controller.endstopSelected,
+                "first R1 after preMatch selects 150 degrees from endstop 2");
+        require(startup.controller.liftMeasurements[0] == references[0]
+                && startup.controller.liftMeasurements[1] == references[1],
+                "startup pose and its height adjustments preserve both calibrated lift references");
+
+        Rig startupRelease; startupRelease.liftOffset = origin; startupRelease.lift += origin;
+        startupRelease.encoderPolarity = polarity; startupRelease.preMatch();
+        startupRelease.step(false, true);
+        require(startupRelease.controller.state == State::releaseWait
+                && !startupRelease.controller.output.closed && startupRelease.motor.holding()
+                && startupRelease.arm == startupRelease.maxArm,
+                "R2 directly after preMatch opens at endstop 2 without a move to 90 degrees");
+        startupRelease.until(State::returnLiftClearance);
+        while (startupRelease.controller.state == State::returnLiftClearance) {
+            startupRelease.step();
+            require(startupRelease.arm == startupRelease.maxArm && startupRelease.motor.holding(),
+                    "R2 raises the startup lift before rotating the arm");
+        }
+        startupRelease.until(State::prepared);
+        require(startupRelease.arm == 0 && std::abs(startupRelease.lift - (origin + liftLow)) < 0.03
+                && !startupRelease.controller.output.closed && startupRelease.controller.output.intake == 127,
+                "R2 still returns to the normal low pickup pose and starts intake there");
+    }
     for (double origin : {-5.0, 0.0, 7.0}) {
         Rig intakeRig; intakeRig.liftOffset = origin; intakeRig.lift += origin; intakeRig.setup();
         require(intakeRig.controller.output.intake == 127,
@@ -290,17 +353,19 @@ int main() {
             "a fresh half turn after pod recovery allows the waiting return");
 
     Rig homingCoast; homingCoast.start();
-    for (State afterContact : {State::armBackoff0, State::armTop1, State::armBackoffTop,
-                               State::preArmClearance, State::prepared}) {
+    for (State afterContact : {State::armBackoff0, State::armTop1, State::armBackoffTop}) {
         homingCoast.until(afterContact);
         require(homingCoast.controller.output.armCoast && homingCoast.motor.coasting(),
                 "every accepted lower and upper preMatch contact immediately removes motor braking");
-        if (afterContact != State::prepared) {
-            homingCoast.step();
-            require(!homingCoast.controller.output.armCoast
-                    && (homingCoast.controller.output.arm || homingCoast.controller.output.armProfileActive),
-                    "the next homing backoff or positioning request clears endpoint COAST");
-        }
+        homingCoast.step();
+        require(!homingCoast.controller.output.armCoast
+                && (homingCoast.controller.output.arm || homingCoast.controller.output.armProfileActive),
+                "the next homing backoff or positioning request clears endpoint COAST");
+    }
+    for (State supported : {State::liftTop1, State::prepared}) {
+        homingCoast.until(supported);
+        require(!homingCoast.controller.output.armCoast && homingCoast.motor.holding(),
+                "the final preMatch endstop contact stays supported during descent and READY");
     }
     for (bool upper : {false, true}) for (bool disabled : {false, true}) {
         Rig endpoint; endpoint.setup();
@@ -347,7 +412,7 @@ int main() {
     require(lowLiftAtTop.motor.coasting(), "the full return ends in COAST at the lower endpoint");
     for (double origin : {-5.0, 0.0, 7.0}) {
         Rig prematch; prematch.liftOffset = origin; prematch.lift += origin;
-        prematch.liftSpeedScale = 0.2; // Still homing the lift when the arm starts.
+        prematch.liftSpeedScale = 0.2; // A slow reset must finish before any arm movement.
         for (unsigned run = 0; run < 2; ++run) {
             const double initialArm = prematch.arm, initialLift = prematch.lift;
             const auto started = prematch.in.now;
@@ -355,23 +420,32 @@ int main() {
             require(prematch.controller.state == State::preLiftStart && !prematch.controller.calibrated
                     && prematch.controller.output.lift > 0 && !prematch.controller.output.arm,
                     "initial and repeated preMatch start lift reset immediately");
-            while (prematch.in.now - started < cfg::preMatchArmDelayMs - 10) {
+            bool liftBackoffSeen = false;
+            for (unsigned i = 0; i < 2000 && prematch.controller.state == State::preLiftStart; ++i) {
                 prematch.step();
-                require(prematch.arm == initialArm && !prematch.controller.output.arm && prematch.motor.holding(),
-                        "the arm stays held for the first second of lift reset");
+                if (prematch.controller.output.lift < 0) liftBackoffSeen = true;
+                if (prematch.controller.state == State::preLiftStart)
+                    require(prematch.arm == initialArm && !prematch.controller.output.arm && prematch.motor.holding(),
+                            "the arm stays held throughout both lift contacts and the calibration backoff");
             }
-            require(prematch.lift > initialLift, "lift reset advances during the arm delay");
-            prematch.step();
-            require(prematch.in.now - started == cfg::preMatchArmDelayMs
-                    && prematch.controller.state == State::armZero1
-                    && prematch.controller.output.arm < 0 && prematch.controller.output.lift > 0,
-                    "arm reset starts exactly one second later while lift reset continues");
+            require(prematch.lift > initialLift && liftBackoffSeen && prematch.in.now - started > 1000,
+                    "lift reset completes both contacts instead of handing off after one second");
+            require(prematch.controller.state == State::armZero1 && prematch.controller.output.arm < 0
+                    && !prematch.controller.output.lift && std::abs(prematch.lift - origin) < 0.03
+                    && std::abs(prematch.controller.liftMeasurements[0] - origin) < 0.03
+                    && std::abs(prematch.controller.liftMeasurements[1] - origin) < 0.03,
+                    "arm reset begins only with the lift fully raised and both lift references verified");
+            while (prematch.controller.state != State::liftTop1 && prematch.controller.state != State::fault) {
+                prematch.step();
+                require(!prematch.controller.output.lift && std::abs(prematch.lift - origin) < 0.03,
+                        "the lift stays fully raised throughout arm reset");
+            }
             prematch.until(State::prepared);
-            require(prematch.controller.calibrated && std::abs(prematch.lift - (origin + liftLow)) < 0.03
+            require(prematch.controller.calibrated && std::abs(prematch.lift - (origin + liftPreMatch)) < 0.03
                     && std::abs(prematch.controller.liftMeasurements[0] - origin) < 0.03
                     && std::abs(prematch.controller.liftMeasurements[1] - origin) < 0.03
-                    && !prematch.controller.output.closed,
-                    "parallel resets retain both lift measurements and complete the final return");
+                    && prematch.arm == prematch.maxArm && prematch.controller.output.closed,
+                    "sequential resets retain both lift measurements and complete the closed extra-low pose");
         }
     }
     for (bool contact : {true, false}) {
@@ -380,40 +454,34 @@ int main() {
         failedReset.forcedLiftCurrent = contact ? 1200 : 100;
         failedReset.start(); failedReset.until(State::fault);
         require(!failedReset.controller.calibrated
-                && !failedReset.controller.output.arm && !failedReset.controller.output.lift,
-                "a failed lift reset stops both concurrent mechanisms");
+                && !failedReset.controller.output.arm && !failedReset.controller.output.lift
+                && failedReset.arm == 70 && !failedReset.controller.encoderDirectionKnown,
+                "a failed lift reset stops startup without ever moving the arm");
         require(std::strstr(failedReset.controller.error, contact ? "Lift bloccato" : "timeout"),
-                "lift reset retains backoff blockage detection and an independent deadline");
+                "lift reset retains backoff blockage detection and per-phase deadlines");
     }
     for (std::uint32_t started : {0u, 0xfffffe00u}) {
         Controller delay;
         Input sample{.now = started, .arm = 70, .lift = -2};
         delay.start(sample);
-        for (unsigned elapsed : {0u, 1u, 999u}) {
+        for (unsigned elapsed : {0u, 1u, 999u, 1000u, 2000u}) {
             sample.now = started + elapsed; delay.tick(sample);
             require(delay.state == State::preLiftStart && !delay.output.arm && delay.output.armHold
-                    && delay.output.lift > 0, "arm delay is exactly 1000ms, including timer wraparound");
+                    && delay.output.lift > 0, "elapsed time cannot start the arm before lift contact, including timer wraparound");
         }
-        sample.now = started + 1000; delay.tick(sample);
-        require(delay.state == State::armZero1 && delay.output.arm < 0 && delay.output.lift > 0,
-                "both reset commands run at the one-second boundary");
         delay.cancel(); sample.now += 100; delay.tick(sample);
-        require(!delay.output.arm && !delay.output.lift, "cancel stops both independent resets");
+        require(!delay.output.arm && !delay.output.lift, "cancel stops lift reset and leaves the waiting arm still");
         delay.start(sample); sample.now += 999; delay.tick(sample);
-        require(!delay.output.arm && delay.output.lift > 0, "restart resets the full arm delay");
+        require(!delay.output.arm && delay.output.lift > 0, "restart waits for a fresh complete lift reset");
     }
     Rig slowReset; slowReset.lift = -1.9; slowReset.liftSpeedScale = 0.065; slowReset.start();
-    slowReset.until(State::liftTop1);
-    require(slowReset.controller.output.lift > 0, "a slow lift can still be homing after arm clearance is ready");
-    for (int i = 0; i < 10; ++i) {
-        slowReset.step();
-        require(slowReset.controller.state == State::liftTop1 && slowReset.motor.holding()
-                && slowReset.controller.output.lift > 0,
-                "final descent waits for lift calibration while holding the arm at clearance");
-    }
+    slowReset.until(State::armZero1);
+    require(slowReset.in.now > cfg::motionTimeoutMs && !slowReset.controller.output.lift
+            && std::abs(slowReset.lift) < 0.03,
+            "a multi-phase lift reset may exceed one motion timeout in total while each phase has its own deadline");
     slowReset.liftSpeedScale = 1;
     slowReset.until(State::prepared);
-    require(slowReset.controller.calibrated, "lift finishing last still completes both resets");
+    require(slowReset.controller.calibrated, "arm reset gets a fresh timeout after a slow complete lift reset");
     for (bool raised : {false, true}) {
         Rig clampWait; clampWait.setup();
         if (raised) { clampWait.lift = liftPickup; clampWait.manuallyPositionArm(40); }
@@ -568,7 +636,7 @@ int main() {
             "expired R1 and R2 deadlines cannot restart a cancelled sequence");
 
     for (State phase : {State::releaseArm90, State::releaseClampWait, State::releaseWait, State::returnArmClearance,
-                        State::returnLiftLow, State::returnArmZero}) {
+                        State::returnArmZero}) {
         Rig overrideReturn; overrideReturn.setup(); overrideReturn.step(true); overrideReturn.until(State::carrying);
         overrideReturn.step(false, true); overrideReturn.until(phase);
         const bool wasClosed = overrideReturn.controller.output.closed;
@@ -939,7 +1007,7 @@ int main() {
     releaseOnWayToTop.until(State::releaseWait);
 
     for (State phase : {State::releaseArm90, State::releaseClampWait, State::releaseWait, State::returnArmClearance,
-                        State::returnLiftLow, State::returnArmZero, State::returnLiftBottom}) {
+                        State::returnArmZero, State::returnLiftBottom}) {
         Rig preempt; preempt.setup(); preempt.step(true, false); preempt.until(State::carrying);
         preempt.step(false, true); preempt.until(phase);
         const double priorLift = preempt.lift;
@@ -1035,14 +1103,14 @@ int main() {
             && profiledTop.motor.coasting() && profiledTop.arm == profiledTop.maxArm,
             "upper endstop uses fast cruise, a soft final contact and COAST after real contact");
 
-    Controller prematchTiming;
-    Input contact;
+    Rig liftBeforeArmTiming;
+    liftBeforeArmTiming.start(); liftBeforeArmTiming.until(State::armZero1);
+    auto& prematchTiming = liftBeforeArmTiming.controller;
+    Input contact = liftBeforeArmTiming.in;
     contact.armCurrent = 800;
-    prematchTiming.start(contact);
-    prematchTiming.tick(contact);
-    contact.now = cfg::preMatchArmDelayMs; prematchTiming.tick(contact);
+    contact.armVelocity = 0;
     require(prematchTiming.state == State::armZero1,
-            "first arm contact timing starts one second after lift reset begins");
+            "first arm contact timing starts after the complete lift reset");
     const auto armHomeStart = contact.now;
     for (unsigned now : {0u, 100u, 349u, 350u, 749u}) {
         contact.now = armHomeStart + now; prematchTiming.tick(contact);
@@ -1072,22 +1140,34 @@ int main() {
 
     require(cfg::liftLowerRotations > cfg::returnLiftRotations,
             "pin pickup is below the R2 passage clearance");
-    for (double origin : {-5.0, 0.0, 7.0}) for (bool raised : {false, true}) {
-        Rig passage; passage.liftOffset = origin; passage.lift += origin; passage.setup();
+    for (double origin : {-5.0, 0.0, 7.0}) for (int polarity : {-1, 1}) for (bool raised : {false, true}) {
+        Rig passage; passage.liftOffset = origin; passage.lift += origin;
+        passage.encoderPolarity = polarity; passage.setup();
         passage.step(true); passage.until(State::carrying);
         if (raised) passage.height(1, origin + liftLevel1);
-        passage.step(false, true); passage.until(State::returnLiftLow);
-        const double passageArm = passage.arm;
-        passage.step();
-        require(raised ? passage.controller.output.lift < 0 : passage.controller.output.lift > 0,
-                "R2 moves down or up to the same passage height from either side");
-        while (passage.controller.state == State::returnLiftLow) {
+        passage.step(false, true); passage.until(State::returnArmClearance);
+        const auto returnStarted = passage.in.now;
+        bool overlapping = false, liftClose = false;
+        std::uint32_t liftCloseSince = 0;
+        while (passage.controller.state == State::returnArmClearance) {
             passage.step();
-            require(passage.arm == passageArm, "the arm waits while R2 sets the passage height");
+            if (passage.controller.output.arm && passage.controller.output.lift) {
+                overlapping = true;
+                require(raised ? passage.controller.output.lift < 0 : passage.controller.output.lift > 0,
+                        "R2 concurrently raises or lowers the lift to the same passage height");
+            }
+            if (std::abs(passage.in.lift - (origin - cfg::returnLiftRotations)) <= cfg::liftToleranceRot) {
+                if (!liftClose) { liftClose = true; liftCloseSince = passage.in.now; }
+            } else liftClose = false;
+            if (std::abs(passage.in.arm * polarity - cfg::armClearanceDeg) > cfg::armReturnClearanceToleranceDeg
+                || !liftClose || passage.in.now - liftCloseSince < cfg::settleMs)
+                require(passage.controller.state == State::returnArmClearance,
+                        "front homing waits for arm clearance and the lift's full settling interval");
         }
-        require(passage.controller.state == State::returnArmZero
-                && std::abs(passage.lift - (origin - 3.0)) <= cfg::liftToleranceRot,
-                "the front endstop move starts only after the lift settles three rotations below the top");
+        require(overlapping && passage.controller.state == State::returnArmZero
+                && std::abs(passage.arm - cfg::armClearanceDeg) <= cfg::armReturnClearanceToleranceDeg
+                && std::abs(passage.lift - (origin - cfg::returnLiftRotations)) <= cfg::liftToleranceRot,
+                "parallel return joins both settled axes before starting front homing");
         while (passage.controller.state == State::returnArmZero) {
             passage.step();
             require(std::abs(passage.lift - (origin - 3.0)) <= cfg::liftToleranceRot,
@@ -1101,13 +1181,139 @@ int main() {
                     "the final lift descent preserves COAST at the front endstop");
         }
         require(passage.controller.state == State::prepared && std::abs(passage.lift - (origin + liftLow)) < 0.03,
-                "R2 finishes at the same configured pin pickup position as preMatch");
+                "R2 finishes at the configured normal pin pickup position");
+        if (!origin && polarity == 1)
+            std::cout << "R2 return after departure, " << (raised ? "raised" : "base")
+                      << " lift: " << passage.in.now - returnStarted << " ms\n";
 
         Rig rapid; rapid.liftOffset = origin; rapid.lift += origin; rapid.setup();
         rapid.step(false, false, 1); rapid.step(false, false, 1);
         for (unsigned i = 0; i < 500; ++i) rapid.step();
         require(std::abs(rapid.lift - (origin + liftLow + 2 * cfg::driverLiftStepRotations)) < 0.03,
                 "quick B presses accumulate two full steps even before the first one finishes");
+    }
+
+    // Either actuator can be the slower one. A jam in one must stop both,
+    // including the case where the first helper fails before the second runs.
+    for (bool jamArm : {false, true}) {
+        Rig jammedReturn; jammedReturn.setup(); jammedReturn.step(true); jammedReturn.until(State::carrying);
+        jammedReturn.height(1, liftLevel1);
+        jammedReturn.step(false, true); jammedReturn.until(State::returnArmClearance);
+        if (jamArm) jammedReturn.maxArm = jammedReturn.arm;
+        else jammedReturn.liftFloor = jammedReturn.lift;
+        jammedReturn.until(State::stopped);
+        require(jammedReturn.controller.calibrated && jammedReturn.motor.holding()
+                && !jammedReturn.controller.output.arm && !jammedReturn.controller.output.lift,
+                "a jam on either parallel axis stops both outputs without losing calibration");
+        for (int i = 0; i < 100; ++i) {
+            jammedReturn.step();
+            require(jammedReturn.controller.state == State::stopped
+                    && !jammedReturn.controller.output.arm && !jammedReturn.controller.output.lift,
+                    "a parallel-axis jam cannot restart the other motor on subsequent ticks");
+        }
+    }
+
+    // Interrupt the phase while both motors are actually powered, rather
+    // than only at the idle tick where the parallel phase was entered.
+    for (int interruption = 0; interruption < 5; ++interruption) {
+        Rig interrupted; interrupted.setup(); interrupted.step(true); interrupted.until(State::carrying);
+        interrupted.height(1, liftLevel1);
+        interrupted.step(false, true); interrupted.until(State::returnArmClearance);
+        for (int i = 0; i < 20 && !(interrupted.controller.output.arm && interrupted.controller.output.lift); ++i)
+            interrupted.step();
+        require(interrupted.controller.state == State::returnArmClearance
+                && interrupted.controller.output.arm && interrupted.controller.output.lift,
+                "interruption regression begins with both return motors moving");
+        const double pausedArm = interrupted.arm, pausedLift = interrupted.lift;
+        if (interruption == 0 || interruption == 1) {
+            if (interruption == 0) interrupted.controller.suspend();
+            else interrupted.controller.cancel();
+            applyArmMotor(interrupted.motor, interrupted.controller.output, interrupted.controller.state, interruption != 0);
+            require(!interrupted.controller.output.arm && !interrupted.controller.output.lift,
+                    "disable or cancellation immediately stops both parallel outputs");
+            interrupted.controller.resume(interrupted.in.now);
+            for (int i = 0; i < 30; ++i) interrupted.step();
+            require(interrupted.controller.state == State::prepared && interrupted.arm == pausedArm
+                    && interrupted.lift == pausedLift && !interrupted.controller.output.arm
+                    && !interrupted.controller.output.lift,
+                    "driver reentry never resumes a cancelled parallel return");
+        } else if (interruption == 2) {
+            interrupted.step(true);
+            require(interrupted.controller.state == State::pickupWait && interrupted.controller.output.closed
+                    && !interrupted.controller.output.arm && !interrupted.controller.output.lift
+                    && interrupted.arm == pausedArm && interrupted.lift == pausedLift,
+                    "R1 stops both active return motors before its full clamp pause");
+            interrupted.until(State::carryingEndstop);
+        } else {
+            interrupted.in.valid = false;
+            interrupted.step();
+            require(interrupted.controller.state == State::returnArmClearance && interrupted.motor.holding()
+                    && !interrupted.controller.output.arm && !interrupted.controller.output.lift
+                    && interrupted.arm == pausedArm && interrupted.lift == pausedLift,
+                    "missing telemetry pauses both concurrent motors immediately");
+            interrupted.driverAt(interrupted.in.now + (interruption == 3 ? 50 : cfg::sensorRecoveryMs));
+            interrupted.in.valid = true;
+            interrupted.step();
+            if (interruption == 3) {
+                require(interrupted.controller.state == State::returnArmClearance,
+                        "a brief telemetry pause resumes the same parallel request");
+                interrupted.until(State::prepared);
+            } else {
+                require(interrupted.controller.state == State::stopped && interrupted.controller.calibrated
+                        && !interrupted.controller.output.arm && !interrupted.controller.output.lift,
+                        "a persistent telemetry loss latches both parallel outputs off after reconnection");
+            }
+        }
+    }
+
+    // A stationary arm already on the front side with the lift at passage
+    // height can return directly after the same half-turn departure gate.
+    for (double origin : {-5.0, 0.0, 7.0}) for (int polarity : {-1, 1}) {
+        Rig directReturn; directReturn.liftOffset = origin; directReturn.lift += origin;
+        directReturn.encoderPolarity = polarity; directReturn.autoDepartAfterRelease = false;
+        directReturn.setup(); directReturn.step(true); directReturn.until(State::carrying);
+        directReturn.in.forwardPodDegrees = 1234;
+        directReturn.step(false, true); directReturn.until(State::releaseWait);
+        directReturn.lift = origin - cfg::returnLiftRotations;
+        directReturn.in.armVelocity = directReturn.in.liftVelocity = 0;
+        directReturn.driverAt(directReturn.in.now + cfg::releasePauseMs);
+        const double releasedArm = directReturn.arm;
+        require(directReturn.controller.state == State::releaseWait,
+                "being at passage height does not bypass the half-turn departure gate");
+        directReturn.in.forwardPodDegrees = 1234 + 179.99;
+        directReturn.step();
+        require(directReturn.controller.state == State::releaseWait,
+                "the direct return still rejects departure just below half a rotation");
+        directReturn.in.forwardPodDegrees = 1234 + 180;
+        directReturn.step();
+        require(directReturn.controller.state == State::returnArmZero,
+                "stationary passage height enables direct front homing without the 144-degree detour");
+        const auto directStarted = directReturn.in.now;
+        for (int i = 0; i < 1000 && directReturn.controller.state != State::prepared; ++i) {
+            directReturn.step();
+            require(directReturn.arm <= releasedArm && directReturn.controller.state != State::returnArmClearance,
+                    "the direct return never reverses toward 144 degrees");
+        }
+        require(directReturn.controller.state == State::prepared && directReturn.arm == 0
+                && std::abs(directReturn.lift - (origin + liftLow)) <= cfg::liftToleranceRot,
+                "the direct return reaches the same open-clamp pickup pose");
+        if (!origin && polarity == 1)
+            std::cout << "R2 direct return after departure: " << directReturn.in.now - directStarted << " ms\n";
+    }
+    for (int ineligible = 0; ineligible < 3; ++ineligible) {
+        Rig guarded; guarded.autoDepartAfterRelease = false; guarded.setup();
+        guarded.step(true); guarded.until(State::carrying);
+        guarded.step(false, true); guarded.until(State::releaseWait);
+        guarded.lift = -cfg::returnLiftRotations;
+        guarded.driverAt(guarded.in.now + cfg::releasePauseMs);
+        guarded.in.forwardPodDegrees += cfg::releaseReturnPodDegrees;
+        guarded.in.armVelocity = ineligible == 0 ? cfg::stallVelocityRpm + 1 : 0;
+        guarded.in.liftVelocity = ineligible == 1 ? cfg::stallVelocityRpm + 1 : 0;
+        if (ineligible == 2) guarded.manuallyPositionArm(guarded.maxArm);
+        guarded.driverAt(guarded.in.now + 10);
+        require(guarded.controller.state == State::returnArmClearance,
+                "a moving mechanism or an arm beyond clearance cannot take the direct-return shortcut");
+        guarded.until(State::prepared);
     }
 
     // The encoder origin is arbitrary: startup may tare at any lift height.
@@ -1154,7 +1360,7 @@ int main() {
         require(heights.lift == releaseHeight, "R2 releases at the selected height before the automatic descent");
         heights.until(State::prepared);
         require(std::abs(heights.lift - (origin + liftLow)) < 0.03 && !heights.controller.output.closed,
-                "automatic return uses the same bottom as preMatch and manual levels, with clamp open");
+                "automatic return uses the normal bottom of the manual levels, with clamp open");
         require(heights.controller.liftMeasurements[0] == references[0]
                 && heights.controller.liftMeasurements[1] == references[1],
                 "R1, height selection, endstop contact and release never rewrite preMatch measurements");
@@ -1210,16 +1416,99 @@ int main() {
         interruptedHeight.step(); require(!interruptedHeight.controller.output.lift, "cancel must also cancel the independent height request");
     }
 
-    Rig relaxed; relaxed.start(); relaxed.until(State::preArmClearance);
-    relaxed.arm = cfg::armClearanceDeg - 4;
-    for (int i = 0; i < 30 && relaxed.controller.state == State::preArmClearance; ++i) {
-        relaxed.step();
-        require(!relaxed.controller.output.arm, "preMatch accepts a settled four-degree error without unnecessary corrections");
+    for (bool duringDescent : {false, true}) {
+        Rig slipped; slipped.start(); slipped.until(State::preLiftLow);
+        if (duringDescent) {
+            slipped.step();
+            require(slipped.controller.output.lift < 0, "extra-low startup descent starts at endstop 2");
+        }
+        slipped.arm -= cfg::repeatArmToleranceDeg + 1;
+        const double stoppedLift = slipped.lift;
+        slipped.step();
+        require(slipped.controller.state == State::fault && !slipped.controller.calibrated
+                && !slipped.controller.output.lift && slipped.lift == stoppedLift
+                && slipped.controller.output.closed && slipped.motor.braking && !slipped.motor.holding(),
+                "preMatch stops before or during extra-low descent if the arm leaves endstop 2");
     }
-    require(relaxed.controller.state == State::liftTop1, "relaxed clearance joins the parallel lift reset before descent");
-    relaxed.until(State::prepared);
-    require(relaxed.controller.calibrated && std::abs(relaxed.lift - liftLow) < 0.03 && !relaxed.controller.output.closed,
-            "relaxed arm clearance must still finish the full preMatch descent and leave the clamp open");
+    Rig blockedStartup; blockedStartup.start(); blockedStartup.until(State::preLiftLow);
+    blockedStartup.liftFloor = liftLow;
+    blockedStartup.until(State::fault);
+    require(!blockedStartup.controller.calibrated && !blockedStartup.controller.output.lift
+            && std::strstr(blockedStartup.controller.error, "Lift bloccato"),
+            "a blocked extra-low startup descent stops effort and cannot declare READY");
+
+    for (int polarity : {-1, 1}) for (double load : {8.0, 55.0}) {
+        Rig supported; supported.encoderPolarity = polarity;
+        supported.start(); supported.until(State::armTop2);
+        supported.armLoadPower = load;
+        supported.until(State::liftTop1);
+        require(supported.motor.holding() && !supported.controller.output.armCoast,
+                "the final measured upper contact engages HOLD immediately before descent");
+        while (supported.controller.state != State::prepared && supported.controller.state != State::fault) {
+            supported.step();
+            require(supported.arm == supported.maxArm && supported.motor.holding()
+                    && supported.controller.output.closed,
+                    "gravity cannot pull the arm off endstop 2 while the startup lift descends");
+        }
+        require(supported.controller.state == State::prepared && supported.controller.calibrated
+                && std::abs(supported.lift - liftPreMatch) < 0.03,
+                "loaded startup descent completes at the requested extra-low lift height");
+        for (int i = 0; i < 100; ++i) supported.step();
+        require(supported.arm == supported.maxArm && supported.motor.holding(),
+                "the loaded arm remains at endstop 2 while waiting in READY");
+        supported.controller.suspend();
+        applyArmMotor(supported.motor, supported.controller.output, supported.controller.state, false);
+        require(supported.motor.braking && !supported.motor.holding(),
+                "disabled startup support must not apply active motor HOLD");
+        supported.controller.resume(supported.in.now);
+        supported.step();
+        require(supported.motor.holding() && supported.arm == supported.maxArm,
+                "driver reentry restores support for the low startup pose");
+        supported.step(false, true);
+        require(supported.controller.state == State::releaseWait && !supported.controller.output.closed
+                && supported.motor.holding() && supported.arm == supported.maxArm,
+                "R2 at the low startup pose opens in place and retains support");
+        supported.until(State::returnLiftClearance);
+        while (supported.controller.state == State::returnLiftClearance) {
+            supported.step();
+            require(supported.arm == supported.maxArm && supported.motor.holding(),
+                    "R2 keeps the loaded arm supported until the lift regains clearance");
+        }
+        supported.armLoadPower = 0;
+        supported.until(State::prepared);
+        require(supported.arm == 0 && supported.motor.coasting(),
+                "the subsequent normal R2 return still releases its confirmed front endstop");
+    }
+
+    for (double origin : {-5.0, 0.0, 7.0}) for (bool upper : {false, true}) {
+        Rig autonLift; autonLift.liftOffset = origin; autonLift.lift += origin;
+        if (upper) autonLift.preMatch();
+        else autonLift.setup();
+        autonLift.controller.cancel(); // Autonomous takes over the calibrated mechanisms.
+        const bool closed = autonLift.controller.output.closed;
+        const std::array<double, 2> references{autonLift.controller.liftMeasurements[0], autonLift.controller.liftMeasurements[1]};
+        autonLift.lift = origin + liftLevel1; autonLift.in.lift = autonLift.lift;
+        require(autonLift.controller.requestLiftBottom(autonLift.in),
+                "autonomous can select the calibrated bottom without a manual button press");
+        for (unsigned i = 0; i < 1000 && autonLift.controller.driverLiftMoving(); ++i) autonLift.step();
+        const double expectedBottom = origin + (upper ? liftPreMatch : liftLow);
+        require(!autonLift.controller.driverLiftMoving() && !autonLift.controller.output.lift
+                && std::abs(autonLift.lift - expectedBottom) < 0.03
+                && autonLift.controller.output.closed == closed,
+                "full lowering uses the extra-low limit only at endstop 2 and preserves the clamp");
+        const double bottom = autonLift.lift;
+        autonLift.controller.cancelDriverLiftTarget();
+        autonLift.controller.adjustDriverLift(1, autonLift.in);
+        for (unsigned i = 0; i < 1000 && autonLift.controller.driverLiftMoving(); ++i) autonLift.step();
+        require(std::abs(autonLift.lift - bottom - cfg::driverLiftStepRotations) < 0.03,
+                "autonomous raises one full configured step from the current lift position");
+        require(autonLift.controller.requestLiftBottom(autonLift.in), "autonomous can lower again after its upward step");
+        for (unsigned i = 0; i < 1000 && autonLift.controller.driverLiftMoving(); ++i) autonLift.step();
+        require(std::abs(autonLift.lift - expectedBottom) < 0.03
+                && autonLift.controller.liftMeasurements[0] == references[0]
+                && autonLift.controller.liftMeasurements[1] == references[1],
+                "autonomous lift moves return to the calibrated bottom without rewriting references");
+    }
 
     RotationReadout rotation;
     Input podSample;

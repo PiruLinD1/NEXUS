@@ -165,7 +165,15 @@ struct MotionOptions {
     double settleTime = 0.18;
     double timeout = 5.0;
 };
-struct Target { Pose pose{}; bool constrainHeading = false; bool turnOnly = false; };
+constexpr std::size_t maxRoutePoints = 8; // Includes the final destination.
+struct Target {
+    Pose pose{};
+    bool constrainHeading = false;
+    bool turnOnly = false;
+    // Intermediate coordinates in SI; headings are inferred from the route.
+    std::array<Pose, maxRoutePoints - 1> via{};
+    std::size_t viaCount = 0;
+};
 struct SolverStats {
     unsigned iterations = 0;
     double initialCost = 0, finalCost = 0;
